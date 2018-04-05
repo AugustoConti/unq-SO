@@ -74,6 +74,7 @@ class Kernel():
         ## setup interruption handlers
         killHandler = KillInterruptionHandler(self)
         HARDWARE.interruptVector.register(KILL_INTERRUPTION_TYPE, killHandler)
+        self._batch = []
 
     def load_program(self, program):
         # loads the program in main memory  
@@ -93,8 +94,7 @@ class Kernel():
 
     def runNext(self):
         if len(self._batch) > 0:
-            self.execute(self._batch[0])
-            self._batch = self._batch[1:]
+            self.execute(self._batch.pop())
         else:
             HARDWARE.switchOff()
 
