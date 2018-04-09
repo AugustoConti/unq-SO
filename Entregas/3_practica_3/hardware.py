@@ -242,6 +242,17 @@ class PrinterIODevice(AbstractIODevice):
         super(PrinterIODevice, self).__init__("Printer", 3)
 
 
+class Disc:
+    def __init__(self):
+        self._programs = dict()
+
+    def add(self, program):
+        self._programs[program.name] = program.instructions
+        return self
+
+    def get(self, name):
+        return self._programs[name]
+
 # emulates the Hardware that were the Operative System run
 class Hardware:
     def __init__(self):
@@ -251,6 +262,7 @@ class Hardware:
         self._ioDevice = None
         self._mmu = None
         self._cpu = None
+        self._disc = Disc()
 
     # Setup our hardware
     def setup(self, memorySize):
@@ -295,6 +307,10 @@ class Hardware:
     @property
     def ioDevice(self):
         return self._ioDevice
+
+    @property
+    def disc(self):
+        return self._disc
 
     def __repr__(self):
         return "HARDWARE state {cpu}\n{mem}".format(cpu=self._cpu, mem=self._memory)

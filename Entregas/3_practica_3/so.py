@@ -95,16 +95,14 @@ class Loader:
         # next empty address
         self._nextDir = 0
 
-    def __loadProgram(self, baseDir, progSize, instructions):
+    def load(self, pcb, program):
+        instructions = HARDWARE.disc.get(program)
+        progSize = len(instructions)
+        pcb['baseDir'] = self._nextDir
+        pcb['limit'] = progSize
         for i in range(0, progSize):
-            HARDWARE.memory.put(baseDir + i, instructions[i])
+            HARDWARE.memory.put(self._nextDir + i, instructions[i])
         self._nextDir += progSize
-        return baseDir
-
-    def load(self, instructions):
-        # TODO recibir string con nombre de programa y cargar desde disco
-        # TODO recibir pcb, actualizar basedir y limit
-        return self.__loadProgram(self._nextDir, len(instructions), instructions)
 
 
 class KillInterruptionHandler:
@@ -136,10 +134,9 @@ class NewInterruptionHandler:
     def execute(self, irq):
         program = irq.parameters
         pcb = {'pid': self._kernel._pcbTable.getPID(),
-               'name': program.name,
-               'baseDir': self._kernel._loader.load(program.instructions),
-               'limit': len(program.instructions),
+               'name': program,
                'pc': 0}
+        self._kernel._loader.load(pcb, program)
 
         self._kernel.addPCB(pcb)
         self._kernel.runOrAddQueue(pcb['pid'])
