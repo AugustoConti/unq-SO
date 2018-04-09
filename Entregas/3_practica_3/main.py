@@ -1,19 +1,12 @@
-from hardware import *
 from so import *
-import log
 
-
-##
-##  MAIN 
-##
 if __name__ == '__main__':
-    log.setupLogger()
-    log.logger.info('Starting emulator')
+    logger.info('Starting emulator')
 
-    ## setup our hardware and set memory size to 25 "cells"
+    # setup our hardware and set memory size to 25 "cells"
     HARDWARE.setup(25)
     
-    ## new create the Operative System Kernel
+    # new create the Operative System Kernel
     kernel = Kernel()
 
     # Ejecutar 3 programas a la vez
@@ -26,5 +19,5 @@ if __name__ == '__main__':
     kernel.execute(prg2)
     kernel.execute(prg3)
 
-    ## start
+    # start
     HARDWARE.switchOn()
