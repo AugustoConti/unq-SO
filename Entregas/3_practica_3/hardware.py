@@ -10,7 +10,7 @@ INSTRUCTION_CPU = 'CPU'
 INSTRUCTION_EXIT = 'EXIT'
 
 
-# Helper for emulated machine code
+# Helper for emulated machine code..
 class ASM:
     @classmethod
     def EXIT(cls, times):
