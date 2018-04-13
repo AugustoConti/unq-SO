@@ -6,13 +6,25 @@ from hardware import *
 from log import logger
 
 
-class Expand:
-    def __init__(self, instructions):
-        self._instructions = instructions
+class Program:
+    def __init__(self, name, instructions):
+        self._name = name
+        self._instructions = self.__expand(instructions)
 
-    def expand(self):
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def instructions(self):
+        return self._instructions
+
+    def addinstr(self, instruction):
+        self._instructions.append(instruction)
+
+    def __expand(self, instructions):
         expanded = []
-        for i in self._instructions:
+        for i in instructions:
             if isinstance(i, list):
                 expanded.extend(i)
             else:
@@ -23,32 +35,36 @@ class Expand:
 
         return expanded
 
+    def __repr__(self):
+        return "Program({name}, {instructions})".format(name=self._name, instructions=self._instructions)
+
 
 class IoDeviceController:
     def __init__(self, device):
         self._device = device
         self._waiting_queue = []
-        self._currentPid = None
+        self._currentPCB = None
 
     @property
     def isBusy(self):
         return self._device.is_busy or len(self._waiting_queue) > 0
 
-    def runOperation(self, pid, instruction):
-        pair = {'pid': pid, 'instruction': instruction}
+    def runOperation(self, pcb, instruction):
+        # TODO cambiar pcb por pid?? CONSULTAR
+        pair = {'pcb': pcb, 'instruction': instruction}
         self._waiting_queue.append(pair)
         self.__load_from_waiting_queue_if_apply()
         logger.info(self)
 
-    def getFinishedPid(self):
-        finishedPid = self._currentPid
-        self._currentPid = None
+    def getFinishedPCB(self):
+        finishedPCB = self._currentPCB
+        self._currentPCB = None
         self.__load_from_waiting_queue_if_apply()
-        return finishedPid
+        return finishedPCB
 
     def __load(self, pair):
         print(pair)
-        self._currentPid = pair['pid']
+        self._currentPCB = pair['pcb']
         self._device.execute(pair['instruction'])
 
     def __load_from_waiting_queue_if_apply(self):
@@ -56,21 +72,18 @@ class IoDeviceController:
             self.__load(self._waiting_queue.pop())
 
     def __repr__(self):
-        return "IoDeviceController for {deviceID} running: {currentPid} waiting: {waiting_queue}" \
-            .format(deviceID=self._device.deviceId, currentPid=self._currentPid, waiting_queue=self._waiting_queue)
+        return "IoDeviceController for {deviceID} running: {currentPCB} waiting: {waiting_queue}" \
+            .format(deviceID=self._device.deviceId, currentPCB=self._currentPCB, waiting_queue=self._waiting_queue)
 
 
 class Dispatcher:
-    def __init__(self, pcbTable):
-        self._pcbTable = pcbTable
-
-    def save(self):
-        self._pcbTable.getRunning()['pc'] = HARDWARE.cpu.pc
+    @classmethod
+    def save(cls, pcb):
+        pcb['pc'] = HARDWARE.cpu.pc
         HARDWARE.cpu.pc = -1
 
-    def load(self, pid):
-        self._pcbTable.setRunning(pid)
-        pcb = self._pcbTable.getRunning()
+    @classmethod
+    def load(cls, pcb):
         HARDWARE.mmu.baseDir = pcb['baseDir']
         HARDWARE.mmu.limit = pcb['limit']
         HARDWARE.cpu.pc = pcb['pc']
@@ -79,6 +92,7 @@ class Dispatcher:
 
 class Loader:
     def __init__(self):
+        # next empty address
         self._nextDir = 0
 
     def load(self, pcb, program):
@@ -91,11 +105,61 @@ class Loader:
         self._nextDir += progSize
 
 
+class KillInterruptionHandler:
+    def __init__(self, kernel):
+        self._kernel = kernel
+
+    def execute(self, irq):
+        logger.info(" Finished: {currentPCB}"
+                    .format(currentPCB=self._kernel._pcbTable.getRunning()))
+
+        Dispatcher.save(self._kernel._pcbTable.getRunning())
+        self._kernel.loadFromReady()
+
+
+class IoInInterruptionHandler:
+    def __init__(self, kernel):
+        self._kernel = kernel
+
+    def execute(self, irq):
+        Dispatcher.save(self._kernel._pcbTable.getRunning())
+        self._kernel.ioDeviceController.runOperation(self._kernel._pcbTable.getRunning(), irq.parameters)
+        self._kernel.loadFromReady()
+
+
+class NewInterruptionHandler:
+    def __init__(self, kernel):
+        self._kernel = kernel
+
+    def execute(self, irq):
+        program = irq.parameters
+        pcb = {'pid': self._kernel._pcbTable.getPID(),
+               'name': program,
+               'pc': 0}
+        self._kernel._loader.load(pcb, program)
+
+        self._kernel.addPCB(pcb)
+        self._kernel.runOrAddQueue(pcb['pid'])
+        logger.info(HARDWARE)
+
+
+class IoOutInterruptionHandler:
+    def __init__(self, kernel):
+        self._kernel = kernel
+
+    def execute(self, irq):
+        self._kernel.runOrAddQueue(self._kernel.ioDeviceController.getFinishedPCB()['pid'])
+        logger.info(self._kernel.ioDeviceController)
+
+
 class PCBTable:
     def __init__(self):
-        self._lastID = 0  # Last PID of PCBs
-        self._tabla = dict()  # list of all PCB
-        self._pidRunning = None  # PCB Running
+        # Last PID of PCBs
+        self._lastID = 0
+        # list of all PCB
+        self._tabla = dict()
+        # PCB Running
+        self._pidRunning = None
 
     def getPID(self):
         self._lastID += 1
@@ -113,190 +177,43 @@ class PCBTable:
     def addPCB(self, pcb):
         self._tabla[pcb['pid']] = pcb
 
-    def getPriority(self, pid):
-        return self._tabla[pid]['priority']
 
-
-class KillInterruptionHandler:
-    def __init__(self, scheduler, pcbTable, dispatcher):
-        self._scheduler = scheduler
-        self._pcbTable = pcbTable
-        self._dispatcher = dispatcher
-
-    def execute(self, irq):
-        logger.info(" Finished: {currentPCB}"
-                    .format(currentPCB=self._pcbTable.getRunning()))
-
-        self._dispatcher.save()
-        self._scheduler.loadFromReady()
-
-
-class IoInInterruptionHandler:
-    def __init__(self, scheduler, pcbTable, ioDeviceController, dispatcher):
-        self._scheduler = scheduler
-        self._pcbTable = pcbTable
-        self._ioDeviceController = ioDeviceController
-        self._dispatcher = dispatcher
-
-    def execute(self, irq):
-        self._dispatcher.save()
-        self._ioDeviceController.runOperation(self._pcbTable.getRunning()['pid'], irq.parameters)
-        self._scheduler.loadFromReady()
-
-
-class NewInterruptionHandler:
-    def __init__(self, scheduler, pcbTable, loader):
-        self._scheduler = scheduler
-        self._pcbTable = pcbTable
-        self._loader = loader
-
-    def execute(self, irq):
-        program = irq.parameters['program']
-        pcb = {'pid': self._pcbTable.getPID(),
-               'priority': irq.parameters['priority'],
-               'name': program,
-               'pc': 0}
-        self._loader.load(pcb, program)
-
-        self._pcbTable.addPCB(pcb)
-        self._scheduler.runOrAddQueue(pcb['pid'])
-        logger.info(HARDWARE)
-
-
-class IoOutInterruptionHandler:
-    def __init__(self, scheduler, ioDeviceController):
-        self._scheduler = scheduler
-        self._ioDeviceController = ioDeviceController
-
-    def execute(self, irq):
-        self._scheduler.runOrAddQueue(self._ioDeviceController.getFinishedPid())
-        logger.info(self._ioDeviceController)
-
-
-class TimeOutInterruptionHandler:
-    def __init__(self):
-        pass
-
-    def execute(self, irq):
-        pass
-
-
-class RoundRobin:
-    def __init__(self):
-        pass
-
-
-class FCFS:
-    def add(self, ready, pid):
-        ready.append(pid)
-
-    def next(self, ready):
-        return ready.pop()
-
-
-class PriorityBase:
-    def __init__(self, pcbTable):
-        self._pcbTable = pcbTable
-
-    def next(self, ready):
-        pidMax = 0
-        priorityMax = 10
-        for i in ready:
-            if self._pcbTable.getPriority(i) < priorityMax:
-                pidMax = i
-                priorityMax = self._pcbTable.getPriority(i)
-        ready.remove(pidMax)
-        return pidMax
-
-
-class PriorityExp:
-    def __init__(self, pcbTable, dispatcher, base):
-        self._pcbTable = pcbTable
-        self._dispatcher = dispatcher
-        self._base = base
-
-    def add(self, ready, pid):
-        pcbRun = self._pcbTable.getRunning()
-        if self._pcbTable.getPriority(pid) < pcbRun['priority']:
-            self._dispatcher.save()
-            self._dispatcher.load(pid)
-            ready.append(pcbRun['pid'])
-            logger.info("PCB entrante con mayor prioridad que running!")
-        else:
-            ready.append(pid)
-
-    def next(self, ready):
-        return self._base.next(ready)
-
-
-class PriorityNoExp:
-    def __init__(self, base):
-        self._base = base
-
-    def add(self, ready, pid):
-        ready.append(pid)
-
-    def next(self, ready):
-        return self._base.next(ready)
-
-
-class Scheduler:
-    def __init__(self, pcbTable, dispatcher, tipo):
-        self.__tipo = tipo
-        self._pcbTable = pcbTable
-        self._dispatcher = dispatcher
-        self._ready_queue = []
-
-    def runOrAddQueue(self, pid):
-        if self._pcbTable.isRunning():
-            self.__tipo.add(self._ready_queue, pid)
-        else:
-            self._dispatcher.load(pid)
-
-    def loadFromReady(self):
-        self._pcbTable.setRunning(None)
-        if len(self._ready_queue) > 0:
-            self._dispatcher.load(self.__tipo.next(self._ready_queue))
-
-
+# emulates the core of an Operative System
 class Kernel:
     def __init__(self):
+        # setup interruption handlers
+        HARDWARE.interruptVector.register(NEW_INTERRUPTION_TYPE, NewInterruptionHandler(self))
+        HARDWARE.interruptVector.register(KILL_INTERRUPTION_TYPE, KillInterruptionHandler(self))
+        HARDWARE.interruptVector.register(IO_IN_INTERRUPTION_TYPE, IoInInterruptionHandler(self))
+        HARDWARE.interruptVector.register(IO_OUT_INTERRUPTION_TYPE, IoOutInterruptionHandler(self))
+
         self._ioDeviceController = IoDeviceController(HARDWARE.ioDevice)
         self._loader = Loader()
         self._pcbTable = PCBTable()
-        self._dispatcher = Dispatcher(self._pcbTable)
-        self._scheduler = Scheduler(self._pcbTable, self._dispatcher,
-                            # FCFS()
-                            # PriorityNoExp(PriorityBase(self._pcbTable))
-                             PriorityExp(self._pcbTable, self._dispatcher, PriorityBase(self._pcbTable))
-                            )
-
-        # setup interruption handlers
-        HARDWARE.interruptVector.register(NEW_INTERRUPTION_TYPE,
-                                          NewInterruptionHandler(self._scheduler, self._pcbTable, self._loader))
-
-        HARDWARE.interruptVector.register(KILL_INTERRUPTION_TYPE,
-                                          KillInterruptionHandler(self._scheduler, self._pcbTable, self._dispatcher))
-
-        HARDWARE.interruptVector.register(IO_IN_INTERRUPTION_TYPE,
-                                          IoInInterruptionHandler(self._scheduler, self._pcbTable,
-                                                                  self._ioDeviceController,
-                                                                  self._dispatcher))
-
-        HARDWARE.interruptVector.register(IO_OUT_INTERRUPTION_TYPE,
-                                          IoOutInterruptionHandler(self._scheduler, self._ioDeviceController))
-
-        HARDWARE.interruptVector.register(TIME_OUT_INTERRUPTION_TYPE,
-                                          TimeOutInterruptionHandler())
-
-        # TODO Nueva interrupcion de hard: TIMEOUT
+        self._ready_queue = []
 
     @property
     def ioDeviceController(self):
         return self._ioDeviceController
 
-    def execute(self, program, priority = 5):
-        HARDWARE.interruptVector.handle(IRQ(NEW_INTERRUPTION_TYPE,{'program': program, 'priority': priority}))
+    def execute(self, program):
+        HARDWARE.interruptVector.handle(IRQ(NEW_INTERRUPTION_TYPE, program))
+
+    def addPCB(self, pcb):
+        self._pcbTable.addPCB(pcb)
+
+    def runOrAddQueue(self, pid):
+        if not self._pcbTable.isRunning():
+            self._pcbTable.setRunning(pid)
+            Dispatcher.load(self._pcbTable.getRunning())
+        else:
+            self._ready_queue.append(pid)
+
+    def loadFromReady(self):
+        self._pcbTable.setRunning(None)
+        if len(self._ready_queue) > 0:
+            self._pcbTable.setRunning(self._ready_queue.pop())
+            Dispatcher.load(self._pcbTable.getRunning())
 
     def __repr__(self):
-        return "Kernel :P"
+        return "Kernel :)"
