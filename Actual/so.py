@@ -6,22 +6,20 @@ from hardware import *
 from log import logger
 
 
-class Expand:
-    def __init__(self, instructions):
-        self._instructions = instructions
+def execute(program, priority=3):
+    HARDWARE.interruptVector.handle(IRQ(NEW_INTERRUPTION_TYPE, {'program': program, 'priority': priority}))
 
-    def expand(self):
-        expanded = []
-        for i in self._instructions:
-            if isinstance(i, list):
-                expanded.extend(i)
-            else:
-                expanded.append(i)
 
-        if not ASM.isEXIT(expanded[-1]):
-            expanded.append(INSTRUCTION_EXIT)
-
-        return expanded
+def expand(instructions):
+    expanded = []
+    for i in instructions:
+        if isinstance(i, list):
+            expanded.extend(i)
+        else:
+            expanded.append(i)
+    if not ASM.isEXIT(expanded[-1]):
+        expanded.append(INSTRUCTION_EXIT)
+    return expanded
 
 
 class IoDeviceController:
@@ -32,7 +30,7 @@ class IoDeviceController:
 
     @property
     def isBusy(self):
-        return self._device.is_busy or len(self._waiting_queue) > 0
+        return self._device.is_busy or self._waiting_queue
 
     def runOperation(self, pid, instruction):
         pair = {'pid': pid, 'instruction': instruction}
@@ -52,7 +50,7 @@ class IoDeviceController:
         self._device.execute(pair['instruction'])
 
     def __load_from_waiting_queue_if_apply(self):
-        if len(self._waiting_queue) > 0 and self._device.is_idle:
+        if self._waiting_queue and self._device.is_idle:
             self.__load(self._waiting_queue.pop())
 
     def __repr__(self):
@@ -82,7 +80,7 @@ class Loader:
         self._nextDir = 0
 
     def load(self, pcb, program):
-        instructions = HARDWARE.disc.get(program)
+        instructions = HARDWARE.disk.get(program)
         progSize = len(instructions)
         pcb['baseDir'] = self._nextDir
         pcb['limit'] = progSize
@@ -105,7 +103,7 @@ class PCBTable:
         return self._pidRunning is not None
 
     def getRunning(self):
-        return None if self._pidRunning is None else self._tabla[self._pidRunning]
+        return self._tabla[self._pidRunning] if self.isRunning else None
 
     def setRunning(self, pid):
         self._pidRunning = pid
@@ -187,26 +185,49 @@ class RoundRobin:
 
 
 class FCFS:
-    def add(self, ready, pid):
-        ready.append(pid)
+    def __init__(self):
+        self._ready = []
 
-    def next(self, ready):
-        return ready.pop()
+    def isEmpty(self):
+        return self._ready
+
+    def add(self, pid):
+        self._ready.append(pid)
+
+    def next(self):
+        return self._ready.pop()
 
 
-class PriorityBase:
+class PriorityNoExp:
     def __init__(self, pcbTable):
         self._pcbTable = pcbTable
+        self._ready = []
+        for i in range(5):
+            self._ready.append([])
 
-    def next(self, ready):
-        pidMax = 0
-        priorityMax = 10
-        for i in ready:
-            if self._pcbTable.getPriority(i) < priorityMax:
-                pidMax = i
-                priorityMax = self._pcbTable.getPriority(i)
-        ready.remove(pidMax)
-        return pidMax
+    def isEmpty(self):
+        for i in range(5):
+            if self._ready[i]:
+                return False
+        return True
+
+    def __getMaxPriority(self):
+        for i in range(5):
+            if self._ready[i]:
+                return self._ready[i].pop()
+
+    def __aging(self):
+        for i in range(1, 4):
+            if self._ready[i]:
+                self._ready[i-1].append(self._ready[i].pop())
+
+    def next(self):
+        pid = self.__getMaxPriority()
+        self.__aging()
+        return pid
+
+    def add(self, pid):
+        self._ready[self._pcbTable.getPriority(pid)-1].append(pid)
 
 
 class PriorityExp:
@@ -215,29 +236,21 @@ class PriorityExp:
         self._dispatcher = dispatcher
         self._base = base
 
-    def add(self, ready, pid):
+    def isEmpty(self):
+        return self._base.isEmpty()
+
+    def add(self, pid):
         pcbRun = self._pcbTable.getRunning()
         if self._pcbTable.getPriority(pid) < pcbRun['priority']:
             self._dispatcher.save()
             self._dispatcher.load(pid)
-            ready.append(pcbRun['pid'])
+            self._base.add(pcbRun['pid'])
             logger.info("PCB entrante con mayor prioridad que running!")
         else:
-            ready.append(pid)
+            self._base.add(pid)
 
-    def next(self, ready):
-        return self._base.next(ready)
-
-
-class PriorityNoExp:
-    def __init__(self, base):
-        self._base = base
-
-    def add(self, ready, pid):
-        ready.append(pid)
-
-    def next(self, ready):
-        return self._base.next(ready)
+    def next(self):
+        return self._base.next()
 
 
 class Scheduler:
@@ -245,18 +258,17 @@ class Scheduler:
         self.__tipo = tipo
         self._pcbTable = pcbTable
         self._dispatcher = dispatcher
-        self._ready_queue = []
 
     def runOrAddQueue(self, pid):
         if self._pcbTable.isRunning():
-            self.__tipo.add(self._ready_queue, pid)
+            self.__tipo.add(pid)
         else:
             self._dispatcher.load(pid)
 
     def loadFromReady(self):
         self._pcbTable.setRunning(None)
-        if len(self._ready_queue) > 0:
-            self._dispatcher.load(self.__tipo.next(self._ready_queue))
+        if not self.__tipo.isEmpty():
+            self._dispatcher.load(self.__tipo.next())
 
 
 class Kernel:
@@ -266,10 +278,10 @@ class Kernel:
         self._pcbTable = PCBTable()
         self._dispatcher = Dispatcher(self._pcbTable)
         self._scheduler = Scheduler(self._pcbTable, self._dispatcher,
-                            # FCFS()
-                            # PriorityNoExp(PriorityBase(self._pcbTable))
-                             PriorityExp(self._pcbTable, self._dispatcher, PriorityBase(self._pcbTable))
-                            )
+                                    # FCFS()
+                                    # PriorityNoExp(self._pcbTable)
+                                    PriorityExp(self._pcbTable, self._dispatcher, PriorityNoExp(self._pcbTable))
+                                    )
 
         # setup interruption handlers
         HARDWARE.interruptVector.register(NEW_INTERRUPTION_TYPE,
@@ -294,9 +306,6 @@ class Kernel:
     @property
     def ioDeviceController(self):
         return self._ioDeviceController
-
-    def execute(self, program, priority = 5):
-        HARDWARE.interruptVector.handle(IRQ(NEW_INTERRUPTION_TYPE,{'program': program, 'priority': priority}))
 
     def __repr__(self):
         return "Kernel :P"

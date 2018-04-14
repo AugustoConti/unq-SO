@@ -243,7 +243,7 @@ class PrinterIODevice(AbstractIODevice):
         super(PrinterIODevice, self).__init__("Printer", 3)
 
 
-class Disc:
+class Disk:
     def __init__(self):
         self._programs = dict()
 
@@ -263,7 +263,7 @@ class Hardware:
         self._ioDevice = None
         self._mmu = None
         self._cpu = None
-        self._disc = Disc()
+        self._disk = Disk()
 
     # Setup our hardware
     def setup(self, memorySize):
@@ -310,8 +310,8 @@ class Hardware:
         return self._ioDevice
 
     @property
-    def disc(self):
-        return self._disc
+    def disk(self):
+        return self._disk
 
     def __repr__(self):
         return "HARDWARE state {cpu}\n{mem}".format(cpu=self._cpu, mem=self._memory)
