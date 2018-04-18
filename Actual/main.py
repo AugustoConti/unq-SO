@@ -17,7 +17,7 @@ if __name__ == '__main__':
     kernel = Kernel()
 
     execute("prg1.exe", 3)
-    execute("prg2.exe", 5)
-    execute("prg3.exe", 1)
+    execute("prg2.exe", 1)
+    execute("prg3.exe", 5)
 
     HARDWARE.switchOn()

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from tabulate import tabulate
+# from tabulate import tabulate
 from time import sleep
 from log import logger
 
@@ -115,8 +115,8 @@ class Memory:
     def get(self, addr):
         return self._cells[addr]
 
-    def __repr__(self):
-        return tabulate(enumerate(self._cells), tablefmt='psql')
+    # def __repr__(self):
+       # return tabulate(enumerate(self._cells), tablefmt='psql')
 
 
 # emulates the Memory Management Unit (MMU)
@@ -227,10 +227,8 @@ class AbstractIODevice:
         if self._busy:
             self._ticksCount += 1
             if self._ticksCount > self._deviceTime:
-                # operation execution has finished
                 self._busy = False
-                ioOutIRQ = IRQ(IO_OUT_INTERRUPTION_TYPE, self._deviceId)
-                HARDWARE.interruptVector.handle(ioOutIRQ)
+                HARDWARE.interruptVector.handle(IRQ(IO_OUT_INTERRUPTION_TYPE, self._deviceId))
             else:
                 logger.info("device {deviceId} - Busy: {ticksCount} of {deviceTime}"
                          .format(deviceId=self.deviceId,
@@ -254,6 +252,33 @@ class Disk:
     def get(self, name):
         return self._programs[name]
 
+
+class Timer:
+    def __init__(self, interruptVector):
+        self._running = False
+        self.__quantum = -1
+        self.__tickCount = -1
+        self._interruptVector = interruptVector
+
+    def tick(self, tickNbr):
+        if self._running:
+            self.__tickCount -= 1
+            if self.__tickCount == 0:
+                self._interruptVector.handle(IRQ(TIME_OUT_INTERRUPTION_TYPE))
+
+    def reset(self):
+        self.__tickCount = self.__quantum
+        self._running = True
+
+    def stop(self):
+        self._running = False
+
+    def start(self, quantum):
+        self.__quantum = quantum
+        self.reset()
+        self._running = True
+
+
 # emulates the Hardware that were the Operative System run
 class Hardware:
     def __init__(self):
@@ -264,6 +289,7 @@ class Hardware:
         self._mmu = None
         self._cpu = None
         self._disk = Disk()
+        self._timer = None
 
     # Setup our hardware
     def setup(self, memorySize):
@@ -272,8 +298,10 @@ class Hardware:
         self._interruptVector = InterruptVector()
         self._clock = Clock()
         self._ioDevice = PrinterIODevice()
+        self._timer = Timer(self._interruptVector)
         self._mmu = MMU(self._memory)
         self._cpu = Cpu(self._mmu, self._interruptVector)
+        self._clock.addSubscriber(self._timer)
         self._clock.addSubscriber(self._ioDevice)
         self._clock.addSubscriber(self._cpu)
 
@@ -296,6 +324,10 @@ class Hardware:
     @property
     def interruptVector(self):
         return self._interruptVector
+
+    @property
+    def timer(self):
+        return self._timer
 
     @property
     def memory(self):

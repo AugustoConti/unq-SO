@@ -51,7 +51,7 @@ class IoDeviceController:
 
     def __load_from_waiting_queue_if_apply(self):
         if self._waiting_queue and self._device.is_idle:
-            self.__load(self._waiting_queue.pop())
+            self.__load(self._waiting_queue.pop(0))
 
     def __repr__(self):
         return "IoDeviceController for {deviceID} running: {currentPid} waiting: {waiting_queue}" \
@@ -72,6 +72,7 @@ class Dispatcher:
         HARDWARE.mmu.baseDir = pcb['baseDir']
         HARDWARE.mmu.limit = pcb['limit']
         HARDWARE.cpu.pc = pcb['pc']
+        HARDWARE.timer.reset()
         logger.info(" CPU running: {currentPCB}".format(currentPCB=pcb))
 
 
@@ -91,9 +92,9 @@ class Loader:
 
 class PCBTable:
     def __init__(self):
-        self._lastID = 0  # Last PID of PCBs
-        self._tabla = dict()  # list of all PCB
-        self._pidRunning = None  # PCB Running
+        self._lastID = 0
+        self._tabla = dict()
+        self._pidRunning = None
 
     def getPID(self):
         self._lastID += 1
@@ -172,16 +173,15 @@ class IoOutInterruptionHandler:
 
 
 class TimeOutInterruptionHandler:
-    def __init__(self):
-        pass
+    def __init__(self, scheduler, dispatcher):
+        self._scheduler = scheduler
+        self._dispatcher = dispatcher
+        # self._pcbTable = pcbTable
 
     def execute(self, irq):
-        pass
-
-
-class RoundRobin:
-    def __init__(self):
-        pass
+        self._dispatcher.save()
+        self._scheduler.addRunning()
+        self._scheduler.loadFromReady()
 
 
 class FCFS:
@@ -189,13 +189,13 @@ class FCFS:
         self._ready = []
 
     def isEmpty(self):
-        return self._ready
+        return not self._ready
 
     def add(self, pid):
         self._ready.append(pid)
 
     def next(self):
-        return self._ready.pop()
+        return self._ready.pop(0)
 
 
 class PriorityNoExp:
@@ -206,20 +206,20 @@ class PriorityNoExp:
             self._ready.append([])
 
     def isEmpty(self):
-        for i in range(5):
-            if self._ready[i]:
+        for list in self._ready:
+            if list:
                 return False
         return True
 
     def __getMaxPriority(self):
-        for i in range(5):
-            if self._ready[i]:
-                return self._ready[i].pop()
+        for list in self._ready:
+            if list:
+                return list.pop(0)
 
     def __aging(self):
         for i in range(1, 4):
             if self._ready[i]:
-                self._ready[i-1].append(self._ready[i].pop())
+                self._ready[i-1].append(self._ready[i].pop(0))
 
     def next(self):
         pid = self.__getMaxPriority()
@@ -253,11 +253,29 @@ class PriorityExp:
         return self._base.next()
 
 
+class RoundRobin:
+    def __init__(self, base, quantum):
+        HARDWARE.timer.start(quantum)
+        self._base = base
+
+    def isEmpty(self):
+        return self._base.isEmpty()
+
+    def add(self, pid):
+        self._base.add(pid)
+
+    def next(self):
+        return self._base.next()
+
+
 class Scheduler:
     def __init__(self, pcbTable, dispatcher, tipo):
         self.__tipo = tipo
         self._pcbTable = pcbTable
         self._dispatcher = dispatcher
+
+    def addRunning(self):
+        self.__tipo.add(self._pcbTable.getRunning()['pid'])
 
     def runOrAddQueue(self, pid):
         if self._pcbTable.isRunning():
@@ -267,6 +285,7 @@ class Scheduler:
 
     def loadFromReady(self):
         self._pcbTable.setRunning(None)
+        HARDWARE.timer.stop()
         if not self.__tipo.isEmpty():
             self._dispatcher.load(self.__tipo.next())
 
@@ -280,7 +299,8 @@ class Kernel:
         self._scheduler = Scheduler(self._pcbTable, self._dispatcher,
                                     # FCFS()
                                     # PriorityNoExp(self._pcbTable)
-                                    PriorityExp(self._pcbTable, self._dispatcher, PriorityNoExp(self._pcbTable))
+                                    # PriorityExp(self._pcbTable, self._dispatcher, PriorityNoExp(self._pcbTable))
+                                      RoundRobin(FCFS(), 2)
                                     )
 
         # setup interruption handlers
@@ -299,7 +319,7 @@ class Kernel:
                                           IoOutInterruptionHandler(self._scheduler, self._ioDeviceController))
 
         HARDWARE.interruptVector.register(TIME_OUT_INTERRUPTION_TYPE,
-                                          TimeOutInterruptionHandler())
+                                          TimeOutInterruptionHandler(self._scheduler, self._dispatcher))
 
         # TODO Nueva interrupcion de hard: TIMEOUT
 
