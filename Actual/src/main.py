@@ -36,6 +36,6 @@ if __name__ == '__main__':
     execute("prg2.exe", 1)
     execute("prg3.exe", 5)
 
-    stats.calculate()
+    stats.calc()
 
     # HARDWARE.switchOn()
