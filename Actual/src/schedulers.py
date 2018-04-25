@@ -20,26 +20,30 @@ class FCFS:
 
 class PriorityNoExp:
     def __init__(self, pcbTable):
+        self.__cantPriority = 5
+        self.__doAging = 0
         self._pcbTable = pcbTable
         self._ready = []
-        for i in range(5):
+        for i in range(self.__cantPriority):
             self._ready.append([])
 
     def isEmpty(self):
-        for lista in self._ready:
-            if lista:
+        for plist in self._ready:
+            if plist:
                 return False
         return True
 
     def __getMaxPriority(self):
-        for lista in self._ready:
-            if lista:
-                return lista.pop(0)
+        for plist in self._ready:
+            if plist:
+                return plist.pop(0)
 
     def __aging(self):
-        for i in range(1, 4):
-            if self._ready[i]:
-                self._ready[i-1].append(self._ready[i].pop(0))
+        self.__doAging += 1
+        if self.__doAging % 4 == 0:
+            for i in range(1, self.__cantPriority - 1):
+                if self._ready[i]:
+                    self._ready[i-1].append(self._ready[i].pop(0))
 
     def next(self):
         pid = self.__getMaxPriority()
