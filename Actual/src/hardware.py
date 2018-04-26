@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# from tabulate import tabulate
+from tabulate import tabulate
 from time import sleep
 from src.log import logger
 
@@ -110,8 +110,8 @@ class Memory:
     def get(self, addr):
         return self._cells[addr]
 
-    # def __repr__(self):
-    #  return tabulate(enumerate(self._cells), tablefmt='psql')
+    def __repr__(self):
+      return tabulate(enumerate(self._cells), tablefmt='psql')
 
 
 class MMU:

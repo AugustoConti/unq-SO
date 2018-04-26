@@ -38,4 +38,4 @@ if __name__ == '__main__':
 
     stats.calc()
 
-    # HARDWARE.switchOn()
+    #HARDWARE.switchOn()

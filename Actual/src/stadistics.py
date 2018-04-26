@@ -4,6 +4,7 @@ from src.so import *
 from src.hardware import HARDWARE
 from collections import defaultdict
 from tabulate import tabulate
+from termcolor import colored, cprint
 
 class Timeline:
     def __init__(self, pcbTable):
@@ -24,14 +25,19 @@ class Timeline:
 
     def __mapear(self, state):
         return {
-            STATE_NEW: 'N',
-            STATE_READY: '\033[92m'+'R',
-            STATE_RUNNING: '\033[95m'+'X',
-            STATE_TERMINATED: 'T',
-            STATE_WAITING: '\033[94m'+'W',
-        }[state] + '\033[0m'
+            STATE_NEW: colored('N', 'magenta'),
+            STATE_READY: colored('R', 'green'),
+            STATE_RUNNING: colored('X', 'red'),
+            STATE_TERMINATED: colored('T', 'white'),
+            STATE_WAITING: colored('W', 'cyan')
+        }[state]
+
+   # text =
+   # print(text)
+   # cprint('Hello, World!', 'green')
 
     def __imprimir(self):
+        count = 0
         print('')
         print(tabulate([['Letra','Estado'],['N', STATE_NEW],['R', STATE_READY],['X', STATE_RUNNING],['T', STATE_TERMINATED]
                      ,['W', STATE_WAITING]], headers="firstrow"))
@@ -46,15 +52,9 @@ class Timeline:
         for pid, states in self._states.items():
             print(' ', '\033[93m', pid, ' ', end="")
             for s in states:
+                count += 1 if s == STATE_READY else 0
                 print(' ', self.__mapear(s), '', end="")
             print('')
-
-    def __calculate(self):
-        count = 0
-        for pid, states in self._states.items():
-            for s in states:
-                if s == STATE_READY:
-                    count += 1
         print('')
         print('Cantidad de Ready: ', count)
         print('Gant: ', count / len(self._states.keys()))
@@ -64,5 +64,4 @@ class Timeline:
             HARDWARE.clock.do_ticks(1)
             self._saveStates()
         self.__imprimir()
-        self.__calculate()
 
