@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 
-from src.hardware import *
+from src.hardware import IRQ, NEW_INTERRUPTION_TYPE, ASM
 
+class Program:
+    def __init__(self, interrupt_vector):
+        self._interrupt_vector = interrupt_vector
 
-def execute(program, priority=3):
-    HARDWARE.interrupt_vector.handle(IRQ(NEW_INTERRUPTION_TYPE, {'program': program, 'priority': priority}))
+    def execute(self, program, priority=3):
+        self._interrupt_vector.handle(IRQ(NEW_INTERRUPTION_TYPE, {'program': program, 'priority': priority}))
 
 
 def expand(instructions):

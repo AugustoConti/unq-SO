@@ -6,8 +6,8 @@ from src.schedulers import PriorityExp
 
 class TestPriorityExp(TestCase):
     def setUp(self):
-        self._table = NonCallableMock(getRunning=Mock(return_value={'pid': 3, 'priority': 3}),
-                                      getPriority=Mock(side_effect=lambda value: value))
+        self._table = NonCallableMock(get_running=Mock(return_value={'pid': 3, 'priority': 3}),
+                                      get_priority=Mock(side_effect=lambda value: value))
         self._dispatcher = NonCallableMock()
         self._base = NonCallableMock()
         self._scheduler = PriorityExp(self._table, self._dispatcher, self._base)

@@ -6,38 +6,38 @@ from src.schedulers import Scheduler
 
 class TestScheduler(TestCase):
     def setUp(self):
-        self._table = NonCallableMock(isRunning=Mock(return_value=False), getRunningPid=Mock(return_value=1))
+        self._table = NonCallableMock(is_running=Mock(return_value=False), get_running_pid=Mock(return_value=1))
         self._dispatcher = NonCallableMock()
-        self._tipo = NonCallableMock(isEmpty=Mock(return_value=True), next=Mock(return_value=1))
+        self._tipo = NonCallableMock(is_empty=Mock(return_value=True), next=Mock(return_value=1))
         self._timer = NonCallableMock()
         self._scheduler = Scheduler(self._table, self._dispatcher, self._timer, self._tipo)
 
-    def checkAdd(self, pid):
+    def check_add(self, pid):
         self._tipo.add.assert_called_once_with(pid)
-        self._table.setPCBState.assert_called_once_with(pid, STATE_READY)
+        self._table.set_pcb_state.assert_called_once_with(pid, STATE_READY)
 
-    def test_addRunning(self):
+    def test_add_running(self):
         self._scheduler.add_running()
-        self.checkAdd(1)
+        self.check_add(1)
 
-    def test_runOrAddQueue_is_running(self):
-        self._table.isRunning.return_value = True
+    def test_run_or_add_queue_is_running(self):
+        self._table.is_running.return_value = True
         self._scheduler.run_or_add_queue(3)
-        self.checkAdd(3)
+        self.check_add(3)
 
-    def test_runOrAddQueue_is_not_running(self):
+    def test_run_or_add_queue_is_not_running(self):
         self._scheduler.run_or_add_queue(3)
         self._dispatcher.load.assert_called_once_with(3)
 
-    def test_loadFromReady_empty(self):
+    def test_load_from_ready_empty(self):
         self._scheduler.load_from_ready()
-        self._table.setRunning.assert_called_once_with(None)
+        self._table.set_running.assert_called_once_with(None)
         self._timer.stop.assert_called_once()
         self._dispatcher.load.assert_not_called()
 
-    def test_loadFromReady_not_empty(self):
+    def test_load_from_ready_not_empty(self):
         self._tipo.is_empty.return_value = False
         self._scheduler.load_from_ready()
-        self._table.setRunning.assert_called_once_with(None)
+        self._table.set_running.assert_called_once_with(None)
         self._timer.stop.assert_called_once()
         self._dispatcher.load.assert_called_once_with(1)

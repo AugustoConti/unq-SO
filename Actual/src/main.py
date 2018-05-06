@@ -3,9 +3,9 @@
 from src.utils import *
 from src.kernel import Kernel
 from src.schedulers import *
+from src.hardware import HARDWARE
 
-# TODO linea de tiempo: como esta el sistema en cada tick
-# TODO Calculo diagrama de gant, comparar scheduler
+# TODO comparar scheduler en stats
 # TODO Threading
 # TODO manejo de disco
 
@@ -22,12 +22,13 @@ def load_programs():
 
 
 def execute_programs():
-    execute("prg1.exe", 3)
-    execute("prg2.exe", 1)
-    execute("prg3.exe", 5)
-    execute("prg4.exe", 3)
-    execute("prg5.exe", 1)
-    execute("prg6.exe", 5)
+    p = Program(HARDWARE.interrupt_vector)
+    p.execute("prg1.exe", 3)
+    p.execute("prg2.exe", 1)
+    p.execute("prg3.exe", 5)
+    p.execute("prg4.exe", 3)
+    p.execute("prg5.exe", 1)
+    p.execute("prg6.exe", 5)
 
 
 def run_simulator(scheduler):

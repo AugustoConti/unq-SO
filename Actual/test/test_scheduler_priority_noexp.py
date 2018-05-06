@@ -4,7 +4,7 @@ from src.schedulers import PriorityNoExp
 
 class TestPriorityNoExp(TestCase):
     def setUp(self):
-        self._pcbTable = NonCallableMock(getPriority=Mock(side_effect=lambda value: value))
+        self._pcbTable = NonCallableMock(get_priority=Mock(side_effect=lambda value: value))
         self._scheduler = PriorityNoExp(self._pcbTable)
 
     def test_isEmpty(self):

@@ -10,7 +10,7 @@ class TestIODevice(TestCase):
         self._iodevice = IODevice(self._inter, "Printer", 1)
 
     def test_device_id(self):
-        self.assertEqual("Printer", self._iodevice.deviceId())
+        self.assertEqual("Printer", self._iodevice.device_id())
 
     def test_is_not_busy_by_default(self):
         self.assertTrue(self._iodevice.is_idle())
