@@ -1,3 +1,3 @@
-Actual/venv
-Actual/.idea
-Actual/src/__pycache__
+*/venv
+*/.idea
+*/*/__pycache__
