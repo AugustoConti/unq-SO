@@ -49,8 +49,7 @@ class Dispatcher:
         self._cpu.set_pc(-1)
 
     def load(self, pid):
-        self._pcb_table.set_running(pid)
-        pcb = self._pcb_table.get_running()
+        pcb = self._pcb_table.set_running(pid)
         self._mmu.limits(pcb['baseDir'], pcb['limit'])
         self._cpu.set_pc(pcb['pc'])
         self._timer.reset()
@@ -63,13 +62,20 @@ class Loader:
         self._disk = disk
         self._memory = memory
 
-    def load(self, pcb):
-        instructions = self._disk.get(pcb['name'])
-        prog_size = len(instructions)
+    def _update_pcb(self, pcb, size):
         pcb['baseDir'] = self._next_dir
-        pcb['limit'] = prog_size
-        [self._memory.put(self._next_dir + i, instructions[i]) for i in range(0, prog_size)]
-        self._next_dir += prog_size
+        pcb['limit'] = size
+
+    def _load_instructions_size(self, pcb, instructions, size):
+        self._update_pcb(pcb, size)
+        [self._memory.put(self._next_dir + i, instructions[i]) for i in range(0, size)]
+        self._next_dir += size
+
+    def _load_instructions(self, pcb, instructions):
+        self._load_instructions_size(pcb, instructions, len(instructions))
+
+    def load(self, pcb):
+        self._load_instructions(pcb, self._disk.get(pcb['name']))
 
 
 class PCBTable:
@@ -98,6 +104,7 @@ class PCBTable:
         self._pid_running = pid
         if pid is not None:
             self.set_pcb_state(pid, STATE_RUNNING)
+        return self.get_running()
 
     def add_pcb(self, pcb):
         self._table[pcb['pid']] = pcb

@@ -3,38 +3,18 @@
 from src.utils import *
 from src.kernel import Kernel
 from src.schedulers import *
-from src.hardware import HARDWARE
+from src.hardware import Hardware
 
-# TODO comparar scheduler en stats
-# TODO Threading
+# TODO MultiThreading
 # TODO manejo de disco
 
 
-def load_programs():
-    HARDWARE.disk.add_all({
-        'prg1.exe': expand([ASM.cpu(2), ASM.io(), ASM.cpu(3), ASM.io(), ASM.cpu(2)]),
-        'prg2.exe': expand([ASM.cpu(4), ASM.io(), ASM.cpu(1)]),
-        'prg3.exe': expand([ASM.cpu(3)]),
-        'prg4.exe': expand([ASM.cpu(3)]),
-        'prg5.exe': expand([ASM.cpu(3)]),
-        'prg6.exe': expand([ASM.cpu(3)])
-    })
-
-
-def execute_programs():
-    p = Program(HARDWARE.interrupt_vector)
-    p.execute("prg1.exe", 3)
-    p.execute("prg2.exe", 1)
-    p.execute("prg3.exe", 5)
-    p.execute("prg4.exe", 3)
-    p.execute("prg5.exe", 1)
-    p.execute("prg6.exe", 5)
-
-
-def run_simulator(scheduler):
-    Kernel(scheduler)
-    execute_programs()
-    HARDWARE.switch_on()
+def run_simulator():
+    hardware = Hardware(35, 0.1)
+    load_programs(hardware.disk())
+    Kernel(hardware, choose_scheduler())
+    execute_programs(hardware.interrupt_vector())
+    hardware.switch_on()
 
 
 if __name__ == '__main__':
@@ -45,23 +25,9 @@ if __name__ == '__main__':
         logger.propagate = False
 
     logger.info('Starting emulator')
-    HARDWARE.setup(35)
-    load_programs()
-
-    sch_elegido = input("\n\nTipo de Scheduler:\n"
-                        "1 - FCFS\n"
-                        "2 - Priority No Expropiativo\n"
-                        "3 - Priority Expropiativo\n"
-                        "4 - Round Robin\n"
-                        "Opción: ")
-
-    sch = {'1': SchedulerType.fcfs(),
-           '2': SchedulerType.priority_no_expropiativo(),
-           '3': SchedulerType.priority_expropiativo(),
-           '4': SchedulerType.round_robin()}[sch_elegido]
 
     if opt == '1':
         from src.stats import run_stats
-        run_stats(sch)
+        run_stats()
     else:
-        run_simulator(sch)
+        run_simulator()

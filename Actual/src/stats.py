@@ -4,19 +4,36 @@ from collections import defaultdict
 from termcolor import colored
 from src.interruption_handlers import *
 from src.kernel import Kernel
-from src.main import execute_programs
+from src.schedulers import all_schedulers, SchedulerType
+from src.utils import *
 
 __all__ = ["run_stats"]
 
 
-def run_stats(sch):
-    kernel = Kernel(sch)
-    execute_programs()
-    Timeline(kernel.pcb_list()).calc()
+def run_stats():
+    print('\n', tabulate([['Letra', 'Estado'],
+                          ['N', STATE_NEW],
+                          ['R', STATE_READY],
+                          ['X', STATE_RUNNING],
+                          ['T', STATE_TERMINATED],
+                          ['W', STATE_WAITING]], headers="firstrow"), '\n')
+    total = [['Scheduler', 'Ready', 'Gant']]
+    for scheduler in all_schedulers:
+        print('\n', colored(SchedulerType.str(scheduler), 'cyan'))
+        hardware = Hardware(35, 0)
+        load_programs(hardware.disk())
+        kernel = Kernel(hardware, scheduler)
+        execute_programs(hardware.interrupt_vector())
+
+        gant = Timeline(hardware.clock(), kernel.pcb_list()).calc()
+        total.append([SchedulerType.str(scheduler)] + gant)
+    print('\n')
+    print(tabulate(total, headers="firstrow", tablefmt="presto"))
 
 
 class Timeline:
-    def __init__(self, pcb_table):
+    def __init__(self, clock, pcb_table):
+        self._clock = clock
         self._pcb_table = pcb_table
         self._tick_nro = 0
         self._count_ready = 0
@@ -40,20 +57,9 @@ class Timeline:
             STATE_WAITING: colored('W', 'cyan')
         }[state]
 
-    def __imprimir(self):
-        print('\n', tabulate([['Letra', 'Estado'],
-                              ['N', STATE_NEW],
-                              ['R', STATE_READY],
-                              ['X', STATE_RUNNING],
-                              ['T', STATE_TERMINATED],
-                              ['W', STATE_WAITING]], headers="firstrow"), '\n')
-        print(tabulate(self._states, headers="keys", tablefmt="fancy_grid"))
-        print('')
-        print('Ready count: ', self._count_ready)
-        print('Gant: ', self._count_ready / len(self._states[0]))
-
     def calc(self):
         while not self._terminated():
             self._save_states()
-            HARDWARE.clock.do_ticks(1)
-        self.__imprimir()
+            self._clock.do_ticks(1)
+        print(tabulate(self._states, headers="keys", tablefmt="fancy_grid"))
+        return [self._count_ready, self._count_ready / len(self._pcb_table)]

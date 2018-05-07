@@ -4,7 +4,28 @@ from src.log import logger
 from src.interruption_handlers import STATE_READY
 
 
+def choose_scheduler():
+    return int(input("\n\nTipo de Scheduler:\n"
+                     "0 - FCFS\n"
+                     "1 - Priority No Expropiativo\n"
+                     "2 - Priority Expropiativo\n"
+                     "3 - Round Robin\n"
+                     "Opción: "))
+
+
+all_schedulers = range(4)
+
+
 class SchedulerType:
+    @staticmethod
+    def str(tipo):
+        return {
+            0: 'FCFS',
+            1: 'Priority No Expropiativo',
+            2: 'Priority Expropiativo',
+            3: 'Round Robin',
+            }[tipo]
+
     @staticmethod
     def fcfs():
         return 0

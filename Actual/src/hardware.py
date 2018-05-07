@@ -65,9 +65,10 @@ class InterruptVector:
 
 
 class Clock:
-    def __init__(self):
+    def __init__(self, delay):
         self._subscribers = []
         self._running = False
+        self._delay = delay
 
     def add_subscriber(self, subscriber):
         self._subscribers.append(subscriber)
@@ -89,11 +90,11 @@ class Clock:
     def tick(self, tick_nbr):
         logger.info("        --------------- tick: {tickNbr} ---------------".format(tickNbr=tick_nbr))
         [subscriber.tick(tick_nbr) for subscriber in self._subscribers]
-        sleep(0.1)
+        sleep(self._delay)
 
     def do_ticks(self, times):
         logger.info("---- :::: CLOCK do_ticks: {times} ::: -----".format(times=times))
-        [self.tick(tickNbr) for tickNbr in range(0, times)]
+        [self.tick(tickNbr) for tickNbr in range(times)]
 
 
 class Memory:
@@ -182,9 +183,6 @@ class IODevice:
     def device_id(self):
         return self._device
 
-    # def is_busy(self):
-    #    return self._busy
-
     def is_idle(self):
         return not self._busy
 
@@ -247,17 +245,17 @@ class Timer:
 
     def start(self, quantum):
         if quantum < 1:
-            raise Exception("Queantum: {q} is smaller than 1".format(q=quantum))
+            raise Exception("Quantum: {q} is smaller than 1".format(q=quantum))
         self._quantum = quantum
         self._running = True
         self.reset()
 
 
 class Hardware:
-    def setup(self, memory_size):
+    def __init__(self, memory_size, delay):
         self._memory = Memory(memory_size)
         self._interrupt_vector = InterruptVector()
-        self._clock = Clock()
+        self._clock = Clock(delay)
         self._io_device = IODevice(self._interrupt_vector, "Printer", 3)
         self._disk = Disk()
         self._mmu = MMU(self._memory)
@@ -266,48 +264,37 @@ class Hardware:
         self._clock.add_subscribers([self._io_device, self._timer, self._cpu])
 
     def switch_on(self):
-        logger.info(HARDWARE)
+        logger.info(self)
         logger.info(" ---- SWITCH ON ---- ")
-        return self.clock.start()
+        self._clock.start()
 
     def switch_off(self):
-        self.clock.stop()
+        self._clock.stop()
         logger.info(" ---- SWITCH OFF ---- ")
 
-    @property
     def cpu(self):
         return self._cpu
 
-    @property
     def clock(self):
         return self._clock
 
-    @property
     def interrupt_vector(self):
         return self._interrupt_vector
 
-    @property
     def timer(self):
         return self._timer
 
-    @property
     def memory(self):
         return self._memory
 
-    @property
     def mmu(self):
         return self._mmu
 
-    @property
     def io_device(self):
         return self._io_device
 
-    @property
     def disk(self):
         return self._disk
 
     def __repr__(self):
         return "HARDWARE state {cpu}\n{mem}".format(cpu=self._cpu, mem=self._memory)
-
-
-HARDWARE = Hardware()

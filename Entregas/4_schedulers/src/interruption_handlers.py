@@ -79,14 +79,14 @@ class IoOutInterruptionHandler:
         logger.info(self._io_device_controller)
 
 
-def register_handlers(scheduler, pcb_table, loader, dispatcher, io_device_controller, timer):
-    HARDWARE.interrupt_vector.register(NEW_INTERRUPTION_TYPE,
-                                      NewInterruptionHandler(scheduler, pcb_table, loader))
-    HARDWARE.interrupt_vector.register(KILL_INTERRUPTION_TYPE,
-                                      KillInterruptionHandler(scheduler, pcb_table, dispatcher))
-    HARDWARE.interrupt_vector.register(IO_IN_INTERRUPTION_TYPE,
-                                      IoInInterruptionHandler(scheduler, pcb_table, io_device_controller, dispatcher))
-    HARDWARE.interrupt_vector.register(IO_OUT_INTERRUPTION_TYPE,
-                                      IoOutInterruptionHandler(scheduler, io_device_controller))
-    HARDWARE.interrupt_vector.register(TIME_OUT_INTERRUPTION_TYPE,
-                                      TimeOutInterruptionHandler(scheduler, dispatcher, timer))
+def register_handlers(interrupt_vector, scheduler, pcb_table, loader, dispatcher, io_device_controller, timer):
+    interrupt_vector.register(NEW_INTERRUPTION_TYPE,
+                              NewInterruptionHandler(scheduler, pcb_table, loader))
+    interrupt_vector.register(KILL_INTERRUPTION_TYPE,
+                              KillInterruptionHandler(scheduler, pcb_table, dispatcher))
+    interrupt_vector.register(IO_IN_INTERRUPTION_TYPE,
+                              IoInInterruptionHandler(scheduler, pcb_table, io_device_controller, dispatcher))
+    interrupt_vector.register(IO_OUT_INTERRUPTION_TYPE,
+                              IoOutInterruptionHandler(scheduler, io_device_controller))
+    interrupt_vector.register(TIME_OUT_INTERRUPTION_TYPE,
+                              TimeOutInterruptionHandler(scheduler, dispatcher, timer))
