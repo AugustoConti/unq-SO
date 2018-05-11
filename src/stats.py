@@ -4,7 +4,7 @@ from collections import defaultdict
 from termcolor import colored
 from src.interruption_handlers import *
 from src.kernel import Kernel
-from src.schedulers import all_schedulers, SchedulerType
+from src.schedulers import SchedulerType
 from src.utils import *
 
 __all__ = ["run_stats"]
@@ -17,8 +17,8 @@ def run_stats():
                           ['X', STATE_RUNNING],
                           ['T', STATE_TERMINATED],
                           ['W', STATE_WAITING]], headers="firstrow"), '\n')
-    total = [['Scheduler', 'Ready', 'Gant']]
-    for scheduler in all_schedulers:
+    total = [['Scheduler', 'Ready', 'AWT']]
+    for scheduler in SchedulerType.all_schedulers():
         print('\n', colored(SchedulerType.str(scheduler), 'cyan'))
         hardware = Hardware(35, 0)
         load_programs(hardware.disk())

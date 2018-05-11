@@ -3,17 +3,7 @@
 from src.log import logger
 from src.interruption_handlers import STATE_READY
 
-
-def choose_scheduler():
-    return int(input("\n\nTipo de Scheduler:\n"
-                     "0 - FCFS\n"
-                     "1 - Priority No Expropiativo\n"
-                     "2 - Priority Expropiativo\n"
-                     "3 - Round Robin\n"
-                     "Opción: "))
-
-
-all_schedulers = range(4)
+__all__ = ["SchedulerType", "Scheduler"]
 
 
 class SchedulerType:
@@ -24,23 +14,37 @@ class SchedulerType:
             1: 'Priority No Expropiativo',
             2: 'Priority Expropiativo',
             3: 'Round Robin',
-            }[tipo]
+            4: 'Round Robin Priority No Expropiativo',
+            5: 'Round Robin Priority Expropiativo'
+        }[tipo]
 
     @staticmethod
-    def fcfs():
-        return 0
+    def all_schedulers():
+        return range(6)
 
     @staticmethod
-    def priority_no_expropiativo():
-        return 1
+    def choose():
+        return int(input("\n\nTipo de Scheduler:\n"
+                         + "".join(["{i} - {sch}\n".format(i=i, sch=SchedulerType.str(i))
+                                    for i in SchedulerType.all_schedulers()])
+                         + "Opción: "))
 
     @staticmethod
-    def priority_expropiativo():
-        return 2
-
-    @staticmethod
-    def round_robin():
-        return 3
+    def new(tipo, pcb_table, dispatcher, timer):
+        if tipo == 0:
+            return FCFS()
+        elif tipo == 1:
+            return PriorityNoExp(pcb_table)
+        elif tipo == 2:
+            return PriorityExp(pcb_table, dispatcher, PriorityNoExp(pcb_table))
+        elif tipo == 3:
+            return RoundRobin(FCFS(), 2, timer)
+        elif tipo == 4:
+            return RoundRobin(PriorityNoExp(pcb_table), 2, timer)
+        elif tipo == 5:
+            return RoundRobin(PriorityExp(pcb_table, dispatcher, PriorityNoExp(pcb_table)), 2, timer)
+        else:
+            raise Exception('scheduler type {sch} not recongnized'.format(sch=tipo))
 
 
 class FCFS:
@@ -75,7 +79,7 @@ class PriorityNoExp:
     def __aging(self):
         self.__doAging += 1
         if self.__doAging % 4 == 0:
-            [self._ready[i-1].append(self._ready[i].pop(0)) for i in range(1, self.__cant_priority) if self._ready[i]]
+            [self._ready[i - 1].append(self._ready[i].pop(0)) for i in range(1, self.__cant_priority) if self._ready[i]]
 
     def next(self):
         pid = self.__get_max_priority()
@@ -83,7 +87,7 @@ class PriorityNoExp:
         return pid
 
     def add(self, pid):
-        self._ready[self._pcb_table.get_priority(pid)-1].append(pid)
+        self._ready[self._pcb_table.get_priority(pid) - 1].append(pid)
 
 
 class PriorityExp:

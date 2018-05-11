@@ -4,6 +4,7 @@ from src.utils import *
 from src.kernel import Kernel
 from src.schedulers import *
 from src.hardware import Hardware
+from src.log import logger
 
 # TODO MultiThreading
 # TODO manejo de disco
@@ -12,7 +13,7 @@ from src.hardware import Hardware
 def run_simulator():
     hardware = Hardware(35, 0.1)
     load_programs(hardware.disk())
-    Kernel(hardware, choose_scheduler())
+    Kernel(hardware, SchedulerType.choose())
     execute_programs(hardware.interrupt_vector())
     hardware.switch_on()
 
