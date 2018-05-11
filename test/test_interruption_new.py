@@ -11,8 +11,8 @@ class TestNewInterruptionHandler(TestCase):
         self._new = NewInterruptionHandler(self._scheduler, self._pcbTable, self._loader)
 
     def test_execute(self):
-        self._new.execute(NonCallableMock(parameters=Mock(return_value={'program':2, 'priority':3})))
-        self._loader.load.assert_called_once_with({'pid':1,'priority':3,'name':2,'pc':0,'state': STATE_NEW})
-        self._pcbTable.add_pcb.assert_called_once_with({'pid': 1, 'priority': 3, 'name': 2, 'pc': 0, 'state': STATE_NEW})
+        self._new.execute(NonCallableMock(parameters=Mock(return_value={'program': 2, 'priority': 3})))
+        self._loader.load.assert_called_once_with({'pid': 1, 'priority': 3, 'name': 2, 'pc': 0, 'state': STATE_NEW})
+        self._pcbTable.add_pcb.assert_called_once_with(
+            {'pid': 1, 'priority': 3, 'name': 2, 'pc': 0, 'state': STATE_NEW})
         self._scheduler.run_or_add_queue.assert_called_once_with(1)
-

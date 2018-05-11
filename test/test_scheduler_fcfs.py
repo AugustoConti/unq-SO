@@ -45,4 +45,3 @@ class TestFCFS(TestCase):
     def test_next_when_empty(self):
         with self.assertRaises(IndexError):
             self._scheduler.next()
-

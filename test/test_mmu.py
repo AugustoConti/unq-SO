@@ -23,4 +23,3 @@ class TestMMU(TestCase):
     def test_fetch_basedir(self):
         self._mmu.limits(5, 10)
         self.assertEqual(9, self._mmu.fetch(4))
-

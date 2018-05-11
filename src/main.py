@@ -6,6 +6,7 @@ from src.schedulers import *
 from src.hardware import Hardware
 from src.log import logger
 
+
 # TODO MultiThreading
 # TODO manejo de disco
 
@@ -29,6 +30,7 @@ if __name__ == '__main__':
 
     if opt == '1':
         from src.stats import run_stats
+
         run_stats()
     else:
         run_simulator()

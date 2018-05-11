@@ -35,7 +35,7 @@ class TestIODevice(TestCase):
         self._iodevice.execute(0)
         ticks = self._iodevice._ticks_count
         self._iodevice.tick(0)
-        self.assertEqual(ticks+1, self._iodevice._ticks_count)
+        self.assertEqual(ticks + 1, self._iodevice._ticks_count)
 
     def test_tick_finish_is_idle_and_raise_interruption_io_out(self):
         self._iodevice.execute(0)
@@ -47,4 +47,3 @@ class TestIODevice(TestCase):
 
 
 logger.propagate = False
-

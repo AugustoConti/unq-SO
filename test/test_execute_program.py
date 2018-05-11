@@ -3,6 +3,7 @@ from unittest.mock import NonCallableMock
 from src.utils import Program
 from src.hardware import NEW_INTERRUPTION_TYPE
 
+
 class TestExecute(TestCase):
     def setUp(self):
         self._interrupt = NonCallableMock()

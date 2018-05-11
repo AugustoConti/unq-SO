@@ -1,5 +1,5 @@
 from unittest import TestCase
-from unittest.mock import Mock, NonCallableMock
+from unittest.mock import NonCallableMock
 from src.log import logger
 from src.hardware import Timer, TIME_OUT_INTERRUPTION_TYPE
 
@@ -45,4 +45,3 @@ class TestTimer(TestCase):
 
 
 logger.propagate = False
-

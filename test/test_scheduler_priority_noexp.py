@@ -2,6 +2,7 @@ from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
 from src.schedulers import PriorityNoExp
 
+
 class TestPriorityNoExp(TestCase):
     def setUp(self):
         self._pcbTable = NonCallableMock(get_priority=Mock(side_effect=lambda value: value))

@@ -35,4 +35,3 @@ class TestPriorityExp(TestCase):
 
 
 logger.propagate = False
-
