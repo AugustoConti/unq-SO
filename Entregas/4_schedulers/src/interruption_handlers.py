@@ -3,7 +3,6 @@
 from src.hardware import *
 from src.log import logger
 
-
 STATE_NEW = 'NEW'
 STATE_READY = 'READY'
 STATE_WAITING = 'WAITING'
