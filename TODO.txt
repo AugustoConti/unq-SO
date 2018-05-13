@@ -1,0 +1,54 @@
+paginacion: estrategia de admin de memoria, basada en frames.
+
+tamaño de marco #=4 (cantidad de celdas x frame) memoria de 16 celdas
+kernel tiene estructura logica: paginas
+cada proceso cargado en paginas, cada pagina asociada a un frames.
+
+PCB, instruc/4 = cant de paginas, cada pagina asoc a un frame
+
+
+MMU paginado: (soporte paginas)
+tiene tabla solo con pagina y frame
+calculo, pc/4. resultado:nro de pagina.	ver pagina a que frame apunta y * 4 = base dir + el resto (el desplazamiento u offset)
+puedo cargar pagina y base dir (4*nro frame) para evitar calculo anterior
+se alimenta con tabla de paginas
+tiene lista de frame libres = [0,1,2,3]
+saca el primero y lo asocia a la pagina 0 del pcb
+
+Tabla de paginas:
+pid	pag	frame
+1	0	0
+1	1	3
+2	0	1
+2	1	2
+
+
+Loader:
+charla con el MM
+ve paginas del pcb
+carga el programa entero
+generar tabla de paginas
+pcb -> cargarlo en paginas, instrucciones / tamMarco = cant de pag
+resto > 0 , una pagina mas
+loader, pregunta al MMU si tiene x frames libres, si no tiene raise exception
+- le pide al MMU la cantidad de frames libres que necesita
+- llena esos frames con las instrucciones del programa, (lo carga en memoria)
+
+
+Dispatcher:
+para setear el MMU, sacar datos de tabla de paginas en MM
+
+
+KILL:
+le digo al MMU, mata al pid 1
+y agrego sus frames a la lista de frames libres
+
+
+
+
+
+----------------------------------------------------
+    bajo demanda
+	si no tiene frame asignado, tirar interruption fallo de pagina
+	cargar la pagina, si no hay frame libre, elegir victima y pasarla a disco
+----------------------------------------------------
