@@ -37,14 +37,14 @@ loader, pregunta al MMU si tiene x frames libres, si no tiene raise exception
 
 Dispatcher:
 para setear el MMU, sacar datos de tabla de paginas en MM
+setea el MMU con la tabla de pagina para ese pid que le pide al MM
+de un pid carga la tabla de paginas al MMU
+
 
 
 KILL:
 le digo al MMU, mata al pid 1
 y agrego sus frames a la lista de frames libres
-
-
-
 
 
 ----------------------------------------------------

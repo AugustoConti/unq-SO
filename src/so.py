@@ -56,6 +56,14 @@ class Dispatcher:
         logger.info(" CPU running: {currentPCB}".format(currentPCB=pcb))
 
 
+class MemoryManager:
+    def __init__(self, memory_size, frame_size):
+        self._free_frames = range(memory_size / frame_size)
+
+    def get_frames(self, count):
+        return self._free_frames[:count]
+
+
 class Loader:
     def __init__(self, disk, memory):
         self._next_dir = 0
