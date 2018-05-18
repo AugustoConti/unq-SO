@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 # return A+1 if A > B else A-1
+from builtins import Exception
+
 from src.interruption_handlers import STATE_RUNNING
 from src.log import logger
 
@@ -57,33 +59,70 @@ class Dispatcher:
 
 
 class MemoryManager:
-    def __init__(self, memory_size, frame_size):
-        self._free_frames = range(memory_size / frame_size)
+    def __init__(self, count_frames):
+        self._free_frames = range(count_frames)
+        self._page_table = dict()
 
     def get_frames(self, count):
-        return self._free_frames[:count]
+        if count > len(self._free_frames):
+            raise Exception('Insuficientes frames. Se piden {c} pero hay {q}'
+                            .format(c=count, q=len(self._free_frames)))
+        ret = self._free_frames[:count]
+        self._free_frames = self._free_frames[count:]
+        return ret
+
+    def add_page_table(self, pid, table):
+        self._page_table[pid] = table
 
 
-class Loader:
-    def __init__(self, disk, memory):
+class LoaderComun:
+    def __init__(self, memory):
         self._next_dir = 0
-        self._disk = disk
         self._memory = memory
 
     def _update_pcb(self, pcb, size):
         pcb['baseDir'] = self._next_dir
         pcb['limit'] = size
 
-    def _load_instructions_size(self, pcb, instructions, size):
+    def load_instructions(self, pcb, instructions):
+        size = len(instructions)
         self._update_pcb(pcb, size)
         [self._memory.put(self._next_dir + i, instructions[i]) for i in range(0, size)]
         self._next_dir += size
 
-    def _load_instructions(self, pcb, instructions):
-        self._load_instructions_size(pcb, instructions, len(instructions))
+
+class LoaderPaginado:
+    def __init__(self, memory, mm, frames_size):
+        self._memory = memory
+        self._mm = mm
+        self._frames_size = frames_size
+
+    def _get_value(self, nro_page, idx=0):
+        return (nro_page + idx) * self._frames_size
+
+    def _load_page_in_frame(self, instructions, nro_page, frame):
+        page = instructions[self._get_value(nro_page):self._get_value(nro_page, 1)]
+        [self._memory.put(self._frames_size * frame + i, page[i]) for i in range(len(page))]
+
+    def load_instructions(self, pcb, instructions):
+        size = len(instructions)
+        page_table = dict()
+        pages_count = size // self._frames_size + (1 if size % self._frames_size else 0)
+        frames_list = self._mm.get_frames(pages_count)
+        for page in range(pages_count):
+            self._load_page_in_frame(instructions, page, frames_list[page])
+            page_table[page] = frames_list[page]
+        self._mm.add_page_table(pcb['pid'], page_table)
+
+
+class Loader:
+    def __init__(self, base, disk):
+        self._next_dir = 0
+        self._disk = disk
+        self._base = base
 
     def load(self, pcb):
-        self._load_instructions(pcb, self._disk.get(pcb['name']))
+        self._base.load_instructions(pcb, self._disk.get(pcb['name']))
 
 
 class PCBTable:

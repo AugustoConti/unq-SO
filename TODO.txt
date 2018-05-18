@@ -30,8 +30,8 @@ carga el programa entero
 generar tabla de paginas
 pcb -> cargarlo en paginas, instrucciones / tamMarco = cant de pag
 resto > 0 , una pagina mas
-loader, pregunta al MMU si tiene x frames libres, si no tiene raise exception
-- le pide al MMU la cantidad de frames libres que necesita
+loader, pregunta al MM si tiene x frames libres, si no tiene raise exception
+- le pide al MM la cantidad de frames libres que necesita
 - llena esos frames con las instrucciones del programa, (lo carga en memoria)
 
 
@@ -47,8 +47,46 @@ le digo al MMU, mata al pid 1
 y agrego sus frames a la lista de frames libres
 
 
-----------------------------------------------------
+-----------------------------------------------------------------------------------
+
+
+PAGINACION BAJO DEMANDA
     bajo demanda
 	si no tiene frame asignado, tirar interruption fallo de pagina
 	cargar la pagina, si no hay frame libre, elegir victima y pasarla a disco
-----------------------------------------------------
+
+
+    interruption desde el MMU PageFoult(por param que page necesita)
+
+    SWAP esta en MM
+
+Tabla de paginas:
+pid	pag	frame   Bit   Swap IdxSwap
+1	0	 0       V     S       0
+1	1	 -       I     N       -
+2	0	 -       I     N       -
+2	1	 2       V     N       -
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
