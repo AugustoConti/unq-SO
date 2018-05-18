@@ -70,6 +70,29 @@ pid	pag	frame   Bit   Swap IdxSwap
 
 
 
+loader -> page table
+
+pageTable -> invalid -> PageFault(page)(del pid running)
+
+pageFault -> cargar pagina en memoria, poner el frame en valido
+
+swap -> in/out (frame)
+
+swap
+	pid + frame
+	tiempo de carga (tick que fue cargado)
+
+
+PageTable
+	pid
+	page
+	frame
+	valid/invalid (bit)
+	swappage en que esta
+
+
+	swap
+
 
 
 
