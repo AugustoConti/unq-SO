@@ -92,26 +92,28 @@ class LoaderComun:
 
 
 class LoaderPaginado:
-    def __init__(self, memory, mm, frames_size):
+    def __init__(self, memory, mm, frame_size):
         self._memory = memory
         self._mm = mm
-        self._frames_size = frames_size
+        self._frame_size = frame_size
 
-    def _get_value(self, nro_page, idx=0):
-        return (nro_page + idx) * self._frames_size
+    def _get_pages(self, instructions, nro_page):
+        return instructions[nro_page*self._frame_size:(nro_page+1)*self._frame_size]
 
-    def _load_page_in_frame(self, instructions, nro_page, frame):
-        page = instructions[self._get_value(nro_page):self._get_value(nro_page, 1)]
-        [self._memory.put(self._frames_size * frame + i, page[i]) for i in range(len(page))]
+    def _load_page_in_frame(self, pages, frame):
+        [self._memory.put(self._frame_size * frame + i, pages[i]) for i in range(len(pages))]
+        return frame
 
     def load_instructions(self, pcb, instructions):
         size = len(instructions)
+        if size<=0:
+            raise Exception("No hay instrucciones en pcb: {pcb}".format(pcb=pcb))
         page_table = dict()
-        pages_count = size // self._frames_size + (1 if size % self._frames_size else 0)
+        pages_count = size // self._frame_size + (1 if size % self._frame_size else 0)
         frames_list = self._mm.get_frames(pages_count)
         for page in range(pages_count):
-            self._load_page_in_frame(instructions, page, frames_list[page])
-            page_table[page] = frames_list[page]
+            page_table[page] = self._load_page_in_frame(self._get_pages(instructions, page),
+                                                        frames_list[page])
         self._mm.add_page_table(pcb['pid'], page_table)
 
 
