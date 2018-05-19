@@ -111,23 +111,50 @@ class Memory:
         return tabulate(enumerate(self._cells), tablefmt='psql')
 
 
-class MMU:
+class MMUPaged:
+    def __init__(self, memory, frame_size):
+        self._page_table = None #dict(page:frame)
+        self._memory = memory
+        self._frame_size = frame_size
+
+    def _get_inst(self, frame, offset):
+        return self._memory.get(frame*self._frame_size+offset)
+
+    def fetch(self, log_addr):
+        return self._get_inst(self._page_table[log_addr // self._frame_size], log_addr % self._frame_size)
+
+
+class MMUNormal:
     def __init__(self, memory):
         self._memory = memory
         self._base_dir = 0
+
+    def set_base_dir(self, base_dir):
+        self._base_dir = base_dir
+
+    def fetch(self, log_addr):
+        return self._memory.get(log_addr + self._base_dir)
+
+
+class MMU:
+    def __init__(self, base):
+        self._base = base
+        self._base_dir = 0
         self._limit = 999
 
-    def limits(self, base_dir, limit):
-        self._base_dir = base_dir
+    def set_base_dir(self, base_dir):
+        self._base.set_base_dir(base_dir)
+
+    def set_limit(self, limit):
         self._limit = limit
 
-    def fetch(self, logical_address):
-        if logical_address < 0:
-            raise IndexError("Invalid Address, {logical} is smaller than 0".format(logical=logical_address))
-        if logical_address >= self._limit:
-            raise Exception("Invalid Address, {logical} is eq or higher than process limit: {limit}"
-                            .format(limit=self._limit, logical=logical_address))
-        return self._memory.get(logical_address + self._base_dir)
+    def fetch(self, log_addr):
+        if log_addr < 0:
+            raise IndexError("Invalid Address, {log_addr} is smaller than 0".format(log_addr=log_addr))
+        if log_addr >= self._limit:
+            raise Exception("Invalid Address, {log_addr} is eq or higher than limit {limit}"
+                            .format(limit=self._limit, log_addr=log_addr))
+        return self._base.fetch(log_addr)
 
 
 class Cpu:
@@ -258,7 +285,7 @@ class Hardware:
         self._clock = Clock(delay)
         self._io_device = IODevice(self._interrupt_vector, "Printer", 3)
         self._disk = Disk()
-        self._mmu = MMU(self._memory)
+        self._mmu = MMU(MMUNormal(self._memory))
         self._cpu = Cpu(self._mmu, self._interrupt_vector)
         self._timer = Timer(self._interrupt_vector)
         self._clock.add_subscribers([self._io_device, self._timer, self._cpu])

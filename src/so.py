@@ -52,7 +52,8 @@ class Dispatcher:
 
     def load(self, pid):
         pcb = self._pcb_table.set_running(pid)
-        self._mmu.limits(pcb['baseDir'], pcb['limit'])
+        self._mmu.set_base_dir(pcb['baseDir'])
+        self._mmu.set_limit(pcb['limit'])
         self._cpu.set_pc(pcb['pc'])
         self._timer.reset()
         logger.info(" CPU running: {currentPCB}".format(currentPCB=pcb))

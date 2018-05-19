@@ -10,10 +10,11 @@ PCB, instruc/4 = cant de paginas, cada pagina asoc a un frame
 MMU paginado: (soporte paginas)
 tiene tabla solo con pagina y frame
 calculo, pc/4. resultado:nro de pagina.	ver pagina a que frame apunta y * 4 = base dir + el resto (el desplazamiento u offset)
-puedo cargar pagina y base dir (4*nro frame) para evitar calculo anterior
-se alimenta con tabla de paginas
+
+
+
+MemoryManager:
 tiene lista de frame libres = [0,1,2,3]
-saca el primero y lo asocia a la pagina 0 del pcb
 
 Tabla de paginas:
 pid	pag	frame
