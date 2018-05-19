@@ -1,13 +1,13 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock, call
-from src.so import LoaderPaginado
+from src.so import LoaderPaged
 
 
-class TestLoaderPaginado(TestCase):
+class TestLoaderPaged(TestCase):
     def setUp(self):
         self._memory = NonCallableMock()
         self._mm = NonCallableMock(get_frames=Mock(return_value=[0, 5, 2]))
-        self._loader_pag = LoaderPaginado(self._memory, self._mm, 2)
+        self._loader_pag = LoaderPaged(self._memory, self._mm, 2)
 
     def test_load_5_instructions(self):
         self._loader_pag.load_instructions({'pid': 1}, [1, 2, 3, 4, 5])
