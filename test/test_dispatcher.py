@@ -22,7 +22,8 @@ class TestDispatcher(TestCase):
     def test_load(self):
         self._dispatcher.load(5)
         self._pcb_table.set_running.assert_called_once_with(5)
-        self._mmu.limits.assert_called_once_with(1, 2)
+        self._mmu.set_base_dir.assert_called_once_with(1)
+        self._mmu.set_limit.assert_called_once_with(2)
         self._cpu.set_pc.assert_called_once_with(0)
         self._timer.reset.assert_called_once()
 
