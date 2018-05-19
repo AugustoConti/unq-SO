@@ -3,7 +3,7 @@ from unittest.mock import Mock, NonCallableMock
 from src.hardware import MMU, MMUNormal
 
 
-class TestMMU(TestCase):
+class TestMMUNormal(TestCase):
     def setUp(self):
         self._mmu = MMU(MMUNormal(NonCallableMock(get=Mock(side_effect=lambda value: value))))
 

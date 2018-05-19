@@ -3,7 +3,7 @@ from unittest.mock import Mock, NonCallableMock, call
 from src.so import Loader, LoaderNormal
 
 
-class TestLoaderComun(TestCase):
+class TestLoaderNormal(TestCase):
     def setUp(self):
         self._disk = NonCallableMock(get=Mock(return_value=[1, 2, 3]))
         self._memory = NonCallableMock()

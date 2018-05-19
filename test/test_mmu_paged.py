@@ -3,7 +3,7 @@ from unittest.mock import Mock, NonCallableMock
 from src.hardware import MMUPaged
 
 
-class TestMMU(TestCase):
+class TestMMUPaged(TestCase):
     def setUp(self):
         self._mmu = MMUPaged(NonCallableMock(get=Mock(side_effect=lambda value: value)), 4)
         self._mmu.set_page_table({0: 3, 1: 0, 2: 5})

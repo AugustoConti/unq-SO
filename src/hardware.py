@@ -151,6 +151,9 @@ class MMU:
     def set_limit(self, limit):
         self._limit = limit
 
+    def set_page_table(self, table):
+        self._base.set_page_table(table)
+
     def fetch(self, log_addr):
         if log_addr < 0:
             raise IndexError("Invalid Address, {log_addr} is smaller than 0".format(log_addr=log_addr))
