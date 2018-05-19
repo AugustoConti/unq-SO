@@ -10,10 +10,11 @@ PCB, instruc/4 = cant de paginas, cada pagina asoc a un frame
 MMU paginado: (soporte paginas)
 tiene tabla solo con pagina y frame
 calculo, pc/4. resultado:nro de pagina.	ver pagina a que frame apunta y * 4 = base dir + el resto (el desplazamiento u offset)
-puedo cargar pagina y base dir (4*nro frame) para evitar calculo anterior
-se alimenta con tabla de paginas
+
+
+
+MemoryManager:
 tiene lista de frame libres = [0,1,2,3]
-saca el primero y lo asocia a la pagina 0 del pcb
 
 Tabla de paginas:
 pid	pag	frame
@@ -30,13 +31,16 @@ carga el programa entero
 generar tabla de paginas
 pcb -> cargarlo en paginas, instrucciones / tamMarco = cant de pag
 resto > 0 , una pagina mas
-loader, pregunta al MMU si tiene x frames libres, si no tiene raise exception
-- le pide al MMU la cantidad de frames libres que necesita
+loader, pregunta al MM si tiene x frames libres, si no tiene raise exception
+- le pide al MM la cantidad de frames libres que necesita
 - llena esos frames con las instrucciones del programa, (lo carga en memoria)
 
 
 Dispatcher:
 para setear el MMU, sacar datos de tabla de paginas en MM
+setea el MMU con la tabla de pagina para ese pid que le pide al MM
+de un pid carga la tabla de paginas al MMU
+
 
 
 KILL:
@@ -44,11 +48,69 @@ le digo al MMU, mata al pid 1
 y agrego sus frames a la lista de frames libres
 
 
+-----------------------------------------------------------------------------------
 
 
-
-----------------------------------------------------
+PAGINACION BAJO DEMANDA
     bajo demanda
 	si no tiene frame asignado, tirar interruption fallo de pagina
 	cargar la pagina, si no hay frame libre, elegir victima y pasarla a disco
-----------------------------------------------------
+
+
+    interruption desde el MMU PageFoult(por param que page necesita)
+
+    SWAP esta en MM
+
+Tabla de paginas:
+pid	pag	frame   Bit   Swap IdxSwap
+1	0	 0       V     S       0
+1	1	 -       I     N       -
+2	0	 -       I     N       -
+2	1	 2       V     N       -
+
+
+
+
+loader -> page table
+
+pageTable -> invalid -> PageFault(page)(del pid running)
+
+pageFault -> cargar pagina en memoria, poner el frame en valido
+
+swap -> in/out (frame)
+
+swap
+	pid + frame
+	tiempo de carga (tick que fue cargado)
+
+
+PageTable
+	pid
+	page
+	frame
+	valid/invalid (bit)
+	swappage en que esta
+
+
+	swap
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

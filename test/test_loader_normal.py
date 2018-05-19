@@ -1,13 +1,13 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock, call
-from src.so import Loader
+from src.so import Loader, LoaderNormal
 
 
-class TestLoader(TestCase):
+class TestLoaderComun(TestCase):
     def setUp(self):
         self._disk = NonCallableMock(get=Mock(return_value=[1, 2, 3]))
         self._memory = NonCallableMock()
-        self._loader = Loader(self._disk, self._memory)
+        self._loader = Loader(LoaderNormal(self._memory), self._disk)
 
     def test_load_only_one_program(self):
         pcb = {'name': 'p1'}
