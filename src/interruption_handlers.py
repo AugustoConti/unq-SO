@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from src.hardware import *
 from src.log import logger
+from src.hardware import NEW_INTERRUPTION_TYPE, KILL_INTERRUPTION_TYPE, IO_IN_INTERRUPTION_TYPE, IO_OUT_INTERRUPTION_TYPE, TIME_OUT_INTERRUPTION_TYPE
 
 STATE_NEW = 'NEW'
 STATE_READY = 'READY'

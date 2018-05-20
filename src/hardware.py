@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from src.mmu import *
 from tabulate import tabulate
 from time import sleep
 from src.log import logger
@@ -234,13 +235,13 @@ class Timer:
 
 
 class Hardware:
-    def __init__(self, memory_size, delay):
+    def __init__(self, memory_size, delay, mmu_type, frame_size):
         self._memory = Memory(memory_size)
         self._interrupt_vector = InterruptVector()
         self._clock = Clock(delay)
         self._io_device = IODevice(self._interrupt_vector, "Printer", 3)
         self._disk = Disk()
-        self._mmu = MMU(MMUBasic(self._memory))
+        self._mmu = MMU(MMUType.new_mmu(mmu_type, self._memory, frame_size))
         self._cpu = Cpu(self._mmu, self._interrupt_vector)
         self._timer = Timer(self._interrupt_vector)
         self._clock.add_subscribers([self._io_device, self._timer, self._cpu])

@@ -6,6 +6,7 @@ from src.interruption_handlers import *
 from src.kernel import Kernel
 from src.schedulers import SchedulerType
 from src.utils import *
+from src.hardware import *
 
 __all__ = ["run_stats"]
 
@@ -20,9 +21,9 @@ def run_stats():
     total = [['Scheduler', 'Ready', 'AWT']]
     for scheduler in SchedulerType.all_schedulers():
         print('\n', colored(SchedulerType.str(scheduler), 'cyan'))
-        hardware = Hardware(35, 0)
+        hardware = Hardware(35, 0, 0, 0)
         load_programs(hardware.disk())
-        kernel = Kernel(hardware, scheduler)
+        kernel = Kernel(hardware, scheduler, 0, 0)
         execute_programs(hardware.interrupt_vector())
 
         gant = Timeline(hardware.clock(), kernel.pcb_list()).calc()

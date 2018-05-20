@@ -1,32 +1,52 @@
-#!/usr/bin/env python
+from src.mmu_types import MMUBasic, MMUPaged
+from src.so import LoaderBasic, LoaderPaged, DispatcherBasic, DispatcherPaged
 
 
-class MMUPaged:
-    def __init__(self, memory, frame_size):
-        self._page_table = None  # dict(page:frame)
-        self._memory = memory
-        self._frame_size = frame_size
+class MMUType:
+    @staticmethod
+    def str(tipo):
+        return {
+            0: 'Basic',
+            1: 'Paging'
+        }[tipo]
 
-    def set_page_table(self, table):
-        self._page_table = table
+    @staticmethod
+    def all_mmu():
+        return range(2)
 
-    def _get_inst(self, frame, offset):
-        return self._memory.get(frame * self._frame_size + offset)
+    @staticmethod
+    def choose():
+        return int(input("\n\nType of MMU:\n"
+                         + "".join(["{i} - {mmu}\n".format(i=i, mmu=MMUType.str(i))
+                                    for i in MMUType.all_mmu()])
+                         + "Option: "))
 
-    def fetch(self, log_addr):
-        return self._get_inst(self._page_table[log_addr // self._frame_size], log_addr % self._frame_size)
+    @staticmethod
+    def new_mmu(tipo, memory, frame_size):
+        if tipo == 0:
+            return MMUBasic(memory)
+        elif tipo == 1:
+            return MMUPaged(memory, frame_size)
+        else:
+            raise Exception('MMU type {mmu} not recongnized'.format(mmu=tipo))
 
+    @staticmethod
+    def new_loader(tipo, memory, mm, frame_size):
+        if tipo == 0:
+            return LoaderBasic(memory)
+        elif tipo == 1:
+            return LoaderPaged(memory, mm, frame_size)
+        else:
+            raise Exception('Loader type {loader} not recongnized'.format(loader=tipo))
 
-class MMUBasic:
-    def __init__(self, memory):
-        self._memory = memory
-        self._base_dir = 0
-
-    def set_base_dir(self, base_dir):
-        self._base_dir = base_dir
-
-    def fetch(self, log_addr):
-        return self._memory.get(log_addr + self._base_dir)
+    @staticmethod
+    def new_dispatcher(tipo, mm, mmu):
+        if tipo == 0:
+            return DispatcherBasic(mmu)
+        elif tipo == 1:
+            return DispatcherPaged(mm, mmu)
+        else:
+            raise Exception('Dispatcher type {dispatcher} not recongnized'.format(dispatcher=tipo))
 
 
 class MMU:
