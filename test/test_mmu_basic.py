@@ -1,11 +1,11 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
-from src.hardware import MMU, MMUNormal
+from src.hardware import MMU, MMUBasic
 
 
-class TestMMUNormal(TestCase):
+class TestMMUBasic(TestCase):
     def setUp(self):
-        self._mmu = MMU(MMUNormal(NonCallableMock(get=Mock(side_effect=lambda value: value))))
+        self._mmu = MMU(MMUBasic(NonCallableMock(get=Mock(side_effect=lambda value: value))))
 
     def test_default(self):
         self.assertEqual(0, self._mmu.fetch(0))

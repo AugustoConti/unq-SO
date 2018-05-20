@@ -127,7 +127,7 @@ class MMUPaged:
         return self._get_inst(self._page_table[log_addr // self._frame_size], log_addr % self._frame_size)
 
 
-class MMUNormal:
+class MMUBasic:
     def __init__(self, memory):
         self._memory = memory
         self._base_dir = 0
@@ -291,7 +291,7 @@ class Hardware:
         self._clock = Clock(delay)
         self._io_device = IODevice(self._interrupt_vector, "Printer", 3)
         self._disk = Disk()
-        self._mmu = MMU(MMUNormal(self._memory))
+        self._mmu = MMU(MMUBasic(self._memory))
         self._cpu = Cpu(self._mmu, self._interrupt_vector)
         self._timer = Timer(self._interrupt_vector)
         self._clock.add_subscribers([self._io_device, self._timer, self._cpu])

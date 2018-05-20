@@ -39,7 +39,7 @@ class IoDeviceController:
             .format(ID=self._device.device_id(), Pid=self._current_pid, waiting=self._waiting_queue)
 
 
-class DispatcherNormal:
+class DispatcherBasic:
     def __init__(self, mmu):
         self._mmu = mmu
 
@@ -78,7 +78,7 @@ class Dispatcher:
 
 class MemoryManager:
     def __init__(self, count_frames):
-        self._free_frames = range(count_frames)
+        self._free_frames = list(range(count_frames))
         self._page_table = dict()
 
     def get_frames(self, count):
@@ -95,8 +95,11 @@ class MemoryManager:
     def get_page_table(self, pid):
         return self._page_table[pid]
 
+    def kill(self, pid):
+        self._free_frames.extend(self._page_table[pid].values())
 
-class LoaderNormal:
+
+class LoaderBasic:
     def __init__(self, memory):
         self._next_dir = 0
         self._memory = memory

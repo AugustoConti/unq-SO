@@ -11,14 +11,17 @@ STATE_TERMINATED = 'TERMINATED'
 
 
 class KillInterruptionHandler:
-    def __init__(self, scheduler, pcb_table, dispatcher):
+    def __init__(self, scheduler, pcb_table, dispatcher, mm):
         self._scheduler = scheduler
         self._pcbTable = pcb_table
         self._dispatcher = dispatcher
+        self._mm = mm
 
     def execute(self, irq):
         logger.info(" Finished: {currentPCB}".format(currentPCB=self._pcbTable.get_running()))
-        self._pcbTable.set_pcb_state(self._pcbTable.get_running_pid(), STATE_TERMINATED)
+        running = self._pcbTable.get_running_pid()
+        self._mm.kill(running)
+        self._pcbTable.set_pcb_state(running, STATE_TERMINATED)
         self._dispatcher.save()
         self._scheduler.load_from_ready()
 
@@ -78,11 +81,11 @@ class IoOutInterruptionHandler:
         logger.info(self._io_device_controller)
 
 
-def register_handlers(interrupt_vector, scheduler, pcb_table, loader, dispatcher, io_device_controller, timer):
+def register_handlers(interrupt_vector, scheduler, pcb_table, loader, dispatcher, io_device_controller, timer, mm):
     interrupt_vector.register(NEW_INTERRUPTION_TYPE,
                               NewInterruptionHandler(scheduler, pcb_table, loader))
     interrupt_vector.register(KILL_INTERRUPTION_TYPE,
-                              KillInterruptionHandler(scheduler, pcb_table, dispatcher))
+                              KillInterruptionHandler(scheduler, pcb_table, dispatcher, mm))
     interrupt_vector.register(IO_IN_INTERRUPTION_TYPE,
                               IoInInterruptionHandler(scheduler, pcb_table, io_device_controller, dispatcher))
     interrupt_vector.register(IO_OUT_INTERRUPTION_TYPE,

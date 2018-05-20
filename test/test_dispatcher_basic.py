@@ -1,12 +1,12 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock
-from src.so import DispatcherNormal
+from src.so import DispatcherBasic
 
 
-class TestDispatcherNormal(TestCase):
+class TestDispatcherBasic(TestCase):
     def setUp(self):
         self._mmu = NonCallableMock()
-        self._dispatcher = DispatcherNormal(self._mmu)
+        self._dispatcher = DispatcherBasic(self._mmu)
 
     def test_load_base_0_limit_5(self):
         self._dispatcher.load({'baseDir': 0, 'limit': 5})
