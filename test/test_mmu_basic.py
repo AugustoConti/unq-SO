@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
-from src.hardware import MMU, MMUBasic
+from src.mmu import MMU, MMUBasic
 
 
 class TestMMUBasic(TestCase):

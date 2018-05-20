@@ -1,14 +1,11 @@
 #!/usr/bin/env python
 
-from src.utils import *
+from src.utils import load_programs, execute_programs
 from src.kernel import Kernel
-from src.schedulers import *
+from src.schedulers import SchedulerType
 from src.hardware import Hardware
 from src.log import logger
-
-
-# TODO MultiThreading
-# TODO manejo de disco
+from src.stats import run_stats
 
 
 def run_simulator():
@@ -19,18 +16,14 @@ def run_simulator():
     hardware.switch_on()
 
 
+# TODO MultiThreading
 if __name__ == '__main__':
     opt = input("1 - Estadísticas\n"
                 "2 - Run simulator\n"
                 "Opción: ")
+
     if opt == '1':
         logger.propagate = False
-
-    logger.info('Starting emulator')
-
-    if opt == '1':
-        from src.stats import run_stats
-
         run_stats()
     else:
         run_simulator()
