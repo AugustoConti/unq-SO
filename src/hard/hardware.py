@@ -1,9 +1,7 @@
-#!/usr/bin/env python
-
 from tabulate import tabulate
 from time import sleep
 from src.log import logger
-from src.mmu import *
+from src.hard.mmu import *
 
 INSTRUCTION_IO = 'IO'
 INSTRUCTION_CPU = 'CPU'

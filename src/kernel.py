@@ -1,9 +1,9 @@
-#!/usr/bin/env python
-
-from src.schedulers import *
-from src.mmu import *
-from src.so import IoDeviceController, Loader, PCBTable, Dispatcher, MemoryManager
-from src.interruption_handlers import register_handlers
+from src.so.schedulers import *
+from src.hard.mmu import *
+from src.so.so import IoDeviceController, PCBTable, MemoryManager
+from src.so.loader import Loader
+from src.so.dispatcher import Dispatcher
+from src.so.interruption_handlers import register_handlers
 
 # TODO pcb_list de pcb_table, crear en variable de kernel y pasar por param en constructor de pcb_table
 class Kernel:

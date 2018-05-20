@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-
-from src.schedulers_types import *
+from src.so.schedulers_types import *
 
 
 class SchedulerType:

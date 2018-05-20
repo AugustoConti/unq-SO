@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
-from src.interruption_handlers import KillInterruptionHandler, STATE_TERMINATED
+from src.so.interruption_handlers import KillInterruptionHandler, STATE_TERMINATED
 from src.log import logger
 
 

@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
-from src.interruption_handlers import IoInInterruptionHandler, STATE_WAITING
+from src.so.interruption_handlers import IoInInterruptionHandler, STATE_WAITING
 
 
 class TestIoInInterruptionHandler(TestCase):

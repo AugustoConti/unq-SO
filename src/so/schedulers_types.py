@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-
-from src.interruption_handlers import STATE_READY
+from src.so.interruption_handlers import STATE_READY
 from src.log import logger
 
 

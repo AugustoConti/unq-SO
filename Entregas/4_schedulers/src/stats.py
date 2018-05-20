@@ -2,9 +2,9 @@
 
 from collections import defaultdict
 from termcolor import colored
-from src.interruption_handlers import *
+from src.so.interruption_handlers import *
 from src.kernel import Kernel
-from src.schedulers import SchedulerType
+from src.so.schedulers import SchedulerType
 from src.utils import *
 
 __all__ = ["run_stats"]

@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
 from src.log import logger
-from src.schedulers import PriorityExp
+from src.so.schedulers import PriorityExp
 
 
 class TestPriorityExp(TestCase):

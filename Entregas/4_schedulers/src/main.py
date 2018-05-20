@@ -2,8 +2,8 @@
 
 from src.utils import *
 from src.kernel import Kernel
-from src.schedulers import *
-from src.hardware import Hardware
+from src.so.schedulers import *
+from src.hard.hardware import Hardware
 from src.log import logger
 
 

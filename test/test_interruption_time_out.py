@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock
-from src.interruption_handlers import TimeOutInterruptionHandler
+from src.so.interruption_handlers import TimeOutInterruptionHandler
 from src.log import logger
 
 

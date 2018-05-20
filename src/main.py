@@ -2,10 +2,9 @@
 
 from src.utils import load_programs, execute_programs
 from src.kernel import Kernel
-from src.schedulers import SchedulerType
-from src.mmu import *
-from src.hardware import Hardware
-from src.log import logger
+from src.so.schedulers import SchedulerType
+from src.hard.mmu import *
+from src.hard.hardware import Hardware
 from src.stats import run_stats
 
 

@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock, Mock
-from src.interruption_handlers import STATE_READY
-from src.schedulers import Scheduler
+from src.so.interruption_handlers import STATE_READY
+from src.so.schedulers import Scheduler
 
 
 class TestScheduler(TestCase):

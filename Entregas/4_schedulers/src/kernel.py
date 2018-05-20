@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-from src.schedulers import *
+from src.so.schedulers import *
 from src.so import IoDeviceController, Loader, PCBTable, Dispatcher
-from src.interruption_handlers import register_handlers
+from src.so.interruption_handlers import register_handlers
 
 
 class Kernel:

@@ -1,5 +1,6 @@
-from src.mmu_types import MMUBasic, MMUPaged
-from src.so import LoaderBasic, LoaderPaged, DispatcherBasic, DispatcherPaged
+from src.hard.mmu_types import MMUBasic, MMUPaged
+from src.so.loader import LoaderBasic, LoaderPaged
+from src.so.dispatcher import DispatcherBasic, DispatcherPaged
 
 
 class MMUType:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # return A+1 if A > B else A-1
-from src.interruption_handlers import STATE_RUNNING
+from src.so.interruption_handlers import STATE_RUNNING
 from src.log import logger
 
 

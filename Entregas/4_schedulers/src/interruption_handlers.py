@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from src.hardware import *
+from src.hard.hardware import *
 from src.log import logger
 
 STATE_NEW = 'NEW'

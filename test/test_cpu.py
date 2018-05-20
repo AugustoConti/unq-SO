@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
-from src.hardware import Cpu, INSTRUCTION_IO, INSTRUCTION_CPU, INSTRUCTION_EXIT, KILL_INTERRUPTION_TYPE, \
+from src.hard.hardware import Cpu, INSTRUCTION_IO, INSTRUCTION_CPU, INSTRUCTION_EXIT, KILL_INTERRUPTION_TYPE, \
     IO_IN_INTERRUPTION_TYPE
 from src.log import logger
 

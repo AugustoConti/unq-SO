@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock
 from src.log import logger
-from src.hardware import IODevice, IO_OUT_INTERRUPTION_TYPE
+from src.hard.hardware import IODevice, IO_OUT_INTERRUPTION_TYPE
 
 
 class TestIODevice(TestCase):
