@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock, call
-from src.so import LoaderPaged
+from src.so.loader import LoaderPaged
 
 
 class TestLoaderPaged(TestCase):

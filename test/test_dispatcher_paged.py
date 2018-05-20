@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
-from src.so import DispatcherPaged
+from src.so.dispatcher import DispatcherPaged
 
 
 class TestDispatcherPaged(TestCase):

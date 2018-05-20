@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
-from src.so import Dispatcher
+from src.so.dispatcher import Dispatcher
 from src.log import logger
 
 

@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock, call
-from src.so import Loader, LoaderBasic
+from src.so.loader import Loader, LoaderBasic
 
 
 class TestLoaderBasic(TestCase):

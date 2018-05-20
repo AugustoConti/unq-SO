@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
-from src.so import IoDeviceController
+from src.so.so import IoDeviceController
 from src.log import logger
 
 
