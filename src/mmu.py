@@ -16,10 +16,10 @@ class MMUType:
 
     @staticmethod
     def choose():
-        return int(input("\n\nType of MMU:\n"
+        return int(input("\n\nType MMU:\n"
                          + "".join(["{i} - {mmu}\n".format(i=i, mmu=MMUType.str(i))
                                     for i in MMUType.all_mmu()])
-                         + "Option: "))
+                         + "Choice: "))
 
     @staticmethod
     def new_mmu(tipo, memory, frame_size):

@@ -21,10 +21,10 @@ class SchedulerType:
 
     @staticmethod
     def choose():
-        return int(input("\n\nTipo de Scheduler:\n"
+        return int(input("\n\nType Scheduler:\n"
                          + "".join(["{i} - {sch}\n".format(i=i, sch=SchedulerType.str(i))
                                     for i in SchedulerType.all_schedulers()])
-                         + "Opción: "))
+                         + "Choice: "))
 
     @staticmethod
     def new(tipo, pcb_table, dispatcher, timer):

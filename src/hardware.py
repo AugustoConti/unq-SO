@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from src.mmu import *
 from tabulate import tabulate
 from time import sleep
 from src.log import logger

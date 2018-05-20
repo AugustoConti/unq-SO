@@ -25,9 +25,9 @@ def run_simulator():
 
 # TODO MultiThreading
 if __name__ == '__main__':
-    opt = input("1 - Estadísticas\n"
+    opt = input("1 - Statistics\n"
                 "2 - Run simulator\n"
-                "Opción: ")
+                "Choice: ")
     if opt == '1':
         run_stats()
     else:
