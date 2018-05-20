@@ -2,7 +2,6 @@
 
 # return A+1 if A > B else A-1
 from builtins import Exception
-
 from src.interruption_handlers import STATE_RUNNING
 from src.log import logger
 
@@ -96,7 +95,8 @@ class MemoryManager:
         return self._page_table[pid]
 
     def kill(self, pid):
-        self._free_frames.extend(self._page_table[pid].values())
+        if pid in self._page_table:
+            self._free_frames.extend(self._page_table[pid].values())
 
 
 class LoaderBasic:
@@ -143,8 +143,8 @@ class LoaderPaged:
 class Loader:
     def __init__(self, base, disk):
         self._next_dir = 0
-        self._disk = disk
         self._base = base
+        self._disk = disk
 
     def load(self, pcb):
         self._base.load_instructions(pcb, self._disk.get(pcb['name']))

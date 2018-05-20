@@ -4,14 +4,6 @@ cada proceso cargado en paginas, cada pagina asociada a un frames.
 instruc/frame size = cant de paginas
 
 
-
-Por hacer:
-
-KILL:
-le digo al MM, mata al pid 1
-y agrego sus frames a la lista de frames libres
-
-
 -----------------------------------------------------------------------------------
 
 
