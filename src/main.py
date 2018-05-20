@@ -3,6 +3,7 @@
 from src.utils import *
 from src.kernel import Kernel
 from src.schedulers import *
+from src.mmu import *
 from src.hardware import Hardware
 from src.log import logger
 
@@ -12,9 +13,15 @@ from src.log import logger
 
 
 def run_simulator():
-    hardware = Hardware(35, 0.1)
+    sch = SchedulerType.choose()
+    mmu = MMUType.choose()
+    if mmu > 0:
+        frame_size = int(input("\n\nFrame size:"))
+    else:
+        frame_size = 0
+    hardware = Hardware(35, 0.1, mmu, frame_size)
     load_programs(hardware.disk())
-    Kernel(hardware, SchedulerType.choose())
+    Kernel(hardware, sch, mmu, frame_size)
     execute_programs(hardware.interrupt_vector())
     hardware.switch_on()
 
