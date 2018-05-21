@@ -7,10 +7,6 @@ from src.hard.hardware import Hardware
 from src.log import logger
 
 
-# TODO MultiThreading
-# TODO manejo de disco
-
-
 def run_simulator():
     hardware = Hardware(35, 0.1)
     load_programs(hardware.disk())

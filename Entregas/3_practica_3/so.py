@@ -50,7 +50,6 @@ class IoDeviceController:
         return self._device.is_busy or len(self._waiting_queue) > 0
 
     def runOperation(self, pcb, instruction):
-        # TODO cambiar pcb por pid?? CONSULTAR
         pair = {'pcb': pcb, 'instruction': instruction}
         self._waiting_queue.append(pair)
         self.__load_from_waiting_queue_if_apply()

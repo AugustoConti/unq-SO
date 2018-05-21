@@ -9,7 +9,6 @@ INSTRUCTION_CPU = 'CPU'
 INSTRUCTION_EXIT = 'EXIT'
 
 
-# TODO una clase por instruccion, execute
 class ASM:
     @classmethod
     def exit(cls):
