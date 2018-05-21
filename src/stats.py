@@ -5,11 +5,13 @@ from src.kernel import Kernel
 from src.so.schedulers import SchedulerType
 from src.utils import *
 from src.hard.hardware import *
+from src.log import logger
 
 __all__ = ["run_stats"]
 
 
 def run_stats():
+    logger.propagate = False
     print('\n', tabulate([['Letra', 'Estado'],
                           ['N', STATE_NEW],
                           ['R', STATE_READY],
@@ -21,7 +23,7 @@ def run_stats():
         print('\n', colored(SchedulerType.str(scheduler), 'cyan'))
         hardware = Hardware(35, 0, 0, 0)
         load_programs(hardware.disk())
-        kernel = Kernel(hardware, scheduler, 0, 0)
+        kernel = Kernel(hardware, scheduler, 0, 0, 0)
         execute_programs(hardware.interrupt_vector())
 
         gant = Timeline(hardware.clock(), kernel.pcb_list()).calc()

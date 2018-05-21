@@ -9,15 +9,14 @@ from src.stats import run_stats
 
 
 def run_simulator():
+    memory_size = 32
+    frame_size = 4
+    count_frames = memory_size // frame_size
     sch = SchedulerType.choose()
     mmu = MMUType.choose()
-    if mmu > 0:
-        frame_size = int(input("\n\nFrame size:"))
-    else:
-        frame_size = 0
-    hardware = Hardware(35, 0.1, mmu, frame_size)
+    hardware = Hardware(memory_size, 0.1, mmu, frame_size)
     load_programs(hardware.disk())
-    Kernel(hardware, sch, mmu, frame_size)
+    Kernel(hardware, sch, mmu, frame_size, count_frames)
     execute_programs(hardware.interrupt_vector())
     hardware.switch_on()
 
