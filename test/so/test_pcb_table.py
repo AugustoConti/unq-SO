@@ -4,7 +4,7 @@ from src.so.so import PCBTable
 
 class TestPCBTable(TestCase):
     def setUp(self):
-        self._pcb_table = PCBTable()
+        self._pcb_table = PCBTable(dict())
 
     def test_getPID(self):
         self.assertEqual(1, self._pcb_table.get_pid())
@@ -41,15 +41,3 @@ class TestPCBTable(TestCase):
     def test_getPriority(self):
         self._pcb_table.add_pcb({'pid': 1, 'priority': 3})
         self.assertEqual(3, self._pcb_table.get_priority(1))
-
-    def test_pcbList_empty(self):
-        self.assertEqual([], list(self._pcb_table.pcb_list()))
-
-    def test_pcbList_one_item(self):
-        self._pcb_table.add_pcb({'pid': 1})
-        self.assertEqual([{'pid': 1}], list(self._pcb_table.pcb_list()))
-
-    def test_pcbList_two_item(self):
-        self._pcb_table.add_pcb({'pid': 1})
-        self._pcb_table.add_pcb({'pid': 2})
-        self.assertEqual([{'pid': 1}, {'pid': 2}], list(self._pcb_table.pcb_list()))

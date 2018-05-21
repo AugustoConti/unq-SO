@@ -60,13 +60,10 @@ class MemoryManager:
 
 
 class PCBTable:
-    def __init__(self):
+    def __init__(self, table):
+        self._table = table
         self._last_id = 0
-        self._table = dict()
         self._pid_running = None
-
-    def pcb_list(self):
-        return self._table.values()
 
     def get_pid(self):
         self._last_id += 1
