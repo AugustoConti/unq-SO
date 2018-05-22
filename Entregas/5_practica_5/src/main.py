@@ -34,7 +34,6 @@ def run_simulator():
     hardware.switch_on()
 
 
-# TODO MultiThreading
 if __name__ == '__main__':
     opt = input("1 - Statistics\n"
                 "2 - Run simulator\n"

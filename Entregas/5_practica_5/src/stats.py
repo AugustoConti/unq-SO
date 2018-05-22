@@ -1,0 +1,66 @@
+from collections import defaultdict
+from termcolor import colored
+from src.system.interruption_handlers import *
+from src.kernel import Kernel
+from src.system.schedulers import SchedulerType
+from src.utils import *
+from src.hardware.hardware import *
+from src.log import logger
+
+__all__ = ["run_stats"]
+
+
+def run_stats():
+    logger.propagate = False
+    print('\n', tabulate([['Letra', 'Estado'],
+                          ['N', STATE_NEW],
+                          ['R', STATE_READY],
+                          ['X', STATE_RUNNING],
+                          ['T', STATE_TERMINATED],
+                          ['W', STATE_WAITING]], headers="firstrow"), '\n')
+    total = [['Scheduler', 'Ready', 'AWT']]
+    for scheduler in SchedulerType.all_schedulers():
+        print('\n', colored(SchedulerType.str(scheduler), 'cyan'))
+        hardware = Hardware(35, 0, 0, 0)
+        load_programs(hardware.disk())
+        kernel = Kernel(hardware, scheduler, 0, 0, 0)
+        execute_programs(hardware.interrupt_vector())
+
+        gant = Timeline(hardware.clock(), kernel.pcb_list()).calc()
+        total.append([SchedulerType.str(scheduler)] + gant)
+    print('\n')
+    print(tabulate(total, headers="firstrow", tablefmt="presto"))
+
+
+class Timeline:
+    def __init__(self, clock, pcb_table):
+        self._clock = clock
+        self._pcb_table = pcb_table
+        self._tick_nro = 0
+        self._count_ready = 0
+        self._states = defaultdict(list)
+
+    def _terminated(self):
+        return all(pcb['state'] == STATE_TERMINATED for pcb in self._pcb_table)
+
+    def _save_states(self):
+        self._states[self._tick_nro] = [pcb['pid'] for pcb in self._pcb_table] if self._tick_nro == 0 \
+            else [self.__mapear(pcb['state']) for pcb in self._pcb_table]
+        self._count_ready += self._states[self._tick_nro].count(self.__mapear(STATE_READY))
+        self._tick_nro += 1
+
+    def __mapear(self, state):
+        return {
+            STATE_NEW: colored('N', 'magenta'),
+            STATE_READY: colored('R', 'green'),
+            STATE_RUNNING: colored('X', 'red'),
+            STATE_TERMINATED: colored('T', 'white'),
+            STATE_WAITING: colored('W', 'cyan')
+        }[state]
+
+    def calc(self):
+        while not self._terminated():
+            self._save_states()
+            self._clock.do_ticks(1)
+        print(tabulate(self._states, headers="keys", tablefmt="fancy_grid"))
+        return [self._count_ready, self._count_ready / len(self._pcb_table)]
