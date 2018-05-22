@@ -1,4 +1,4 @@
-from src.hard.hardware import IRQ, NEW_INTERRUPTION_TYPE, ASM
+from src.hardware.hardware import IRQ, NEW_INTERRUPTION_TYPE, ASM
 
 __all__ = ["load_programs", "execute_programs"]
 

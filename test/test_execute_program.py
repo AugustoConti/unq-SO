@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock
 from src.utils import Program
-from src.hard.hardware import NEW_INTERRUPTION_TYPE
+from src.hardware.hardware import NEW_INTERRUPTION_TYPE
 
 
 class TestExecute(TestCase):

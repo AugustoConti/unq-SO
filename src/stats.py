@@ -1,10 +1,10 @@
 from collections import defaultdict
 from termcolor import colored
-from src.so.interruption_handlers import *
+from src.system.interruption_handlers import *
 from src.kernel import Kernel
-from src.so.schedulers import SchedulerType
+from src.system.schedulers import SchedulerType
 from src.utils import *
-from src.hard.hardware import *
+from src.hardware.hardware import *
 from src.log import logger
 
 __all__ = ["run_stats"]

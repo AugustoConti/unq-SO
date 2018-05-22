@@ -1,9 +1,9 @@
-from src.so.schedulers import *
-from src.hard.mmu import *
-from src.so.so import IoDeviceController, PCBTable, MemoryManager
-from src.so.loader import Loader
-from src.so.dispatcher import Dispatcher
-from src.so.interruption_handlers import register_handlers
+from src.system.schedulers import *
+from src.hardware.mmu import *
+from src.system.so import IoDeviceController, PCBTable, MemoryManager
+from src.system.loader import Loader
+from src.system.dispatcher import Dispatcher
+from src.system.interruption_handlers import register_handlers
 
 
 class Kernel:
