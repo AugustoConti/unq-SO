@@ -1,11 +1,20 @@
 #!/usr/bin/env python
-
+from termcolor import colored
 from src.utils import load_programs, execute_programs
 from src.kernel import Kernel
 from src.so.schedulers import SchedulerType
 from src.hard.mmu import *
 from src.hard.hardware import Hardware
 from src.stats import run_stats
+
+def logo():
+    print(colored('\n'
+        ' ██████╗ ██████╗ ███╗   ██╗████████╗██╗      ██████╗ ███████╗██╗     ██╗     ██╗███╗   ██╗██╗       ██████╗ ███████╗\n'
+        '██╔════╝██╔═══██╗████╗  ██║╚══██╔══╝██║      ██╔══██╗██╔════╝██║     ██║     ██║████╗  ██║██║      ██╔═══██╗██╔════╝\n'
+        '██║     ██║   ██║██╔██╗ ██║   ██║   ██║      ██████╔╝█████╗  ██║     ██║     ██║██╔██╗ ██║██║      ██║   ██║███████╗\n'
+        '██║     ██║   ██║██║╚██╗██║   ██║   ██║      ██╔══██╗██╔══╝  ██║     ██║     ██║██║╚██╗██║██║      ██║   ██║╚════██║\n'
+        '╚██████╗╚██████╔╝██║ ╚████║   ██║   ██║      ██████╔╝███████╗███████╗███████╗██║██║ ╚████║██║      ╚██████╔╝███████║\n'
+        ' ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚═╝      ╚═════╝ ╚══════╝╚══════╝╚══════╝╚═╝╚═╝  ╚═══╝╚═╝       ╚═════╝ ╚══════╝\n','cyan'))
 
 
 def run_simulator():
@@ -23,6 +32,7 @@ def run_simulator():
 
 # TODO MultiThreading
 if __name__ == '__main__':
+    logo()
     opt = input("1 - Statistics\n"
                 "2 - Run simulator\n"
                 "Choice: ")
