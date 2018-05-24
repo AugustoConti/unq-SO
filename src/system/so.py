@@ -1,5 +1,5 @@
 from builtins import Exception
-from src.system.interruption_handlers import STATE_RUNNING
+from src.system.states import State
 from src.log import logger
 
 
@@ -81,7 +81,7 @@ class PCBTable:
     def set_running(self, pid):
         self._pid_running = pid
         if pid is not None:
-            self.set_pcb_state(pid, STATE_RUNNING)
+            self.set_pcb_state(pid, State.RUNNING)
         return self.get_running()
 
     def add_pcb(self, pcb):

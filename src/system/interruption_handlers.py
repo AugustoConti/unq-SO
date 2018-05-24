@@ -1,11 +1,6 @@
 from src.log import logger
 from src.hardware.hardware import NEW_INTERRUPTION_TYPE, KILL_INTERRUPTION_TYPE, IO_IN_INTERRUPTION_TYPE, IO_OUT_INTERRUPTION_TYPE, TIME_OUT_INTERRUPTION_TYPE
-
-STATE_NEW = 'NEW'
-STATE_READY = 'READY'
-STATE_WAITING = 'WAITING'
-STATE_RUNNING = 'RUNNING'
-STATE_TERMINATED = 'TERMINATED'
+from src.system.states import State
 
 
 class KillInterruptionHandler:
@@ -19,7 +14,7 @@ class KillInterruptionHandler:
         logger.info(" Finished: {currentPCB}".format(currentPCB=self._pcbTable.get_running()))
         running = self._pcbTable.get_running_pid()
         self._mm.kill(running)
-        self._pcbTable.set_pcb_state(running, STATE_TERMINATED)
+        self._pcbTable.set_pcb_state(running, State.TERMINATED)
         self._dispatcher.save()
         self._scheduler.load_from_ready()
 
@@ -32,7 +27,7 @@ class IoInInterruptionHandler:
         self._dispatcher = dispatcher
 
     def execute(self, irq):
-        self._pcbTable.set_pcb_state(self._pcbTable.get_running_pid(), STATE_WAITING)
+        self._pcbTable.set_pcb_state(self._pcbTable.get_running_pid(), State.WAITING)
         self._dispatcher.save()
         self._ioDeviceController.run_operation(self._pcbTable.get_running_pid(), irq.parameters())
         self._scheduler.load_from_ready()
@@ -63,7 +58,7 @@ class NewInterruptionHandler:
                'priority': irq.parameters()['priority'],
                'name': irq.parameters()['program'],
                'pc': 0,
-               'state': STATE_NEW}
+               'state': State.NEW}
         self._loader.load(pcb)
         self._pcbTable.add_pcb(pcb)
         self._scheduler.run_or_add_queue(pcb['pid'])

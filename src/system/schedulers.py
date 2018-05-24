@@ -1,4 +1,5 @@
 from src.system.schedulers_types import *
+from src.system.states import State
 
 
 class SchedulerType:
@@ -50,7 +51,7 @@ class Scheduler:
         self.__tipo = tipo
 
     def __add(self, pid):
-        self._pcbTable.set_pcb_state(pid, STATE_READY)
+        self._pcbTable.set_pcb_state(pid, State.READY)
         self.__tipo.add(pid)
 
     def add_running(self):

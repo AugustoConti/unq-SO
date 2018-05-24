@@ -1,4 +1,4 @@
-from src.system.interruption_handlers import STATE_READY
+from src.system.states import State
 from src.log import logger
 
 
@@ -60,7 +60,7 @@ class PriorityExp:
             logger.info("PCB entrante con mayor prioridad que running!")
             self._dispatcher.save()
             self._dispatcher.load(pid)
-            pcb_run['state'] = STATE_READY
+            pcb_run['state'] = State.READY
             self._base.add(pcb_run['pid'])
         else:
             self._base.add(pid)

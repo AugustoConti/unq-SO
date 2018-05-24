@@ -1,6 +1,6 @@
 from collections import defaultdict
 from termcolor import colored
-from src.system.interruption_handlers import *
+from src.system.states import State
 from src.kernel import Kernel
 from src.system.schedulers import SchedulerType
 from src.utils import *
@@ -13,11 +13,11 @@ __all__ = ["run_stats"]
 def run_stats():
     logger.propagate = False
     print('\n', tabulate([['Letra', 'Estado'],
-                          ['N', STATE_NEW],
-                          ['R', STATE_READY],
-                          ['X', STATE_RUNNING],
-                          ['T', STATE_TERMINATED],
-                          ['W', STATE_WAITING]], headers="firstrow"), '\n')
+                          ['N', State.NEW],
+                          ['R', State.READY],
+                          ['X', State.RUNNING],
+                          ['T', State.TERMINATED],
+                          ['W', State.WAITING]], headers="firstrow"), '\n')
     total = [['Scheduler', 'Ready', 'AWT']]
     for scheduler in SchedulerType.all_schedulers():
         print('\n', colored(SchedulerType.str(scheduler), 'cyan'))
@@ -41,21 +41,21 @@ class Timeline:
         self._states = defaultdict(list)
 
     def _terminated(self):
-        return all(pcb['state'] == STATE_TERMINATED for pcb in self._pcb_table)
+        return all(pcb['state'] == State.TERMINATED for pcb in self._pcb_table)
 
     def _save_states(self):
         self._states[self._tick_nro] = [pcb['pid'] for pcb in self._pcb_table] if self._tick_nro == 0 \
             else [self.__mapear(pcb['state']) for pcb in self._pcb_table]
-        self._count_ready += self._states[self._tick_nro].count(self.__mapear(STATE_READY))
+        self._count_ready += self._states[self._tick_nro].count(self.__mapear(State.READY))
         self._tick_nro += 1
 
     def __mapear(self, state):
         return {
-            STATE_NEW: colored('N', 'magenta'),
-            STATE_READY: colored('R', 'green'),
-            STATE_RUNNING: colored('X', 'red'),
-            STATE_TERMINATED: colored('T', 'white'),
-            STATE_WAITING: colored('W', 'cyan')
+            State.NEW: colored('N', 'magenta'),
+            State.READY: colored('R', 'green'),
+            State.RUNNING: colored('X', 'red'),
+            State.TERMINATED: colored('T', 'white'),
+            State.WAITING: colored('W', 'cyan')
         }[state]
 
     def calc(self):

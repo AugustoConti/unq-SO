@@ -1,0 +1,6 @@
+class State:
+    NEW = 'NEW'
+    READY = 'READY'
+    WAITING = 'WAITING'
+    RUNNING = 'RUNNING'
+    TERMINATED = 'TERMINATED'

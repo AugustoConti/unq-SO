@@ -1,6 +1,7 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
-from src.system.interruption_handlers import IoInInterruptionHandler, STATE_WAITING
+from src.system.interruption_handlers import IoInInterruptionHandler
+from src.system.states import State
 
 
 class TestIoInInterruptionHandler(TestCase):
@@ -13,7 +14,7 @@ class TestIoInInterruptionHandler(TestCase):
 
     def test_execute(self):
         self._io_in.execute(Mock(parameters=Mock(return_value=2)))
-        self._pcbTable.set_pcb_state.assert_called_once_with(1, STATE_WAITING)
+        self._pcbTable.set_pcb_state.assert_called_once_with(1, State.WAITING)
         self._dispatcher.save.assert_called_once()
         self._deviceController.run_operation.assert_called_once_with(1, 2)
         self._scheduler.load_from_ready.assert_called_once()

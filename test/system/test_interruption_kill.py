@@ -1,6 +1,7 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
-from src.system.interruption_handlers import KillInterruptionHandler, STATE_TERMINATED
+from src.system.interruption_handlers import KillInterruptionHandler
+from src.system.states import State
 from src.log import logger
 
 
@@ -15,7 +16,7 @@ class TestKillInterruptionHandler(TestCase):
     def test_execute(self):
         self._kill.execute(None)
         self._mm.kill.assert_called_once_with(1)
-        self._pcbTable.set_pcb_state.assert_called_once_with(1, STATE_TERMINATED)
+        self._pcbTable.set_pcb_state.assert_called_once_with(1, State.TERMINATED)
         self._dispatcher.save.assert_called_once()
         self._scheduler.load_from_ready.assert_called_once()
 
