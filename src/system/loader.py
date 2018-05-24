@@ -20,6 +20,13 @@ class LoaderPaged:
         self._mm = mm
         self._frame_size = frame_size
 
+    def _check_len_instr(self, pcb, instructions):
+        if len(instructions) <= 0:
+            raise Exception("No hay instrucciones en pcb: {pcb}".format(pcb=pcb))
+
+    def _get_pages_count(self, size):
+        return size // self._frame_size + (1 if size % self._frame_size else 0)
+
     def _get_pages(self, instructions, nro_page):
         return instructions[nro_page * self._frame_size:(nro_page + 1) * self._frame_size]
 
@@ -28,11 +35,10 @@ class LoaderPaged:
         return frame
 
     def load_instructions(self, pcb, instructions):
+        self._check_len_instr(pcb, instructions)
         size = len(instructions)
-        if size <= 0:
-            raise Exception("No hay instrucciones en pcb: {pcb}".format(pcb=pcb))
         page_table = dict()
-        pages_count = size // self._frame_size + (1 if size % self._frame_size else 0)
+        pages_count = self._get_pages_count(size)
         frames_list = self._mm.get_frames(pages_count)
         for page in range(pages_count):
             page_table[page] = self._load_page_in_frame(self._get_pages(instructions, page), frames_list[page])
