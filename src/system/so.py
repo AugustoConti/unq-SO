@@ -55,6 +55,7 @@ class MemoryManager:
         return self._page_table[pid]
 
     def kill(self, pid):
+        # TODO sacar pid de self._page_table
         if pid in self._page_table:
             self._free_frames.extend(self._page_table[pid].values())
 

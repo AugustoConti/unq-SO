@@ -52,3 +52,26 @@ PageTable
 
 
 
+LOADER: leer del disco la cantidad de instrucciones que entran en el frame
+DISCO: get(name, page) = devuelve solo las intrucciones de esa page de ese program
+
+PageTable: cuando se crea el pcb, los frames quedan en -1 indicando que no esta cargado en memory
+
+MMU, si el frame es -1, tirar page fault(page) page como parametro
+
+HANDLER PAGEFAULT:
+primero ver si esta cargada en SWAP, sino, ir a buscar a disco
+
+estrategia para seleccion de victima:
+FIFO: Cuando loader carga una pagina en un frame, guardar el tick para saber cual es el mas viejo
+Elijo la mas vieja para mandar a SWAP. Cuando mando a SWAP me guardo el indice donde esta en el SWAP
+SWAP: le digo guarda esta page y me devuelve el indice para ir a buscarla despues
+Y pongo el frame -1 en la page table !!!
+
+Cuando cargo de swap: actualizo el tick, borro flag de swap, cargo en memory, actualizo frame de pagetable, actualizo data de mmu
+
+KILL: borrar pid de SWAP
+
+
+
+
