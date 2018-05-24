@@ -1,7 +1,8 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock
 from src.log import logger
-from src.hardware.hardware import Timer, TIME_OUT_INTERRUPTION_TYPE
+from src.hardware.hardware import Timer
+from src.hardware.interruptions import Interruption
 
 
 class TestTimer(TestCase):
@@ -18,7 +19,7 @@ class TestTimer(TestCase):
         self._timer.start(1)
         self._timer.tick(0)
         self._timer.tick(0)
-        self.assertEqual(TIME_OUT_INTERRUPTION_TYPE, self._inter.handle.call_args[0][0].type())
+        self.assertEqual(Interruption.TIME_OUT, self._inter.handle.call_args[0][0].type())
 
     def test_reset_sin_ajuste(self):
         self._timer.start(2)

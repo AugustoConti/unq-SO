@@ -1,4 +1,5 @@
-from src.hardware.hardware import IRQ, NEW_INTERRUPTION_TYPE, ASM
+from src.hardware.hardware import IRQ, ASM
+from src.hardware.interruptions import Interruption
 
 __all__ = ["load_programs", "execute_programs"]
 
@@ -23,7 +24,7 @@ class Program:
         self._interrupt_vector = interrupt_vector
 
     def execute(self, program, priority=3):
-        self._interrupt_vector.handle(IRQ(NEW_INTERRUPTION_TYPE, {'program': program, 'priority': priority}))
+        self._interrupt_vector.handle(IRQ(Interruption.NEW, {'program': program, 'priority': priority}))
 
 
 def expand(instructions):

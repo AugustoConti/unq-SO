@@ -1,5 +1,5 @@
 from src.log import logger
-from src.hardware.hardware import NEW_INTERRUPTION_TYPE, KILL_INTERRUPTION_TYPE, IO_IN_INTERRUPTION_TYPE, IO_OUT_INTERRUPTION_TYPE, TIME_OUT_INTERRUPTION_TYPE
+from src.hardware.interruptions import Interruption
 from src.system.states import State
 
 
@@ -75,13 +75,13 @@ class IoOutInterruptionHandler:
 
 
 def register_handlers(interrupt_vector, scheduler, pcb_table, loader, dispatcher, io_device_controller, timer, mm):
-    interrupt_vector.register(NEW_INTERRUPTION_TYPE,
+    interrupt_vector.register(Interruption.NEW,
                               NewInterruptionHandler(scheduler, pcb_table, loader))
-    interrupt_vector.register(KILL_INTERRUPTION_TYPE,
+    interrupt_vector.register(Interruption.KILL,
                               KillInterruptionHandler(scheduler, pcb_table, dispatcher, mm))
-    interrupt_vector.register(IO_IN_INTERRUPTION_TYPE,
+    interrupt_vector.register(Interruption.IO_IN,
                               IoInInterruptionHandler(scheduler, pcb_table, io_device_controller, dispatcher))
-    interrupt_vector.register(IO_OUT_INTERRUPTION_TYPE,
+    interrupt_vector.register(Interruption.IO_OUT,
                               IoOutInterruptionHandler(scheduler, io_device_controller))
-    interrupt_vector.register(TIME_OUT_INTERRUPTION_TYPE,
+    interrupt_vector.register(Interruption.TIME_OUT,
                               TimeOutInterruptionHandler(scheduler, dispatcher, timer))

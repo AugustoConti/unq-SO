@@ -2,39 +2,30 @@ from tabulate import tabulate
 from time import sleep
 from src.log import logger
 from src.hardware.mmu import *
-
-INSTRUCTION_IO = 'IO'
-INSTRUCTION_CPU = 'CPU'
-INSTRUCTION_EXIT = 'EXIT'
+from src.hardware.instructions import Instruction
+from src.hardware.interruptions import Interruption
 
 
 class ASM:
     @classmethod
     def exit(cls):
-        return [INSTRUCTION_EXIT]
+        return [Instruction.EXIT]
 
     @classmethod
     def io(cls):
-        return [INSTRUCTION_IO]
+        return [Instruction.IO]
 
     @classmethod
     def cpu(cls, times):
-        return [INSTRUCTION_CPU] * times
+        return [Instruction.CPU] * times
 
     @classmethod
     def is_exit(cls, instruction):
-        return INSTRUCTION_EXIT == instruction
+        return Instruction.EXIT == instruction
 
     @classmethod
     def is_io(cls, instruction):
-        return INSTRUCTION_IO == instruction
-
-
-NEW_INTERRUPTION_TYPE = "#NEW"
-KILL_INTERRUPTION_TYPE = "#KILL"
-IO_IN_INTERRUPTION_TYPE = "#IO_IN"
-IO_OUT_INTERRUPTION_TYPE = "#IO_OUT"
-TIME_OUT_INTERRUPTION_TYPE = "#TIME_OUT"
+        return Instruction.IO == instruction
 
 
 class IRQ:
@@ -134,9 +125,9 @@ class Cpu:
 
     def _execute(self):
         if ASM.is_exit(self._ir):
-            self._interrupt_vector.handle(IRQ(KILL_INTERRUPTION_TYPE))
+            self._interrupt_vector.handle(IRQ(Interruption.KILL))
         elif ASM.is_io(self._ir):
-            self._interrupt_vector.handle(IRQ(IO_IN_INTERRUPTION_TYPE, self._ir))
+            self._interrupt_vector.handle(IRQ(Interruption.IO_IN, self._ir))
         else:
             logger.info("cpu - Exec: {instr}, PC={pc}".format(instr=self._ir, pc=self._pc))
 
@@ -179,7 +170,7 @@ class IODevice:
         self._ticks_count += 1
         if self._ticks_count > self._time:
             self._busy = False
-            self._interrupt_vector.handle(IRQ(IO_OUT_INTERRUPTION_TYPE, self._device))
+            self._interrupt_vector.handle(IRQ(Interruption.IO_OUT, self._device))
         else:
             logger.info("device {deviceId} - Busy: {ticksCount} of {deviceTime}"
                         .format(deviceId=self._device, ticksCount=self._ticks_count, deviceTime=self._time))
@@ -212,7 +203,7 @@ class Timer:
             return
         logger.info("Timer - tick: {Count} of {Quantum}".format(Count=self._tickCount, Quantum=self._quantum))
         if self._tickCount == 0:
-            self._interrupt_vector.handle(IRQ(TIME_OUT_INTERRUPTION_TYPE))
+            self._interrupt_vector.handle(IRQ(Interruption.TIME_OUT))
         else:
             self._tickCount -= 1
 
