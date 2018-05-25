@@ -36,7 +36,7 @@ def run_simulator():
 
 # TODO MultiThreading
 if __name__ == '__main__':
-    #logo()
+    # logo()
     opt = input("1 - Statistics\n"
                 "2 - Run simulator\n"
                 "Choice: ")
