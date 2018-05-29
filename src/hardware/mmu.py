@@ -4,7 +4,7 @@ from src.system.dispatcher import DispatcherBasic, DispatcherPaged
 
 
 class MMUType:
-    lista = ['Basic', 'Paging']
+    lista = ['Asignación Continua', 'Paginación', 'Paginación bajo demanda']
 
     @staticmethod
     def str(tipo):
