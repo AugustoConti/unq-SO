@@ -76,3 +76,25 @@ KILL: borrar pid de SWAP
 
 
 
+FECHAS:
+
+MAYO:
+29 page fault
+31 page fault
+
+JUNIO:
+5 seleccion de victima (FIFO - LRU - Reloj Second Chance)
+7 ENTREGA
+
+12 Parcial Practica - scheduler
+14 Parcial Practiva - memoria
+
+19 PARCIAL (que es un SO, scheduler y memoria)
+21 Complemento teoria
+
+26 -
+28 ENTREGA FINAL TP
+
+JULIO:
+3, 5, 10: Expo
+12 Cierre (Notas)
