@@ -1,5 +1,5 @@
 from unittest import TestCase
-from src.system.so import MemoryManager
+from src.system.memory_manager import MemoryManager
 
 
 class TestMemoryManager(TestCase):
