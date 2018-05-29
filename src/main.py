@@ -10,14 +10,14 @@ from src.stats import run_stats
 
 def logo():
     print(colored('\n' +
-                  '  ,ad8888ba,                                     88     88888888ba               88  88  88               88       ,ad8888ba,     ad88888ba  \n'
-                  ' d8"     `"8b                             ,d     ""     88      "8b              88  88  ""               ""      d8"     `"8b   d8"     "8b \n'
-                  'd8,                                       88            88      ,8P              88  88                          d8,        `8b  Y8,         \n'
-                  '88              ,adPPYba,   8b,dPPYba,  MM88MMM  88     88aaaaaa8P    ,adPPYba,  88  88  88  8b,dPPYba,   88     88          88  `Y8aaaaa,   \n'
-                  '88             a8"     "8a  88P    `"8a   88     88     88""""""8b,  a8P_____88  88  88  88  88P    `"8a  88     88          88    `"""""8b, \n'
-                  'Y8,            8b       d8  88       88   88     88     88      `8b  8PP"""""""  88  88  88  88       88  88     Y8,        ,8P          `8b \n'
-                  ' Y8a.    .a8P  "8a,   ,a8"  88       88   88,    88     88      a8P  "8b,   ,aa  88  88  88  88       88  88      Y8a.    .a8P   Y8a     a8P \n'
-                  '  `"Y8888Y"     `"YbbdP"    88       88   "Y888  88     88888888P"    `"Ybbd8"   88  88  88  88       88  88       `"Y8888Y"      "Y88888P"  \n',
+                  '  ,ad8888ba,                                     88  88  88  88               88       ,ad8888ba,     ad88888ba  \n'
+                  ' d8"     `"8b                             ,d     ""  88  88  ""               ""      d8"     `"8b   d8"     "8b \n'
+                  'd8,                                       88         88  88                          d8,        `8b  Y8,         \n'
+                  '88              ,adPPYba,   8b,dPPYba,  MM88MMM  88  88  88  88  8b,dPPYba,   88     88          88  `Y8aaaaa,   \n'
+                  '88             a8"     "8a  88P    `"8a   88     88  88  88  88  88P    `"8a  88     88          88    `"""""8b, \n'
+                  'Y8,            8b       d8  88       88   88     88  88  88  88  88       88  88     Y8,        ,8P          `8b \n'
+                  ' Y8a.    .a8P  "8a,   ,a8"  88       88   88,    88  88  88  88  88       88  88      Y8a.    .a8P   Y8a     a8P \n'
+                  '  `"Y8888Y"     `"YbbdP"    88       88   "Y888  88  88  88  88  88       88  88       `"Y8888Y"      "Y88888P"  \n',
                   'cyan'))
 
 
