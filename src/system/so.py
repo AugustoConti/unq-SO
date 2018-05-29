@@ -42,8 +42,7 @@ class MemoryManager:
 
     def get_frames(self, count):
         if count > len(self._free_frames):
-            raise Exception('Insuficientes frames. Se piden {c} pero hay {q}'
-                            .format(c=count, q=len(self._free_frames)))
+            raise Exception('PANTALLA AZUL')
         ret = self._free_frames[:count]
         self._free_frames = self._free_frames[count:]
         return ret

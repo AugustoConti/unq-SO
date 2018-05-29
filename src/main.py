@@ -22,7 +22,7 @@ def logo():
 
 
 def run_simulator():
-    memory_size = 32
+    memory_size = 16
     frame_size = 4
     count_frames = memory_size // frame_size
     sch = SchedulerType.choose()

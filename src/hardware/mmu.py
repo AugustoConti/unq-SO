@@ -4,22 +4,21 @@ from src.system.dispatcher import DispatcherBasic, DispatcherPaged
 
 
 class MMUType:
-    @staticmethod
-    def str(tipo):
-        return {
-            0: 'Basic',
-            1: 'Paging'
-        }[tipo]
+    lista = ['Basic', 'Paging']
 
     @staticmethod
-    def all_mmu():
-        return range(2)
+    def str(tipo):
+        return MMUType.lista[tipo]
+
+    @staticmethod
+    def all():
+        return range(len(MMUType.lista))
 
     @staticmethod
     def choose():
         return int(input("\n\nType MMU:\n"
                          + "".join(["{i} - {mmu}\n".format(i=i, mmu=MMUType.str(i))
-                                    for i in MMUType.all_mmu()])
+                                    for i in MMUType.all()])
                          + "Choice: "))
 
     @staticmethod
