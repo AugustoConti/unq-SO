@@ -3,26 +3,26 @@ from src.system.states import State
 
 
 class SchedulerType:
-    @staticmethod
-    def str(tipo):
-        return {
-            0: 'FCFS',
-            1: 'Priority No Expropiativo',
-            2: 'Priority Expropiativo',
-            3: 'Round Robin',
-            4: 'Round Robin Priority No Expropiativo',
-            5: 'Round Robin Priority Expropiativo'
-        }[tipo]
+    lista = ['FCFS',
+             'Priority No Expropiativo',
+             'Priority Expropiativo',
+             'Round Robin',
+             'Round Robin Priority No Expropiativo',
+             'Round Robin Priority Expropiativo']
 
     @staticmethod
-    def all_schedulers():
-        return range(6)
+    def str(tipo):
+        return SchedulerType.lista[tipo]
+
+    @staticmethod
+    def all():
+        return range(len(SchedulerType.lista))
 
     @staticmethod
     def choose():
         return int(input("\n\nType Scheduler:\n"
                          + "".join(["{i} - {sch}\n".format(i=i, sch=SchedulerType.str(i))
-                                    for i in SchedulerType.all_schedulers()])
+                                    for i in SchedulerType.all()])
                          + "Choice: "))
 
     @staticmethod

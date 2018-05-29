@@ -19,7 +19,7 @@ def run_stats():
                           ['T', State.TERMINATED],
                           ['W', State.WAITING]], headers="firstrow"), '\n')
     total = [['Scheduler', 'Ready', 'AWT']]
-    for scheduler in SchedulerType.all_schedulers():
+    for scheduler in SchedulerType.all():
         print('\n', colored(SchedulerType.str(scheduler), 'cyan'))
         hardware = Hardware(35, 0, 0, 0)
         load_programs(hardware.disk())
