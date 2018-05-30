@@ -190,6 +190,13 @@ class Disk:
     def get(self, name):
         return self._programs[name]
 
+    def get_page(self, name, page, frame_size):
+        return self.get(name)[page * frame_size: (page + 1) * frame_size]
+
+    def get_nro_pages(self, name, frame_size):
+        size = len(self.get(name))
+        return size // frame_size + (1 if size % frame_size else 0)
+
 
 class Timer:
     def __init__(self, interrupt_vector):
