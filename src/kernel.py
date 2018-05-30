@@ -2,7 +2,6 @@ from src.system.schedulers import *
 from src.hardware.mmu import *
 from src.system.so import IoDeviceController, PCBTable
 from src.system.memory_manager import MemoryManager
-from src.system.loader import Loader
 from src.system.dispatcher import Dispatcher
 from src.system.interruption_handlers import register_handlers
 
@@ -13,7 +12,7 @@ class Kernel:
         self._mm = MemoryManager(count_frames)
         self._io_device_controller = IoDeviceController(hardware.io_device())
         self._pcb_table = PCBTable(self._table)
-        self._loader = Loader(MMUType.new_loader(mmu_type, hardware.memory(), self._mm, frame_size), hardware.disk())
+        self._loader = MMUType.new_loader(mmu_type, hardware.disk(), hardware.memory(), self._mm, frame_size)
         self._dispatcher = Dispatcher(MMUType.new_dispatcher(mmu_type, self._mm, hardware.mmu()), self._pcb_table,
                                       hardware.cpu(), hardware.timer())
         self._scheduler = Scheduler(self._pcb_table, self._dispatcher, hardware.timer(),

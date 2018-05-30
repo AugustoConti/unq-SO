@@ -31,11 +31,11 @@ class MMUType:
             raise Exception('MMU type {mmu} not recongnized'.format(mmu=tipo))
 
     @staticmethod
-    def new_loader(tipo, memory, mm, frame_size):
+    def new_loader(tipo, disk, memory, mm, frame_size):
         if tipo == 0:
-            return LoaderBasic(memory)
+            return LoaderBasic(disk, memory)
         elif tipo == 1:
-            return LoaderPaged(memory, mm, frame_size)
+            return LoaderPaged(disk, memory, mm, frame_size)
         else:
             raise Exception('Loader type {loader} not recongnized'.format(loader=tipo))
 
