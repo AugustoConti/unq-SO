@@ -16,49 +16,42 @@ class LoaderBasic:
         self._next_dir += size
 
 
-class LoaderPaged:
+class LoaderPagedBase:
     def __init__(self, disk, memory, mm, frame_size):
         self._disk = disk
         self._memory = memory
         self._mm = mm
         self._frame_size = frame_size
 
-    def _load_page_in_frame(self, name, page, frame):
+    def load_page_in_frame(self, name, page, page_table):
+        frame = self._mm.get_frames(1)
         instructions = self._disk.get_page(name, page, self._frame_size)
         baseDir = self._frame_size * frame
         [self._memory.put(baseDir + i, instructions[i]) for i in range(len(instructions))]
+        page_table[page] = frame
 
-    def _update_page_table(self, name, page_table, pages_count, frames_list):
-        for page in range(pages_count):
-            self._load_page_in_frame(name, page, frames_list[page])
-            page_table[page] = frames_list[page]
-        return page_table
+
+class LoaderPaged:
+    def __init__(self, base, disk, mm, frame_size):
+        self._base = base
+        self._disk = disk
+        self._mm = mm
+        self._frame_size = frame_size
 
     def load(self, pcb):
-        pages_count = self._disk.get_nro_pages(pcb['name'], self._frame_size)
-        frames_list = self._mm.get_frames(pages_count)
-        page_table = self._update_page_table(pcb['name'], dict(), pages_count, frames_list)
+        page_table = dict()
+        for page in range(self._disk.get_nro_pages(pcb['name'], self._frame_size)):
+            self._base.load_page_in_frame(pcb['name'], page, page_table)
         self._mm.add_page_table(pcb['pid'], page_table)
 
 
 class LoaderPagedOnDemand:
-    def __init__(self, disk, memory, mm, frame_size):
-        self._disk = disk
-        self._memory = memory
+    def __init__(self, base, mm):
+        self._base = base
         self._mm = mm
-        self._frame_size = frame_size
 
-    # TODO implementar load page de pid running
-    def load_page_in_frame(self, name, page, frame):
-        instructions = self._disk.get_page(name, page, self._frame_size)
-        baseDir = self._frame_size * frame
-        [self._memory.put(baseDir + i, instructions[i]) for i in range(len(instructions))]
-
-    def _update_page_table(self, name, page_table, pages_count, frames_list):
-        for page in range(pages_count):
-            self.load_page_in_frame(name, page, frames_list[page])
-            page_table[page] = frames_list[page]
-        return page_table
+    def load_page_in_frame(self, name, page, page_table):
+        self._base.load_page_in_frame(name, page, page_table)
 
     def load(self, pcb):
         self._mm.add_page_table(pcb['pid'], dict())
