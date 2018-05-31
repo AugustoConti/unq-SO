@@ -1,7 +1,7 @@
 from termcolor import colored
 
 
-def pantalla_azul():
+def blue_screen():
     raise Exception(colored('\n\n              BLUE SCREEN OF DEATH \n\n' +
         '                    uuuuuuu                   \n' 
         '                uu$$$$$$$$$$$uu               \n' 
@@ -36,12 +36,10 @@ class MemoryManager:
         self._free_frames = list(range(count_frames))
         self._page_table = dict()
 
-    def get_frames(self, count):
-        if count > len(self._free_frames):
-            pantalla_azul()
-        ret = self._free_frames[:count]
-        self._free_frames = self._free_frames[count:]
-        return ret
+    def get_frame(self):
+        if not self._free_frames:
+            blue_screen()
+        return self._free_frames.pop(0)
 
     def add_page_table(self, pid, table):
         self._page_table[pid] = table

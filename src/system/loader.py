@@ -24,7 +24,7 @@ class LoaderPagedBase:
         self._frame_size = frame_size
 
     def load_page_in_frame(self, name, page, page_table):
-        frame = self._mm.get_frames(1)
+        frame = self._mm.get_frame()
         instructions = self._disk.get_page(name, page, self._frame_size)
         baseDir = self._frame_size * frame
         [self._memory.put(baseDir + i, instructions[i]) for i in range(len(instructions))]
