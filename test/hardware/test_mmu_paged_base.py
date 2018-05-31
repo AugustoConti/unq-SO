@@ -1,11 +1,13 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
-from src.hardware.mmu import MMUPaged
+from src.hardware.mmu_types import MMUPagedBase
 
 
-class TestMMUPaged(TestCase):
+class TestMMUPagedBase(TestCase):
     def setUp(self):
-        self._mmu = MMUPaged(NonCallableMock(get=Mock(side_effect=lambda value: value)), 4)
+        self._base = NonCallableMock()
+        self._memory = NonCallableMock(get=Mock(side_effect=lambda v: v))
+        self._mmu = MMUPagedBase(self._base, self._memory, 4)
         self._mmu.set_page_table({0: 3, 1: 0, 2: 5})
 
     def test_fetch_frame_size_4_inst_0(self):

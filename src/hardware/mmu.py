@@ -1,6 +1,6 @@
-from src.hardware.mmu_types import MMUBasic, MMUPaged
-from src.system.loader import LoaderBasic, LoaderPaged
-from src.system.dispatcher import DispatcherBasic, DispatcherPaged
+from src.hardware.mmu_types import *
+from src.system.loader import *
+from src.system.dispatcher import *
 
 
 class MMUType:
@@ -22,11 +22,13 @@ class MMUType:
                          + "Choice: "))
 
     @staticmethod
-    def new_mmu(tipo, memory, frame_size):
+    def new_mmu(tipo, memory, frame_size, interrupt_vector):
         if tipo == 0:
             return MMUBasic(memory)
         elif tipo == 1:
-            return MMUPaged(memory, frame_size)
+            return MMUPagedBase(MMUPaged(), memory, frame_size)
+        elif tipo == 2:
+            return MMUPagedBase(MMUPagedOnDemand(interrupt_vector), memory, frame_size)
         else:
             raise Exception('MMU type {mmu} not recongnized'.format(mmu=tipo))
 
@@ -35,7 +37,9 @@ class MMUType:
         if tipo == 0:
             return LoaderBasic(disk, memory)
         elif tipo == 1:
-            return LoaderPaged(disk, memory, mm, frame_size)
+            return LoaderPaged(LoaderPagedBase(disk, memory, mm, frame_size), disk, mm, frame_size)
+        elif tipo == 2:
+            return LoaderPagedOnDemand(LoaderPagedBase(disk, memory, mm, frame_size), mm)
         else:
             raise Exception('Loader type {loader} not recongnized'.format(loader=tipo))
 
@@ -45,6 +49,9 @@ class MMUType:
             return DispatcherBasic(mmu)
         elif tipo == 1:
             return DispatcherPaged(mm, mmu)
+        elif tipo == 2:
+            # TODO falta dispatcher paginado bajo demanda
+            return "falta"
         else:
             raise Exception('Dispatcher type {dispatcher} not recongnized'.format(dispatcher=tipo))
 

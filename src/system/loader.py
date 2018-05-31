@@ -51,6 +51,7 @@ class LoaderPagedOnDemand:
         self._mm = mm
 
     def load_page_in_frame(self, name, page, page_table):
+        # TODO chequear si esta swap, sino cargar de disco
         self._base.load_page_in_frame(name, page, page_table)
 
     def load(self, pcb):
