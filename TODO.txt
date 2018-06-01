@@ -74,8 +74,20 @@ Cuando cargo de swap: actualizo el tick, borro flag de swap, cargo en memory, ac
 KILL: borrar pid de SWAP
 
 
+pageFault handler
+mmu.pagetable -> pagetable.global
+frame = mm.getFreeFrame() // si ff tiene frame libre -> pop[0] // if ff is [] then swapFrame = swap.getFrame()
+																	victim = getVictim(algoritmo!!)
+																loader.swap_in(victima) 
+																	(actualizar pagetable del que se fue swap)
 
-
+loader.loadPage(pcb, page, frame)
+	actualizar pagetable global
+										   --disco -> load
+								loadPage()	
+										   --swap ->swap_out(pagina)
+dispatcher(pageTableglobal --> pageTableMMU)
+ 
 FECHAS:
 
 MAYO:
