@@ -74,6 +74,14 @@ class IoOutInterruptionHandler:
         logger.info(self._io_device_controller)
 
 
+class PageFaultInterruptionHandler:
+    def __init__(self):
+        pass
+
+    def execute(self, irq):
+        page = irq.parameters()
+
+
 def register_handlers(interrupt_vector, scheduler, pcb_table, loader, dispatcher, io_device_controller, timer, mm):
     interrupt_vector.register(Interruption.NEW,
                               NewInterruptionHandler(scheduler, pcb_table, loader))
@@ -85,3 +93,5 @@ def register_handlers(interrupt_vector, scheduler, pcb_table, loader, dispatcher
                               IoOutInterruptionHandler(scheduler, io_device_controller))
     interrupt_vector.register(Interruption.TIME_OUT,
                               TimeOutInterruptionHandler(scheduler, dispatcher, timer))
+    interrupt_vector.register(Interruption.PAGE_FAULT,
+                              PageFaultInterruptionHandler())
