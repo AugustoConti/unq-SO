@@ -75,11 +75,17 @@ class IoOutInterruptionHandler:
 
 
 class PageFaultInterruptionHandler:
-    def __init__(self):
-        pass
+    def __init__(self, mm, pcb_table, loader, mmu):
+        self._mm = mm
+        self._pcbTable = pcb_table
+        self._loader = loader
+        self._mmu = mmu
 
     def execute(self, irq):
-        page = irq.parameters()
+        run = self._pcbTable.get_running_pid()
+        self._mm.add_page_table(run, self._mmu.get_page_table())
+        self._loader.load_page(self._pcbTable.get_running(), irq.parameters())
+        self._mmu.set_page_table(self._mm.get_page_table(run))
 
 
 def register_handlers(interrupt_vector, scheduler, pcb_table, loader, dispatcher, io_device_controller, timer, mm):

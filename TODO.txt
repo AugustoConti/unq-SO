@@ -90,10 +90,6 @@ dispatcher(pageTableglobal --> pageTableMMU)
  
 FECHAS:
 
-MAYO:
-29 page fault
-31 page fault
-
 JUNIO:
 5 seleccion de victima (FIFO - LRU - Reloj Second Chance)
 7 ENTREGA

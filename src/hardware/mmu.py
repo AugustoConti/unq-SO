@@ -25,10 +25,8 @@ class MMUType:
     def new_mmu(tipo, memory, frame_size, interrupt_vector):
         if tipo == 0:
             return MMUBasic(memory)
-        elif tipo == 1:
-            return MMUPagedBase(MMUPaged(), memory, frame_size)
-        elif tipo == 2:
-            return MMUPagedBase(MMUPagedOnDemand(interrupt_vector), memory, frame_size)
+        elif tipo in [1, 2]:
+            return MMUPaged(memory, interrupt_vector, frame_size)
         else:
             raise Exception('MMU type {mmu} not recongnized'.format(mmu=tipo))
 
@@ -70,6 +68,9 @@ class MMU:
 
     def set_page_table(self, table):
         self._base.set_page_table(table)
+
+    def get_page_table(self):
+        return self._base.get_page_table()
 
     def fetch(self, log_addr):
         if log_addr < 0:
