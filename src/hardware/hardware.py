@@ -5,6 +5,7 @@ from src.hardware.mmu import *
 from src.hardware.irq import IRQ
 from src.hardware.instructions import Instruction
 from src.hardware.interruptions import Interruption
+from src.utils import blue_screen
 
 
 class ASM:
