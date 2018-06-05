@@ -17,44 +17,49 @@ class LoaderBasic:
 
 
 class LoaderPagedBase:
-    def __init__(self, disk, memory, mm, frame_size):
+    def __init__(self, tipo, disk, swap, memory, mm, frame_size):
+        self._tipo = tipo
         self._disk = disk
+        self._swap = swap
         self._memory = memory
         self._mm = mm
         self._frame_size = frame_size
 
-    def load_page_in_frame(self, pcb, page):
-        frame = self._mm.get_frame()
-        instructions = self._disk.get_page(pcb['name'], page)
-        baseDir = self._frame_size * frame
-        [self._memory.put(baseDir + i, instructions[i]) for i in range(len(instructions))]
-        self._mm.get_page_table(pcb['pid'])[page] = frame
+    def _put(self, frame, instr):
+        base_dir = self._frame_size * frame
+        [self._memory.put(base_dir + i, instr[i]) for i in range(len(instr))]
 
-
-class LoaderPaged:
-    def __init__(self, base, disk, mm):
-        self._base = base
-        self._disk = disk
-        self._mm = mm
-
-    def load(self, pcb):
-        self._mm.add_page_table(pcb['pid'], dict())
-        for page in range(self._disk.get_nro_pages(pcb['name'])):
-            self._base.load_page_in_frame(pcb, page)
-
-
-class LoaderPagedOnDemand:
-    def __init__(self, base, disk, mm):
-        self._base = base
-        self._disk = disk
-        self._mm = mm
-
-    def load_page(self, pcb, page):
-        # TODO chequear si esta swap, sino cargar de disco
-        self._base.load_page_in_frame(pcb, page)
+    def load_page(self, name, page, frame):
+        # TODO actualizar page table con el frame de la page ??
+        self._put(frame, self._disk.get_page(name, page))
 
     def load(self, pcb):
         page_table = dict()
         for page in range(self._disk.get_nro_pages(pcb['name'])):
-            page_table[page] = -1
+            page_table[page] = self._tipo.load(self, pcb['name'], page)
         self._mm.add_page_table(pcb['pid'], page_table)
+
+    def swap_out(self, idx, frame):
+        # TODO actualizar page table con el idx del swap ??
+        self._put(frame, self._swap.swap_out(idx))
+
+    def swap_in(self, frame):
+        # TODO devuelvo el idx de swap o actualizar page table con el idx del swap desde aca ??
+        base_dir = self._frame_size * frame
+        page = [self._memory.get(base_dir + i) for i in range(self._frame_size)]
+        return self._swap.swap_in(page)
+
+
+class LoaderPaged:
+    def __init__(self, mm):
+        self._mm = mm
+
+    def load(self, base, name, page):
+        frame = self._mm.get_frame()
+        base.load_page(name, page, frame)
+        return frame
+
+
+class LoaderPagedOnDemand:
+    def load(self, base, name, page):
+        return -1
