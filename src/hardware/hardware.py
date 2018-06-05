@@ -166,7 +166,8 @@ class IODevice:
 
 
 class Disk:
-    def __init__(self):
+    def __init__(self, frame_size):
+        self._frame_size = frame_size
         self._programs = dict()
 
     def add(self, name, program):
@@ -179,12 +180,29 @@ class Disk:
     def get(self, name):
         return self._programs[name]
 
-    def get_page(self, name, page, frame_size):
-        return self.get(name)[page * frame_size: (page + 1) * frame_size]
+    def get_page(self, name, page):
+        return self.get(name)[page * self._frame_size: (page + 1) * self._frame_size]
 
-    def get_nro_pages(self, name, frame_size):
+    def get_nro_pages(self, name):
         size = len(self.get(name))
-        return size // frame_size + (1 if size % frame_size else 0)
+        return size // self._frame_size + (1 if size % self._frame_size else 0)
+
+
+class Swap:
+    def __init__(self, memory_size, frame_size):
+        self._free_index = list(range(memory_size / frame_size * 2))
+        self._swap_memory = dict()
+
+    def swap_in(self, page):
+        if not self._free_index:
+            blue_screen()
+        idx = self._free_index.pop(0)
+        self._swap_memory[idx] = page
+        return idx
+
+    def swap_out(self, idx):
+        self._free_index.append(idx)
+        return self._swap_memory[idx]
 
 
 class Timer:
@@ -223,7 +241,7 @@ class Hardware:
         self._interrupt_vector = InterruptVector()
         self._clock = Clock(delay)
         self._io_device = IODevice(self._interrupt_vector, "Printer", 3)
-        self._disk = Disk()
+        self._disk = Disk(frame_size)
         self._mmu = MMU(MMUType.new_mmu(mmu_type, self._memory, frame_size, self._interrupt_vector))
         self._cpu = Cpu(self._mmu, self._interrupt_vector)
         self._timer = Timer(self._interrupt_vector)

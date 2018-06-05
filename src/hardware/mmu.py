@@ -35,9 +35,9 @@ class MMUType:
         if tipo == 0:
             return LoaderBasic(disk, memory)
         elif tipo == 1:
-            return LoaderPaged(LoaderPagedBase(disk, memory, mm, frame_size), disk, mm, frame_size)
+            return LoaderPaged(LoaderPagedBase(disk, memory, mm, frame_size), disk, mm)
         elif tipo == 2:
-            return LoaderPagedOnDemand(LoaderPagedBase(disk, memory, mm, frame_size), mm)
+            return LoaderPagedOnDemand(LoaderPagedBase(disk, memory, mm, frame_size), disk, mm)
         else:
             raise Exception('Loader type {loader} not recongnized'.format(loader=tipo))
 
