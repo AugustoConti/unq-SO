@@ -33,10 +33,8 @@ class LoaderPagedBase:
         self._put(frame, self._disk.get_page(name, page))
 
     def load(self, pcb):
-        page_table = dict()
-        for page in range(self._disk.get_nro_pages(pcb['name'])):
-            page_table[page] = self._tipo.load(self, pcb['name'], page)
-        self._mm.add_page_table(pcb['pid'], page_table)
+        frames = [self._tipo.load(self, pcb['name'], page) for page in range(self._disk.get_nro_pages(pcb['name']))]
+        self._mm.create_page_table(pcb['pid'], frames)
 
     def swap_out(self, idx, frame):
         self._put(frame, self._swap.swap_out(idx))

@@ -96,7 +96,7 @@ class PageFaultInterruptionHandler:
         self._mmu.set_page_table(self._mm.get_page_table(run))
 
 
-def register_handlers(interrupt_vector, scheduler, pcb_table, loader, dispatcher, io_device_controller, timer, mm):
+def register_handlers(interrupt_vector, scheduler, pcb_table, loader, dispatcher, io_device_controller, timer, mm, mmu):
     interrupt_vector.register(Interruption.NEW,
                               NewInterruptionHandler(scheduler, pcb_table, loader))
     interrupt_vector.register(Interruption.KILL,
@@ -108,4 +108,4 @@ def register_handlers(interrupt_vector, scheduler, pcb_table, loader, dispatcher
     interrupt_vector.register(Interruption.TIME_OUT,
                               TimeOutInterruptionHandler(scheduler, dispatcher, timer))
     interrupt_vector.register(Interruption.PAGE_FAULT,
-                              PageFaultInterruptionHandler())
+                              PageFaultInterruptionHandler(mm, pcb_table, loader, mmu))
