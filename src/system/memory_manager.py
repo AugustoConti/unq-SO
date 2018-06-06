@@ -21,3 +21,7 @@ class MemoryManager:
         # TODO sacar pid de self._page_table
         if pid in self._page_table:
             self._free_frames.extend(self._page_table[pid].values())
+
+    def update_page(self, pid, page, frame):
+        # TODO poner idx de swap en -1 !!
+        pass

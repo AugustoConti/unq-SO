@@ -86,13 +86,13 @@ class PageFaultInterruptionHandler:
         self._mm.add_page_table(run, self._mmu.get_page_table())
         page = irq.parameters()
         frame = self._mm.get_frame()
+
         idx = self._mm.get_page_index(run, page)
         if idx == -1:
             self._loader.load_page(self._pcbTable.get_running()['name'], page, frame)
         else:
             self._loader.swap_out(idx, frame)
-            # TODO actualizo desde aca la page table? O desde el loader??
-            # self._mm.update_page(run, page, frame, -1)
+        self._mm.update_page(run, page, frame)
         self._mmu.set_page_table(self._mm.get_page_table(run))
 
 

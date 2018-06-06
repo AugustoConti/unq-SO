@@ -30,7 +30,6 @@ class LoaderPagedBase:
         [self._memory.put(base_dir + i, instr[i]) for i in range(len(instr))]
 
     def load_page(self, name, page, frame):
-        # TODO actualizar page table con el frame de la page ??
         self._put(frame, self._disk.get_page(name, page))
 
     def load(self, pcb):
@@ -40,11 +39,9 @@ class LoaderPagedBase:
         self._mm.add_page_table(pcb['pid'], page_table)
 
     def swap_out(self, idx, frame):
-        # TODO actualizar page table con el idx del swap ??
         self._put(frame, self._swap.swap_out(idx))
 
     def swap_in(self, frame):
-        # TODO devuelvo el idx de swap o actualizar page table con el idx del swap desde aca ??
         base_dir = self._frame_size * frame
         page = [self._memory.get(base_dir + i) for i in range(self._frame_size)]
         return self._swap.swap_in(page)
