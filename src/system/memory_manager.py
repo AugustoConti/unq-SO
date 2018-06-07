@@ -1,4 +1,4 @@
-from src.utils import blue_screen
+from src.images import blue_screen
 
 
 # Columnas page, frame, swap,
@@ -44,10 +44,9 @@ class MemoryManager:
         if pid in self._page_table:
             self._free_frames.extend(self._page_table[pid].values())
 
-    def get_page_index(self, pid, page):
-        # TODO retornar idx de swap
-        pass
+    def get_swap_index(self, pid, page):
+        return self._page_table[pid][page].swap
 
     def update_page(self, pid, page, frame):
-        # TODO update frame y poner idx de swap en -1 !!
-        pass
+        self._page_table[pid][page].swap = -1
+        self._page_table[pid][page].frame = frame

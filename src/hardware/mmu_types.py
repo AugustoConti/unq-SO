@@ -1,5 +1,6 @@
 from src.hardware.irq import IRQ
 from src.hardware.interruptions import Interruption
+from src.log import logger
 
 
 class MMUBasic:
@@ -13,7 +14,10 @@ class MMUBasic:
     def fetch(self, log_addr):
         return self._memory.get(log_addr + self._base_dir)
 
-
+# Columnas page, frame, swap,
+#   loadTime - tick en que se cargo en memoria en pagefault(para fifo)
+#   lastAccessTime - update en mmu cada vez que se accede a esa pagina (LRU, saca el nro menor, el mas viejo)
+#   SC - cada vez que mmu accede, pone en 1, se crea en 0 (Second chance)
 class MMUPaged:
     def __init__(self, memory, interrupt_vector, frame_size):
         self._page_table = None
@@ -29,8 +33,9 @@ class MMUPaged:
 
     def fetch(self, log_addr):
         page = log_addr // self._frame_size
-        frame = self._page_table[page].frame
-        if frame == -1:
+        if self._page_table[page].frame == -1:
             self._interrupt_vector.handle(IRQ(Interruption.PAGE_FAULT, page))
+            logger.info(self._memory)
+        frame = self._page_table[page].frame
         offset = log_addr % self._frame_size
         return self._memory.get(frame * self._frame_size + offset)

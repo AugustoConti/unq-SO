@@ -5,7 +5,7 @@ from src.hardware.mmu import *
 from src.hardware.irq import IRQ
 from src.hardware.instructions import Instruction
 from src.hardware.interruptions import Interruption
-from src.utils import blue_screen
+from src.images import blue_screen
 
 
 class ASM:
@@ -191,7 +191,7 @@ class Disk:
 
 class Swap:
     def __init__(self, memory_size, frame_size):
-        self._free_index = list(range(memory_size / frame_size * 2))
+        self._free_index = list(range(int(memory_size / frame_size) * 2))
         self._swap_memory = dict()
 
     def swap_in(self, page):
@@ -243,6 +243,7 @@ class Hardware:
         self._clock = Clock(delay)
         self._io_device = IODevice(self._interrupt_vector, "Printer", 3)
         self._disk = Disk(frame_size)
+        self._swap = Swap(memory_size, frame_size)
         self._mmu = MMU(MMUType.new_mmu(mmu_type, self._memory, frame_size, self._interrupt_vector))
         self._cpu = Cpu(self._mmu, self._interrupt_vector)
         self._timer = Timer(self._interrupt_vector)
@@ -280,6 +281,9 @@ class Hardware:
 
     def disk(self):
         return self._disk
+
+    def swap(self):
+        return self._swap
 
     def __repr__(self):
         return "HARDWARE state {cpu}\n{mem}".format(cpu=self._cpu, mem=self._memory)

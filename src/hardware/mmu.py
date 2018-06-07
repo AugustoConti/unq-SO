@@ -31,13 +31,13 @@ class MMUType:
             raise Exception('MMU type {mmu} not recongnized'.format(mmu=tipo))
 
     @staticmethod
-    def new_loader(tipo, disk, memory, mm, frame_size):
+    def new_loader(tipo, disk, memory, mm, frame_size, swap):
         if tipo == 0:
             return LoaderBasic(disk, memory)
         elif tipo == 1:
-            return LoaderPaged(LoaderPagedBase(disk, memory, mm, frame_size), disk, mm)
+            return LoaderPagedBase(LoaderPaged(mm), disk, swap, memory, mm, frame_size)
         elif tipo == 2:
-            return LoaderPagedOnDemand(LoaderPagedBase(disk, memory, mm, frame_size), disk, mm)
+            return LoaderPagedBase(LoaderPagedOnDemand(), disk, swap, memory, mm, frame_size)
         else:
             raise Exception('Loader type {loader} not recongnized'.format(loader=tipo))
 
@@ -48,8 +48,7 @@ class MMUType:
         elif tipo == 1:
             return DispatcherPaged(mm, mmu)
         elif tipo == 2:
-            # TODO falta dispatcher paginado bajo demanda
-            return "falta"
+            return DispatcherPaged(mm, mmu)
         else:
             raise Exception('Dispatcher type {dispatcher} not recongnized'.format(dispatcher=tipo))
 
