@@ -16,7 +16,7 @@ class MMUBasic:
 
 class MMUPaged:
     def __init__(self, memory, interrupt_vector, frame_size):
-        self._page_table = None  # dict(page:frame)
+        self._page_table = None
         self._memory = memory
         self._interrupt_vector = interrupt_vector
         self._frame_size = frame_size
@@ -29,8 +29,8 @@ class MMUPaged:
 
     def fetch(self, log_addr):
         page = log_addr // self._frame_size
-        if self._page_table[page] == -1:
+        frame = self._page_table[page].frame
+        if frame == -1:
             self._interrupt_vector.handle(IRQ(Interruption.PAGE_FAULT, page))
-        frame = self._page_table[page]
         offset = log_addr % self._frame_size
         return self._memory.get(frame * self._frame_size + offset)

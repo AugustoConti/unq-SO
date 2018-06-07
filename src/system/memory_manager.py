@@ -9,8 +9,8 @@ from src.utils import blue_screen
 
 
 class PageRow:
-    def __init__(self):
-        self.frame = -1
+    def __init__(self, frame = -1):
+        self.frame = frame
         self.swap = -1
         self.loadTime = -1
         self.lastAccessTime = -1
@@ -28,8 +28,10 @@ class MemoryManager:
         return self._free_frames.pop(0)
 
     def create_page_table(self, pid, frames):
-        # TODO arreglar esto y crear con valores default, usar RECORD?
-        self.add_page_table(pid, frames)
+        page_table = dict()
+        for i in range(len(frames)):
+            page_table[i] = PageRow(frames[i])
+        self.add_page_table(pid, page_table)
 
     def add_page_table(self, pid, table):
         self._page_table[pid] = table
