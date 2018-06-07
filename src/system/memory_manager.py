@@ -1,10 +1,21 @@
 from src.utils import blue_screen
 
+
 # Columnas page, frame, swap,
 #   loadTime - tick en que se cargo en memoria en pagefault(para fifo)
 #   lastAccessTime - update en mmu cada vez que se accede a esa pagina (LRU, saca el nro menor, el mas viejo)
-#   SD - cada vez que mmu accede, pone en 1, se crea en 0 (Second chance)
+#   SC - cada vez que mmu accede, pone en 1, se crea en 0 (Second chance)
 #ALGORITMO revisar solo los que estan en memoria
+
+
+class PageRow:
+    def __init__(self):
+        self.frame = -1
+        self.swap = -1
+        self.loadTime = -1
+        self.lastAccessTime = -1
+        self.SD = 0
+
 
 class MemoryManager:
     def __init__(self, count_frames):
