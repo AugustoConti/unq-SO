@@ -6,7 +6,7 @@ from src.log import logger
 
 class TestDispatcher(TestCase):
     def setUp(self):
-        self._running = {'pc': 0, 'baseDir': 1, 'limit': 2}
+        self._running = {'pid': 1, 'pc': 0, 'baseDir': 1, 'limit': 2}
         self._base = NonCallableMock()
         self._pcb_table = NonCallableMock(set_running=Mock(return_value=self._running),
                                           get_running=Mock(return_value=self._running))
