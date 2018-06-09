@@ -1,18 +1,15 @@
 from unittest import TestCase
-from unittest.mock import NonCallableMock
+from unittest.mock import NonCallableMock, Mock
 from src.hardware.interruptions import Interruption
 from src.hardware.mmu_types import MMUPaged
 
 
 class TestMMUPagedOnDemand(TestCase):
     def setUp(self):
-        self._base = NonCallableMock()
         self._memory = NonCallableMock(get=Mock(side_effect=lambda v: v))
-        self._mmu = MMUPagedBase(self._base, self._memory, 4)
-        self._mmu.set_page_table({0: 3, 1: 0, 2: 5})
-
         self._inter = NonCallableMock()
-        self._mmu = MMUPaged(self._inter)
+        self._mmu = MMUPaged(self._memory, self._inter, 4)
+        self._mmu.set_page_table({0: 3, 1: 0, 2: 5})
 
     def test_check_page_in_table(self):
         self._mmu.check_page(1, {1:1})

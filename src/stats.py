@@ -21,7 +21,7 @@ def run_stats():
     total = [['Scheduler', 'Ready', 'AWT']]
     for scheduler in SchedulerType.all():
         print('\n', colored(SchedulerType.str(scheduler), 'cyan'))
-        hardware = Hardware(35, 0, 0, 0)
+        hardware = Hardware(35, 0, 0, 1)
         load_programs(hardware.disk())
         kernel = Kernel(hardware, scheduler, 0, 0, 0)
         execute_programs(hardware.interrupt_vector())
@@ -44,7 +44,7 @@ class Timeline:
         return all(pcb['state'] == State.TERMINATED for pcb in self._pcb_table)
 
     def _save_states(self):
-        self._states[self._tick_nro] = [pcb['pid'] for pcb in self._pcb_table] if self._tick_nro == 0 \
+        self._states[self._tick_nro] = ['PCB '+str(pcb['pid']) for pcb in self._pcb_table] if self._tick_nro == 0 \
             else [self.__mapear(pcb['state']) for pcb in self._pcb_table]
         self._count_ready += self._states[self._tick_nro].count(self.__mapear(State.READY))
         self._tick_nro += 1

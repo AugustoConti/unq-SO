@@ -247,7 +247,7 @@ class Hardware:
         self._mmu = MMU(MMUType.new_mmu(mmu_type, self._memory, frame_size, self._interrupt_vector))
         self._cpu = Cpu(self._mmu, self._interrupt_vector)
         self._timer = Timer(self._interrupt_vector)
-        self._clock.add_subscribers([self._io_device, self._timer, self._cpu])
+        self._clock.add_subscribers([self._mmu, self._io_device, self._timer, self._cpu])
 
     def switch_on(self):
         logger.info(self)

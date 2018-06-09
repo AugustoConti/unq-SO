@@ -71,6 +71,9 @@ class MMU:
     def get_page_table(self):
         return self._base.get_page_table()
 
+    def tick(self, tick_nbr):
+        self._base.tick(tick_nbr)
+
     def fetch(self, log_addr):
         if log_addr < 0:
             raise IndexError("Invalid Address, {log_addr} is smaller than 0".format(log_addr=log_addr))
