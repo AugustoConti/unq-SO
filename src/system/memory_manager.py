@@ -2,12 +2,19 @@ from src.images import blue_screen
 
 
 class PageRow:
-    def __init__(self, frame = -1):
+    def __init__(self, frame=-1):
         self.frame = frame
         self.swap = -1
-        self.loadTime = -1  # loadTime - tick en que se cargo en memoria en pagefault(para fifo)
-        self.lastAccessTime = -1  # lastAccessTime - update en mmu cada vez que se accede a esa pagina (LRU, saca el nro menor, el mas viejo)
-        self.SC = 0  # SC - cada vez que mmu accede, pone en 1, se crea en 0 (Second chance)
+        # loadTime - tick en que se cargo en memoria en pagefault(para fifo)
+        self.loadTime = -1
+        # lastAccessTime - update en mmu cada vez que se accede a esa pagina (LRU, saca el nro menor, el mas viejo)
+        self.lastAccessTime = -1
+        # SC - cada vez que mmu accede, pone en 1, se crea en 0 (Second chance)
+        self.SC = 0
+
+    def __repr__(self):
+        return "PageRow( Frame: {f}, Swap: {s}, LoadTime: {lt}, LastAccess: {la}, SC: {sc} )"\
+            .format(f=self.frame, s=self.swap, lt=self.loadTime, la=self.lastAccessTime, sc=self.SC)
 
 
 class MemoryManager:
@@ -31,9 +38,9 @@ class MemoryManager:
         return self._page_table[pid]
 
     def kill(self, pid):
-        # TODO sacar pid de self._page_table
         if pid in self._page_table:
             self._free_frames.extend([p.frame for p in self._page_table[pid]])
+            del self._page_table[pid]
 
     def get_swap_index(self, pid, page):
         return self._page_table[pid][page].swap
