@@ -2,6 +2,7 @@ from unittest import TestCase
 from unittest.mock import NonCallableMock, Mock
 from src.hardware.interruptions import Interruption
 from src.hardware.mmu_types import MMUPaged
+from src.system.memory_manager import PageRow
 
 
 class TestMMUPagedOnDemand(TestCase):
@@ -9,14 +10,17 @@ class TestMMUPagedOnDemand(TestCase):
         self._memory = NonCallableMock(get=Mock(side_effect=lambda v: v))
         self._inter = NonCallableMock()
         self._mmu = MMUPaged(self._memory, self._inter, 4)
-        self._mmu.set_page_table({0: 3, 1: 0, 2: 5})
+        pr0 = PageRow()
+        pr1 = PageRow()
+        self._mmu.set_page_table([pr0, pr1])
 
-    def test_check_page_in_table(self):
-        self._mmu.check_page(1, {1:1})
-        self._inter.handle.assert_not_called()
+    def test_page_not_in_table_do_page_fault(self):
+        self._mmu.fetch(1)
+        self.assertEqual(Interruption.PAGE_FAULT, self._inter.handle.call_args[0][0].type())
+        self.assertEqual(0, self._inter.handle.call_args[0][0].parameters())
 
     def test_check_page_not_in_table(self):
-        self._mmu.check_page(1, {})
+        self._mmu.fetch(1)
         self._inter.handle.assert_called_once()
         self.assertEqual(Interruption.PAGE_FAULT, self._inter.handle.call_args[0][0].type())
 
