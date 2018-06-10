@@ -28,7 +28,7 @@ class TestLoaderPagedBase(TestCase):
         self._memory.put.assert_has_calls([call(8, 0), call(9, 1)])
 
     def test_swap_in(self):
-        self.assertEquals([4, 5], self._loader.swap_in(2))
+        self.assertEqual([4, 5], self._loader.swap_in(2))
 
 class TestLoaderPaged(TestCase):
     def setUp(self):
@@ -37,7 +37,7 @@ class TestLoaderPaged(TestCase):
         self._loader = LoaderPaged(self._mm)
 
     def test_load(self):
-        self.assertEquals(2, self._loader.load(self._base, 0, 1))
+        self.assertEqual(2, self._loader.load(self._base, 0, 1))
         self._base.load_page.assert_called_once_with(0, 1, 2)
 
 
@@ -46,4 +46,4 @@ class TestLoaderPagedOnDemand(TestCase):
         self._loader = LoaderPagedOnDemand()
 
     def test_load(self):
-        self.assertEquals(-1, self._loader.load(0, 0, 0))
+        self.assertEqual(-1, self._loader.load(0, 0, 0))
