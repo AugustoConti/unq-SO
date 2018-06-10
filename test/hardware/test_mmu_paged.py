@@ -3,7 +3,7 @@ from unittest.mock import NonCallableMock, Mock
 from src.hardware.interruptions import Interruption
 from src.hardware.mmu_types import MMUPaged
 from src.log import logger
-from src.system.memory_manager import PageRow
+from src.system.memory_manager.page_row import PageRow
 
 
 class TestMMUPagedOnDemand(TestCase):

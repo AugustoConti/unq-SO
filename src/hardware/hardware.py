@@ -1,6 +1,5 @@
 from tabulate import tabulate
 from time import sleep
-from src.log import logger
 from src.hardware.mmu import *
 from src.hardware.irq import IRQ
 from src.hardware.instructions import Instruction

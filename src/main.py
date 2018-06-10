@@ -1,11 +1,9 @@
 #!/usr/bin/env python
-from src.utils import load_programs, execute_programs
 from src.kernel import Kernel
 from src.system.schedulers import SchedulerType
 from src.hardware.mmu import *
 from src.hardware.hardware import Hardware
-from src.stats import run_stats
-from src.images import logo
+from src import *
 
 
 def run_simulator():
