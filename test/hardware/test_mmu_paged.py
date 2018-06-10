@@ -2,6 +2,7 @@ from unittest import TestCase
 from unittest.mock import NonCallableMock, Mock
 from src.hardware.interruptions import Interruption
 from src.hardware.mmu_types import MMUPaged
+from src.log import logger
 from src.system.memory_manager import PageRow
 
 
@@ -10,34 +11,51 @@ class TestMMUPagedOnDemand(TestCase):
         self._memory = NonCallableMock(get=Mock(side_effect=lambda v: v))
         self._inter = NonCallableMock()
         self._mmu = MMUPaged(self._memory, self._inter, 4)
-        pr0 = PageRow()
-        pr1 = PageRow()
-        self._mmu.set_page_table([pr0, pr1])
 
     def test_page_not_in_table_do_page_fault(self):
-        self._mmu.fetch(1)
-        self.assertEqual(Interruption.PAGE_FAULT, self._inter.handle.call_args[0][0].type())
-        self.assertEqual(0, self._inter.handle.call_args[0][0].parameters())
-
-    def test_check_page_not_in_table(self):
+        self._mmu.set_page_table([PageRow()])
         self._mmu.fetch(1)
         self._inter.handle.assert_called_once()
         self.assertEqual(Interruption.PAGE_FAULT, self._inter.handle.call_args[0][0].type())
+        self.assertEqual(0, self._inter.handle.call_args[0][0].parameters())
 
-    def test_fetch_frame_size_4_inst_0(self):
-        self.assertEqual(12, self._mmu.fetch(0))
+    def test_page_not_in_table_set_load_time_in_page_table(self):
+        p0 = PageRow()
+        self._mmu.set_page_table([p0])
+        tick = 4
+        self._mmu.tick(tick)
+        self._mmu.fetch(1)
+        self.assertEqual(tick, p0.loadTime)
 
-    def test_fetch_frame_size_4_inst_3(self):
-        self.assertEqual(15, self._mmu.fetch(3))
+    def test_fetch_set_last_access_time_in_page_table(self):
+        p0 = PageRow()
+        self._mmu.set_page_table([p0])
+        tick = 4
+        self._mmu.tick(tick)
+        self._mmu.fetch(1)
+        self.assertEqual(tick, p0.lastAccessTime)
 
-    def test_fetch_frame_size_4_inst_4(self):
-        self.assertEqual(0, self._mmu.fetch(4))
+    def test_fetch_set_second_chance_time_in_page_table(self):
+        p0 = PageRow()
+        self._mmu.set_page_table([p0])
+        self._mmu.fetch(1)
+        self.assertEqual(1, p0.SC)
 
-    def test_fetch_frame_size_4_inst_7(self):
-        self.assertEqual(3, self._mmu.fetch(7))
+    def test_fetch_frame_0_offset_0(self):
+        self._mmu.set_page_table([PageRow(0)])
+        self.assertEqual(0, self._mmu.fetch(0))
 
-    def test_fetch_frame_size_4_inst_8(self):
-        self.assertEqual(20, self._mmu.fetch(8))
+    def test_fetch_frame_0_offset_2(self):
+        self._mmu.set_page_table([PageRow(0)])
+        self.assertEqual(2, self._mmu.fetch(2))
 
-    def test_fetch_frame_size_4_inst_11(self):
-        self.assertEqual(23, self._mmu.fetch(11))
+    def test_fetch_frame_1_offset_0(self):
+        self._mmu.set_page_table([PageRow(0), PageRow(2)])
+        self.assertEqual(8, self._mmu.fetch(4))
+
+    def test_fetch_frame_1_offset_2(self):
+        self._mmu.set_page_table([PageRow(0), PageRow(2)])
+        self.assertEqual(10, self._mmu.fetch(6))
+
+
+logger.propagate = False
