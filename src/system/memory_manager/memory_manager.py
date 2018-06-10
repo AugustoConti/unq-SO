@@ -21,10 +21,13 @@ class MemoryManagerPagedOnDemand:
 
 
 class MemoryManager:
-    def __init__(self, count_frames, base):
+    def __init__(self, count_frames):
         self._free_frames = list(range(count_frames))
-        self._base = base
+        self._base = None
         self._page_table = dict()
+
+    def set_base(self, base):
+        self._base = base
 
     def get_frame(self):
         if not self._free_frames:

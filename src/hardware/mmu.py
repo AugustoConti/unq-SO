@@ -1,6 +1,8 @@
 from src.hardware.mmu_types import *
 from src.system.loader import *
 from src.system.dispatcher import *
+from src.system.memory_manager.memory_manager import *
+from src.system.memory_manager.algorithms import AlgorithmType
 
 
 class MMUType:
@@ -45,12 +47,19 @@ class MMUType:
     def new_dispatcher(tipo, mm, mmu):
         if tipo == 0:
             return DispatcherBasic(mmu)
-        elif tipo == 1:
-            return DispatcherPaged(mm, mmu)
-        elif tipo == 2:
+        elif tipo in [1, 2]:
             return DispatcherPaged(mm, mmu)
         else:
             raise Exception('Dispatcher type {dispatcher} not recongnized'.format(dispatcher=tipo))
+
+    @staticmethod
+    def new_memory_manager(tipo, loader):
+        if tipo in [0, 1]:
+            return MemoryManagerPaged()
+        elif tipo == 2:
+            return MemoryManagerPagedOnDemand(AlgorithmType.choose(), loader)
+        else:
+            raise Exception('Memory Manager type {mm} not recongnized'.format(mm=tipo))
 
 
 class MMU:

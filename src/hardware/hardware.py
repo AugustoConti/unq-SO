@@ -80,6 +80,8 @@ class Memory:
         self._cells = [''] * size
 
     def put(self, addr, value):
+        if addr >= len(self._cells):
+            blue_screen()
         self._cells[addr] = value
 
     def get(self, addr):

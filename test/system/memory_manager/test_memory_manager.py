@@ -6,10 +6,12 @@ from src.system.memory_manager.memory_manager import MemoryManager, PageRow
 class TestMemoryManager(TestCase):
     def setUp(self):
         self._base = NonCallableMock(get_frame=Mock(return_value=1))
-        self._mm = MemoryManager(0, self._base)
+        self._mm = MemoryManager(0)
+        self._mm.set_base(self._base)
 
     def test_get_all_frames(self):
-        mm = MemoryManager(4, self._base)
+        mm = MemoryManager(4)
+        self._mm.set_base(self._base)
         self.assertEqual(0, mm.get_frame())
         self.assertEqual(1, mm.get_frame())
         self.assertEqual(2, mm.get_frame())

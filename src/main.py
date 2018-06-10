@@ -3,7 +3,9 @@ from src.kernel import Kernel
 from src.system.schedulers import SchedulerType
 from src.hardware.mmu import *
 from src.hardware.hardware import Hardware
-from src import *
+from src.images import logo
+from src.stats import run_stats
+from src.utils import *
 
 
 def run_simulator():
