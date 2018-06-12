@@ -53,11 +53,11 @@ class MMUType:
             raise Exception('Dispatcher type {dispatcher} not recongnized'.format(dispatcher=tipo))
 
     @staticmethod
-    def new_memory_manager(tipo, loader):
+    def new_memory_manager(tipo, loader, swap):
         if tipo in [0, 1]:
             return MemoryManagerPaged()
         elif tipo == 2:
-            return MemoryManagerPagedOnDemand(AlgorithmType.choose(), loader)
+            return MemoryManagerPagedOnDemand(AlgorithmType.choose(), loader, swap)
         else:
             raise Exception('Memory Manager type {mm} not recongnized'.format(mm=tipo))
 

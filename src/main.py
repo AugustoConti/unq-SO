@@ -9,7 +9,7 @@ from src.utils import *
 
 
 def run_simulator():
-    memory_size = 24
+    memory_size = 8
     frame_size = 4
     count_frames = memory_size // frame_size
     sch = SchedulerType.choose()

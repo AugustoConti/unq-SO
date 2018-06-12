@@ -13,7 +13,7 @@ class Kernel:
         self._pcb_table = PCBTable(self._table)
         self._loader = MMUType.new_loader(mmu_type, hardware.disk(), hardware.memory(), self._mm, frame_size,
                                           hardware.swap())
-        self._mm.set_base(MMUType.new_memory_manager(mmu_type, self._loader))
+        self._mm.set_base(MMUType.new_memory_manager(mmu_type, self._loader, hardware.swap()))
         self._dispatcher = Dispatcher(MMUType.new_dispatcher(mmu_type, self._mm, hardware.mmu()), self._pcb_table,
                                       hardware.cpu(), hardware.timer())
         self._scheduler = Scheduler(self._pcb_table, self._dispatcher, hardware.timer(),

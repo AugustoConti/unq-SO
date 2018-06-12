@@ -29,5 +29,9 @@ class TestMMU(TestCase):
     def test_get_page_table(self):
         self.assertEqual(0, self._mmu.get_page_table())
 
+    def test_tick(self):
+        self._mmu.tick(4)
+        self._base.tick.assert_called_once_with(4)
+
     def test_fetch(self):
         self.assertEqual(4, self._mmu.fetch(4))

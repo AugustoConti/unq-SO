@@ -22,3 +22,8 @@ class TestDispatcherBasic(TestCase):
         self._dispatcher.load({'baseDir': 6, 'limit': 1})
         self._mmu.set_base_dir.assert_called_once_with(6)
         self._mmu.set_limit.assert_called_once_with(1)
+
+    def test_save_do_nothing(self):
+        self._dispatcher.save(1)
+        self._mmu.set_base_dir.assert_not_called()
+        self._mmu.set_limit.assert_not_called()

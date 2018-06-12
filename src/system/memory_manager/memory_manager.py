@@ -3,14 +3,21 @@ from src.system.memory_manager.page_row import PageRow
 
 
 class MemoryManagerPaged:
+    def delete_swap(self, lista):
+        pass
+
     def get_frame(self, page_table):
         blue_screen()
 
 
 class MemoryManagerPagedOnDemand:
-    def __init__(self, algorithm, loader):
+    def __init__(self, algorithm, loader, swap):
         self._algorithm = algorithm
         self._loader = loader
+        self._swap = swap
+
+    def delete_swap(self, lista):
+        [self._swap.swap_out(i) for i in lista]
 
     def get_frame(self, page_table):
         row = self._algorithm.get_victim([r for p in page_table.values() for r in p if r.frame >= 0])
@@ -30,9 +37,9 @@ class MemoryManager:
         self._base = base
 
     def get_frame(self):
-        if not self._free_frames:
-            return self._base.get_frame(self._page_table)
-        return self._free_frames.pop(0)
+        if self._free_frames:
+            return self._free_frames.pop(0)
+        return self._base.get_frame(self._page_table)
 
     def create_page_table(self, pid, frames):
         self.add_page_table(pid, [PageRow(f) for f in frames])
@@ -46,6 +53,7 @@ class MemoryManager:
     def kill(self, pid):
         if pid in self._page_table:
             self._free_frames.extend([r.frame for r in self._page_table[pid]])
+            self._base.delete_swap([r.swap for r in self._page_table[pid] if r.swap != -1])
             del self._page_table[pid]
 
     def get_swap_index(self, pid, page):

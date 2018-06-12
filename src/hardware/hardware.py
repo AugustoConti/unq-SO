@@ -1,4 +1,5 @@
 from tabulate import tabulate
+from termcolor import colored
 from time import sleep
 from src.hardware.mmu import *
 from src.hardware.irq import IRQ
@@ -200,11 +201,17 @@ class Swap:
             blue_screen()
         idx = self._free_index.pop(0)
         self._swap_memory[idx] = page
+        logger.info(colored(" [ SWAP ] ", "yellow", attrs=["bold"])+
+                    ">> Page: {page} loaded in index: {idx}".format(page=page, idx=idx))
         return idx
 
     def swap_out(self, idx):
+        page = self._swap_memory[idx]
+        del self._swap_memory[idx]
         self._free_index.append(idx)
-        return self._swap_memory[idx]
+        logger.info(colored(" [ SWAP ] ", "yellow", attrs=["bold"])+
+                    ">> Page: {page} loaded from index: {idx}".format(page=page, idx=idx))
+        return page
 
 
 class Timer:

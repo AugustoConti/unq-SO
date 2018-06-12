@@ -40,6 +40,13 @@ class TestMemoryManager(TestCase):
         with self.assertRaises(KeyError):
             self._mm.get_page_table(1)
 
+    def test_kill_call_delete_swap_from_base(self):
+        p1 = PageRow(4, swap=1)
+        p2 = PageRow(5, swap=3)
+        self._mm.add_page_table(1, [p1, p2])
+        self._mm.kill(1)
+        self._base.delete_swap.assert_called_once_with([1, 3])
+
     def test_get_swap_index(self):
         p1 = PageRow(2, swap=8)
         self._mm.add_page_table(1, [p1])

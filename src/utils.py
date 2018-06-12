@@ -8,10 +8,10 @@ def load_programs(disk):
     disk.add_all({
         'prg1.exe': expand([ASM.cpu(2), ASM.io(), ASM.cpu(3), ASM.io(), ASM.cpu(2)])
         ,'prg2.exe': expand([ASM.cpu(4), ASM.io(), ASM.cpu(1)])
-        ,'prg3.exe': expand([ASM.cpu(3)])
-        ,'prg4.exe': expand([ASM.cpu(3)])
-        ,'prg5.exe': expand([ASM.cpu(3)])
-        ,'prg6.exe': expand([ASM.cpu(3)])
+        ,'prg3.exe': expand([ASM.cpu(3), ASM.io()])
+        ,'prg4.exe': expand([ASM.cpu(3), ASM.io()])
+        ,'prg5.exe': expand([ASM.cpu(3), ASM.io()])
+        ,'prg6.exe': expand([ASM.cpu(3), ASM.io()])
     })
 
 

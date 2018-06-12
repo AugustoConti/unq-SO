@@ -12,6 +12,10 @@ class TestMMUPagedOnDemand(TestCase):
         self._inter = NonCallableMock()
         self._mmu = MMUPaged(self._memory, self._inter, 4)
 
+    def test_get_page_table(self):
+        self._mmu.set_page_table(1)
+        self.assertEqual(1, self._mmu.get_page_table())
+
     def test_page_not_in_table_do_page_fault(self):
         self._mmu.set_page_table([PageRow()])
         self._mmu.fetch(1)
