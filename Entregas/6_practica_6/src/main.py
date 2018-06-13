@@ -21,10 +21,6 @@ def run_simulator():
     hardware.switch_on()
 
 
-# TODO MultiThreading
-# TODO Colores en logger de info
-# TODO asignacion continua?
-
 if __name__ == '__main__':
     logo()
     opt = input("1 - Statistics\n"
