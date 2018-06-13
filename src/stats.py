@@ -11,7 +11,7 @@ __all__ = ["run_stats"]
 
 
 def run_stats():
-    logger.propagate = False
+    logger.disabled()
     print('\n', tabulate([['Letra', 'Estado'],
                           ['N', State.NEW],
                           ['R', State.READY],

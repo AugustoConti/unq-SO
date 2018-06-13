@@ -43,4 +43,4 @@ class Dispatcher:
         self._base.load(pcb)
         self._cpu.set_pc(pcb['pc'])
         self._timer.reset()
-        logger.info(" CPU running: {currentPCB}".format(currentPCB=pcb))
+        logger.info("Dispatcher", " CPU running: {currentPCB}".format(currentPCB=pcb))

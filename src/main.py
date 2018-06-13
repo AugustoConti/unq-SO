@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 from src.kernel import Kernel
 from src.system.schedulers import SchedulerType
 from src.hardware.mmu import *
@@ -9,7 +10,7 @@ from src.utils import *
 
 
 def run_simulator():
-    memory_size = 8
+    memory_size = 32
     frame_size = 4
     count_frames = memory_size // frame_size
     sch = SchedulerType.choose()
@@ -24,9 +25,12 @@ def run_simulator():
 # TODO MultiThreading
 # TODO Colores en logger de info
 # TODO asignacion continua?
+# TODO implementar scheduler ShorterJobFirst !!
+# TODO file system
+# TODO proceso que empieze en un determinado tick
 
 if __name__ == '__main__':
-    logo()
+    # logo()
     opt = input("1 - Statistics\n"
                 "2 - Run simulator\n"
                 "Choice: ")

@@ -38,7 +38,7 @@ class InterruptVector:
         self._handlers[tipo] = handler
 
     def handle(self, irq):
-        logger.info("Handling {type} irq with parameters = {parameters}"
+        logger.info("InterruptVector", "Handling {type} irq with parameters = {parameters}"
                     .format(type=irq.type(), parameters=irq.parameters()))
         self._handlers[irq.type()].execute(irq)
 
@@ -59,7 +59,7 @@ class Clock:
         self._running = False
 
     def start(self):
-        logger.info("---- :::: START CLOCK  ::: -----")
+        logger.info("Clock", "---- :::: START CLOCK  ::: -----")
         self._running = True
         tick_nbr = 0
         while self._running:
@@ -67,12 +67,12 @@ class Clock:
             tick_nbr += 1
 
     def tick(self, tick_nbr):
-        logger.info("        --------------- tick: {tickNbr} ---------------".format(tickNbr=tick_nbr))
+        logger.info("Clock", "        --------------- tick: {tickNbr} ---------------".format(tickNbr=tick_nbr))
         [subscriber.tick(tick_nbr) for subscriber in self._subscribers]
         sleep(self._delay)
 
     def do_ticks(self, times):
-        logger.info("---- :::: CLOCK do_ticks: {times} ::: -----".format(times=times))
+        logger.info("Clock", "---- :::: CLOCK do_ticks: {times} ::: -----".format(times=times))
         [self.tick(tickNbr) for tickNbr in range(times)]
 
 
@@ -105,7 +105,7 @@ class Cpu:
             self._decode()
             self._execute()
         else:
-            logger.info("cpu - NOOP")
+            logger.info("CPU", "cpu - NOOP")
 
     def _fetch(self):
         self._ir = self._mmu.fetch(self._pc)
@@ -121,7 +121,7 @@ class Cpu:
         elif ASM.is_io(self._ir):
             self._interrupt_vector.handle(IRQ(Interruption.IO_IN, self._ir))
         else:
-            logger.info("cpu - Exec: {instr}, PC={pc}".format(instr=self._ir, pc=self._pc))
+            logger.info("CPU", "cpu - Exec: {instr}, PC={pc}".format(instr=self._ir, pc=self._pc))
 
     def get_pc(self):
         return self._pc
@@ -164,7 +164,7 @@ class IODevice:
             self._busy = False
             self._interrupt_vector.handle(IRQ(Interruption.IO_OUT, self._device))
         else:
-            logger.info("device {deviceId} - Busy: {ticksCount} of {deviceTime}"
+            logger.info(self._device, "device {deviceId} - Busy: {ticksCount} of {deviceTime}"
                         .format(deviceId=self._device, ticksCount=self._ticks_count, deviceTime=self._time))
 
 
@@ -201,16 +201,14 @@ class Swap:
             blue_screen()
         idx = self._free_index.pop(0)
         self._swap_memory[idx] = page
-        logger.info(colored(" [ SWAP ] ", "yellow", attrs=["bold"])+
-                    ">> Page: {page} loaded in index: {idx}".format(page=page, idx=idx))
+        logger.info("SWAP", "Page: {page} loaded in index: {idx}".format(page=page, idx=idx))
         return idx
 
     def swap_out(self, idx):
         page = self._swap_memory[idx]
         del self._swap_memory[idx]
         self._free_index.append(idx)
-        logger.info(colored(" [ SWAP ] ", "yellow", attrs=["bold"])+
-                    ">> Page: {page} loaded from index: {idx}".format(page=page, idx=idx))
+        logger.info("SWAP", "Page: {page} loaded from index: {idx}".format(page=page, idx=idx))
         return page
 
 
@@ -224,7 +222,7 @@ class Timer:
     def tick(self, tick_nbr):
         if not self._running or self._tickCount < 0:
             return
-        logger.info("Timer - tick: {Count} of {Quantum}".format(Count=self._tickCount, Quantum=self._quantum))
+        logger.info("Timer", "tick: {Count} of {Quantum}".format(Count=self._tickCount, Quantum=self._quantum))
         if self._tickCount == 0:
             self._interrupt_vector.handle(IRQ(Interruption.TIME_OUT))
         else:
@@ -259,12 +257,12 @@ class Hardware:
 
     def switch_on(self):
         logger.info(self)
-        logger.info(" ---- SWITCH ON ---- ")
+        logger.info("Hardware", " ---- SWITCH ON ---- ")
         self._clock.start()
 
     def switch_off(self):
         self._clock.stop()
-        logger.info(" ---- SWITCH OFF ---- ")
+        logger.info("Hardware", " ---- SWITCH OFF ---- ")
 
     def cpu(self):
         return self._cpu

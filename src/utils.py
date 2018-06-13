@@ -20,9 +20,9 @@ def execute_programs(interrupt_vector):
     p.execute("prg1.exe", 3)
     p.execute("prg2.exe", 1)
     p.execute("prg3.exe", 5)
-    p.execute("prg4.exe", 5)
-    p.execute("prg5.exe", 4)
-    p.execute("prg6.exe", 3)
+    #p.execute("prg4.exe", 5)
+    #p.execute("prg5.exe", 4)
+    #p.execute("prg6.exe", 3)
 
 
 class Program:

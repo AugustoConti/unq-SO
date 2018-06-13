@@ -12,7 +12,7 @@ class IoDeviceController:
         pair = {'pid': pid, 'inst': instruction}
         self._waiting_queue.append(pair)
         self.__load_from_waiting()
-        logger.info(self)
+        logger.info("IoDeviceController", self)
 
     def get_finished_pid(self):
         finished_pid = self._current_pid
@@ -21,7 +21,7 @@ class IoDeviceController:
         return finished_pid
 
     def __load(self, pair):
-        logger.info(" IO loading pid: {pid}, instruction: {inst}".format(pid=pair['pid'], inst=pair['inst']))
+        logger.info("IoDeviceController", " IO loading pid: {pid}, instruction: {inst}".format(pid=pair['pid'], inst=pair['inst']))
         self._current_pid = pair['pid']
         self._device.execute(pair['inst'])
 

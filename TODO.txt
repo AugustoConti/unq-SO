@@ -1,99 +1,14 @@
 PAGINACIÓN: estrategia de admin de memoria, basada en frames.
-tamaño de marco #=4 (cantidad de celdas x frame) memoria de 16 celdas
+tamaño de marco #=4 (cantidad de celdas x frame)
 cada proceso cargado en paginas, cada pagina asociada a un frames.
-instruc/frame size = cant de paginas
 
 
 -----------------------------------------------------------------------------------
 
 
-PAGINACION BAJO DEMANDA
-    bajo demanda
-	si no tiene frame asignado, tirar interruption fallo de pagina
-	cargar la pagina, si no hay frame libre, elegir victima y pasarla a disco
-
-
-    interruption desde el MMU PageFoult(por param que page necesita)
-
-    SWAP esta en MM
-
-Tabla de paginas:
-pid	pag	frame   Bit   Swap IdxSwap
-1	0	 0       V     S       0
-1	1	 -       I     N       -
-2	0	 -       I     N       -
-2	1	 2       V     N       -
-
-
-
-
-loader -> page table
-
-pageTable -> invalid -> PageFault(page)(del pid running)
-
-pageFault -> cargar pagina en memoria, poner el frame en valido
-
-swap -> in/out (frame)
-
-swap
-	pid + frame
-	tiempo de carga (tick que fue cargado)
-
-
-PageTable
-	pid
-	page
-	frame
-	valid/invalid (bit)
-	swappage en que esta
-
-
-	swap
-
-
-
-LOADER: leer del disco la cantidad de instrucciones que entran en el frame
-DISCO: get(name, page) = devuelve solo las intrucciones de esa page de ese program
-
-PageTable: cuando se crea el pcb, los frames quedan en -1 indicando que no esta cargado en memory
-
-MMU, si el frame es -1, tirar page fault(page) page como parametro
-
-HANDLER PAGEFAULT:
-primero ver si esta cargada en SWAP, sino, ir a buscar a disco
-
-estrategia para seleccion de victima(dentro del MM):
-
-FIFO: Cuando loader carga una pagina en un frame, guardar el tick para saber cual es el mas viejo
-Elijo la mas vieja para mandar a SWAP. Cuando mando a SWAP me guardo el indice donde esta en el SWAP
-SWAP: le digo guarda esta page y me devuelve el indice para ir a buscarla despues
-Y pongo el frame -1 en la page table !!!
-
-Cuando cargo de swap: actualizo el tick, borro flag de swap, cargo en memory, actualizo frame de pagetable, actualizo data de mmu
-
-KILL: borrar pid de SWAP
-
-
-pageFault handler
-mmu.pagetable -> pagetable.global
-frame = mm.getFreeFrame() // si ff tiene frame libre -> pop[0] // if ff is [] then swapFrame = swap.getFrame()
-																	victim = getVictim(algoritmo!!)
-																loader.swap_in(victima) 
-																	(actualizar pagetable del que se fue swap)
-
-loader.loadPage(pcb, page, frame)
-	actualizar pagetable global
-										   --disco -> load
-								loadPage()	
-										   --swap ->swap_out(pagina)
-dispatcher(pageTableglobal --> pageTableMMU)
- 
 FECHAS:
 
 JUNIO:
-5 seleccion de victima (FIFO - LRU - Reloj Second Chance)
-7 ENTREGA
-
 12 Parcial Practica - scheduler
 14 Parcial Practiva - memoria
 
@@ -106,3 +21,24 @@ JUNIO:
 JULIO:
 3, 5, 10: Expo
 12 Cierre (Notas)
+
+
+
+    Lleg  CPU
+P1  0      3
+P2  2      3
+
+    0   1   2   3   4   5   6       Esp     Ret
+p1  3   2   1   .   -   -   -       0       3
+p2  -   -   E   3   2   1   .       1       4
+                                Tot 0.5     3.5
+Redy        2
+
+
+
+
+
+
+
+
+
