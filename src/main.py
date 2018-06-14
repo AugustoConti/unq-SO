@@ -29,8 +29,22 @@ def run_simulator():
 # TODO file system
 # TODO proceso que empieze en un determinado tick
 
+def runFcfsPagedLRU():
+    memory_size = 32
+    frame_size = 4
+    count_frames = memory_size // frame_size
+    mmu = 2
+    hardware = Hardware(memory_size, 0.1, mmu, frame_size)
+    load_programs(hardware.disk())
+    Kernel(hardware, 0, mmu, frame_size, count_frames)
+    execute_programs(hardware.interrupt_vector())
+    hardware.switch_on()
+
 if __name__ == '__main__':
+    runFcfsPagedLRU()
+
     # logo()
+    '''
     opt = input("1 - Statistics\n"
                 "2 - Run simulator\n"
                 "Choice: ")
@@ -38,3 +52,5 @@ if __name__ == '__main__':
         run_stats()
     else:
         run_simulator()
+    '''
+    

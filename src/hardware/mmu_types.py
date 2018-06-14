@@ -1,6 +1,6 @@
 from src.hardware.irq import IRQ
 from src.hardware.interruptions import Interruption
-from src.log import logger
+from src.log import Logger
 
 
 class MMUBasic:
@@ -41,7 +41,7 @@ class MMUPaged:
         if table.frame == -1:
             self._interrupt_vector.handle(IRQ(Interruption.PAGE_FAULT, page))
             table.loadTime = self._tick
-            logger.info("MMUPaged", self._memory)
+            Logger.info("MMUPaged", self._memory)
         table.lastAccessTime = self._tick
         table.SC = 1
         frame = table.frame

@@ -1,4 +1,4 @@
-from src.log import logger
+from src.log import Logger
 from src.hardware.interruptions import Interruption
 from src.system.states import State
 
@@ -11,7 +11,7 @@ class KillInterruptionHandler:
         self._mm = mm
 
     def execute(self, irq):
-        logger.info("Kill", " Finished: {currentPCB}".format(currentPCB=self._pcbTable.get_running()))
+        Logger.info("Kill", " Finished: {currentPCB}".format(currentPCB=self._pcbTable.get_running()))
         running = self._pcbTable.get_running_pid()
         self._mm.kill(running)
         self._pcbTable.set_pcb_state(running, State.TERMINATED)
@@ -40,7 +40,7 @@ class TimeOutInterruptionHandler:
         self._timer = timer
 
     def execute(self, irq):
-        logger.info("TimeOut", "TimeOut Interruption")
+        Logger.info("TimeOut", "TimeOut Interruption")
         self._dispatcher.save()
         self._scheduler.add_running()
         self._scheduler.load_from_ready()
@@ -71,7 +71,7 @@ class IoOutInterruptionHandler:
 
     def execute(self, irq):
         self._scheduler.run_or_add_queue(self._io_device_controller.get_finished_pid())
-        logger.info("IoOut", self._io_device_controller)
+        Logger.info("IoOut", self._io_device_controller)
 
 
 class PageFaultInterruptionHandler:

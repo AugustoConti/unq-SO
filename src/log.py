@@ -1,5 +1,7 @@
 import logging.config
 
+from termcolor import colored
+
 """
     print(colored('red', 'red'),'\n')
     print(colored('green', 'green'),'\n')
@@ -36,11 +38,38 @@ logging.config.dictConfig({
 })
 
 
-class Logueo:
-    def info(self, tipo, msj):
-        logging.getLogger(__name__).info("{tipo} >>> {msj}".format(tipo=tipo, msj=msj))
+def do_color(tipo, color):
+    return colored('[' + tipo + ']', color, attrs=['bold'])
 
-    def disabled(self):
+
+def get_color(tipo):
+    hard = ['MMUPaged',
+            'InterruptVector',
+            'Clock',
+            'CPU',
+            'SWAP',
+            'Timer',
+            'Hardware',
+            'Printer']
+    soft = ['Kill',
+            'TimeOut',
+            'IoOut',
+            'Dispatcher',
+            'PriorityExp',
+            'IoDeviceController']
+    if tipo in hard:
+        return do_color(tipo, 'magenta')
+    elif tipo in soft:
+        return do_color(tipo, 'cyan')
+    else:
+        return do_color(tipo, 'red')
+
+
+class Logger:
+    @staticmethod
+    def info(tipo, msj):
+        logging.getLogger(__name__).info("{tipo} >>> {msj}".format(tipo=get_color(tipo), msj=msj))
+
+    @staticmethod
+    def disabled():
         logging.getLogger(__name__).propagate = False
-
-logger = Logueo()

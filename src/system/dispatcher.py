@@ -1,4 +1,4 @@
-from src.log import logger
+from src.log import Logger
 
 
 class DispatcherBasic:
@@ -43,4 +43,4 @@ class Dispatcher:
         self._base.load(pcb)
         self._cpu.set_pc(pcb['pc'])
         self._timer.reset()
-        logger.info("Dispatcher", " CPU running: {currentPCB}".format(currentPCB=pcb))
+        Logger.info("Dispatcher", " CPU running: {currentPCB}".format(currentPCB=pcb))

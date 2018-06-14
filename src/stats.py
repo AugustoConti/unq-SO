@@ -5,13 +5,13 @@ from src.kernel import Kernel
 from src.system.schedulers import SchedulerType
 from src.utils import *
 from src.hardware.hardware import *
-from src.log import logger
+from src.log import Logger
 
 __all__ = ["run_stats"]
 
 
 def run_stats():
-    logger.disabled()
+    Logger.disabled()
     print('\n', tabulate([['Letra', 'Estado'],
                           ['N', State.NEW],
                           ['R', State.READY],

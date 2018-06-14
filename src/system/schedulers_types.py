@@ -1,5 +1,5 @@
 from src.system.states import State
-from src.log import logger
+from src.log import Logger
 
 
 class FCFS:
@@ -57,7 +57,7 @@ class PriorityExp:
     def add(self, pid):
         pcb_run = self._pcbTable.get_running()
         if self._pcbTable.get_priority(pid) < pcb_run['priority']:
-            logger.info("PriorityExp", "PCB entrante con mayor prioridad que running!")
+            Logger.info("PriorityExp", "PCB entrante con mayor prioridad que running!")
             self._dispatcher.save()
             self._dispatcher.load(pid)
             pcb_run['state'] = State.READY
