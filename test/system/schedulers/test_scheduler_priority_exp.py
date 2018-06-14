@@ -1,6 +1,5 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
-from src.log import logger
 from src.system.schedulers import PriorityExp
 
 
@@ -32,6 +31,3 @@ class TestPriorityExp(TestCase):
         self._scheduler.add(1)
         self._dispatcher.save.assert_called_once()
         self._dispatcher.load.assert_called_once_with(1)
-
-
-logger.propagate = False

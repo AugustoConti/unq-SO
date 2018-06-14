@@ -1,6 +1,5 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock
-from src.log import logger
 from src.hardware.hardware import IODevice
 from src.hardware.interruptions import Interruption
 
@@ -45,6 +44,3 @@ class TestIODevice(TestCase):
         self.assertTrue(self._iodevice.is_idle())
         self._inter.handle.assert_called_once()
         self.assertEqual(Interruption.IO_OUT, self._inter.handle.call_args[0][0].type())
-
-
-logger.propagate = False

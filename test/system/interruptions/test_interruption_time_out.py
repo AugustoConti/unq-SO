@@ -1,7 +1,6 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock
 from src.system.interruption_handlers import TimeOutInterruptionHandler
-from src.log import logger
 
 
 class TestTimeOutInterruptionHandler(TestCase):
@@ -17,6 +16,3 @@ class TestTimeOutInterruptionHandler(TestCase):
         self._scheduler.add_running.assert_called_once()
         self._scheduler.load_from_ready.assert_called_once()
         self._timer.reset.assert_called_once_with(True)
-
-
-logger.propagate = False

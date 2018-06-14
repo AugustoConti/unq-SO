@@ -3,7 +3,10 @@ from unittest.mock import Mock, NonCallableMock
 from src.hardware.hardware import Cpu
 from src.hardware.instructions import Instruction
 from src.hardware.interruptions import Interruption
-from src.log import logger
+import logging.config
+
+
+logging.disable(logging.CRITICAL)
 
 
 class TestCPU(TestCase):
@@ -41,6 +44,3 @@ class TestCPU(TestCase):
         self._mmu.fetch.assert_called_once_with(2)
         self.assertEqual(Interruption.IO_IN, self._interrupt.handle.call_args[0][0].type())
         self.assertEqual(3, self._cpu.get_pc())
-
-
-logger.propagate = False

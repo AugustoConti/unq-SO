@@ -1,7 +1,6 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
 from src.system.interruption_handlers import IoOutInterruptionHandler
-from src.log import logger
 
 
 class TestIoOutInterruptionHandler(TestCase):
@@ -13,6 +12,3 @@ class TestIoOutInterruptionHandler(TestCase):
     def test_execute(self):
         self._io_out.execute(None)
         self._scheduler.run_or_add_queue.assert_called_once_with(1)
-
-
-logger.propagate = False

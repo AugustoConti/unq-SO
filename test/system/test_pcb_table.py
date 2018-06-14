@@ -1,5 +1,5 @@
 from unittest import TestCase
-from src.system.so import PCBTable
+from src.system.pcb_table import PCBTable
 
 
 class TestPCBTable(TestCase):

@@ -1,7 +1,6 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
 from src.system.dispatcher import Dispatcher
-from src.log import logger
 
 
 class TestDispatcher(TestCase):
@@ -25,6 +24,3 @@ class TestDispatcher(TestCase):
         self._base.load.assert_called_once_with(self._running)
         self._cpu.set_pc.assert_called_once_with(0)
         self._timer.reset.assert_called_once()
-
-
-logger.propagate = False

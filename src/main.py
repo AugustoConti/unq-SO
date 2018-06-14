@@ -24,12 +24,12 @@ def run_simulator():
 
 # TODO MultiThreading
 # TODO Colores en logger de info
-# TODO asignacion continua?
+# TODO asignacion continua ?
 # TODO implementar scheduler ShorterJobFirst !!
 # TODO file system
 # TODO proceso que empieze en un determinado tick
 
-def runFcfsPagedLRU():
+def runFcfsPaged():
     memory_size = 32
     frame_size = 4
     count_frames = memory_size // frame_size
@@ -41,7 +41,7 @@ def runFcfsPagedLRU():
     hardware.switch_on()
 
 if __name__ == '__main__':
-    runFcfsPagedLRU()
+    runFcfsPaged()
 
     # logo()
     '''

@@ -2,7 +2,6 @@ from unittest import TestCase
 from unittest.mock import NonCallableMock, Mock
 from src.hardware.interruptions import Interruption
 from src.hardware.mmu_types import MMUPaged
-from src.log import logger
 from src.system.memory_manager.page_row import PageRow
 
 
@@ -60,6 +59,3 @@ class TestMMUPagedOnDemand(TestCase):
     def test_fetch_frame_1_offset_2(self):
         self._mmu.set_page_table([PageRow(0), PageRow(2)])
         self.assertEqual(10, self._mmu.fetch(6))
-
-
-logger.propagate = False

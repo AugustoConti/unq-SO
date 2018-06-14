@@ -1,6 +1,5 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock
-from src.log import logger
 from src.hardware.hardware import Timer
 from src.hardware.interruptions import Interruption
 
@@ -43,6 +42,3 @@ class TestTimer(TestCase):
     def test_start_quantum_negativo(self):
         with self.assertRaises(Exception):
             self._timer.start(-1)
-
-
-logger.propagate = False

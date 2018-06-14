@@ -2,6 +2,21 @@ from src.system.states import State
 from src.log import Logger
 
 
+# TODO falta implementar bien SJF
+class SJF:
+    def __init__(self):
+        self._ready = []
+
+    def is_empty(self):
+        return not self._ready
+
+    def add(self, pid):
+        self._ready.append(pid)
+
+    def next(self):
+        return self._ready.pop(0)
+
+
 class FCFS:
     def __init__(self):
         self._ready = []

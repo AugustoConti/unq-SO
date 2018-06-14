@@ -1,6 +1,6 @@
 from src.system.schedulers import *
 from src.hardware.mmu import *
-from src.system.so import IoDeviceController, PCBTable
+from src.system.pcb_table import IoDeviceController, PCBTable
 from src.system.dispatcher import Dispatcher
 from src.system.interruption_handlers import register_handlers
 

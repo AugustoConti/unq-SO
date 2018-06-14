@@ -1,7 +1,6 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
-from src.system.so import IoDeviceController
-from src.log import logger
+from src.system.io_device_controller import IoDeviceController
 
 
 class TestIoDeviceController(TestCase):
@@ -23,6 +22,3 @@ class TestIoDeviceController(TestCase):
         self.assertEqual(1, self._control.get_finished_pid())
         self._device.execute.assert_called_with(4)
         self.assertEqual(3, self._control.get_finished_pid())
-
-
-logger.propagate = False
