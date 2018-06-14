@@ -51,16 +51,18 @@ def get_color(tipo):
             'Timer',
             'Hardware',
             'Printer']
-    soft = ['Kill',
-            'TimeOut',
-            'IoOut',
-            'Dispatcher',
+    soft = ['Dispatcher',
             'PriorityExp',
             'IoDeviceController']
+    interrupt = ['Kill',
+                 'TimeOut',
+                 'IoOut']
     if tipo in hard:
         return do_color(tipo, 'magenta')
     elif tipo in soft:
         return do_color(tipo, 'cyan')
+    elif tipo in interrupt:
+        return do_color(tipo, 'green')
     else:
         return do_color(tipo, 'red')
 
