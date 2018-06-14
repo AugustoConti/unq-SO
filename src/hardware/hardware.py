@@ -256,7 +256,7 @@ class Hardware:
         self._clock.add_subscribers([self._mmu, self._io_device, self._timer, self._cpu])
 
     def switch_on(self):
-        logger.info(self)
+        logger.info("Hardware", self)
         logger.info("Hardware", " ---- SWITCH ON ---- ")
         self._clock.start()
 
