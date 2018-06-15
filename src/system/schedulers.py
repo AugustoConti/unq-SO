@@ -3,7 +3,8 @@ from src.system.states import State
 
 
 class SchedulerType:
-    lista = ['FCFS',
+    lista = ['Shorter Job First',
+             'FCFS',
              'Priority No Expropiativo',
              'Priority Expropiativo',
              'Round Robin',
@@ -28,16 +29,18 @@ class SchedulerType:
     @staticmethod
     def new(tipo, pcb_table, dispatcher, timer):
         if tipo == 0:
-            return FCFS()
+            return SJF(pcb_table, dispatcher)
         elif tipo == 1:
-            return PriorityNoExp(pcb_table)
+            return FCFS()
         elif tipo == 2:
-            return PriorityExp(pcb_table, dispatcher, PriorityNoExp(pcb_table))
+            return PriorityNoExp(pcb_table)
         elif tipo == 3:
-            return RoundRobin(FCFS(), 2, timer)
+            return PriorityExp(pcb_table, dispatcher, PriorityNoExp(pcb_table))
         elif tipo == 4:
-            return RoundRobin(PriorityNoExp(pcb_table), 2, timer)
+            return RoundRobin(FCFS(), 2, timer)
         elif tipo == 5:
+            return RoundRobin(PriorityNoExp(pcb_table), 2, timer)
+        elif tipo == 6:
             return RoundRobin(PriorityExp(pcb_table, dispatcher, PriorityNoExp(pcb_table)), 2, timer)
         else:
             raise Exception('scheduler type {sch} not recongnized'.format(sch=tipo))

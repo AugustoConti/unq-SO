@@ -2,21 +2,6 @@ from src.system.states import State
 from src.log import Logger
 
 
-# TODO falta implementar bien SJF
-class SJF:
-    def __init__(self):
-        self._ready = []
-
-    def is_empty(self):
-        return not self._ready
-
-    def add(self, pid):
-        self._ready.append(pid)
-
-    def next(self):
-        return self._ready.pop(0)
-
-
 class FCFS:
     def __init__(self):
         self._ready = []
@@ -58,6 +43,32 @@ class PriorityNoExp:
 
     def add(self, pid):
         self._ready[self._pcb_table.get_priority(pid) - 1].append(pid)
+
+
+class SJF:
+    def __init__(self, pcb_table, dispatcher):
+        self._pcbTable = pcb_table
+        self._dispatcher = dispatcher
+        self._ready = []
+
+    def is_empty(self):
+        return not self._ready
+
+    def add(self, pid):
+        pcb_run = self._pcbTable.get_running()
+        if self._pcbTable.get_intructions_left(pid) < self._pcbTable.get_intructions_left(pcb_run['pid']):
+            Logger.info("SJF", "PCB entrante con menor cantidad de instrucciones restantes que running!")
+            self._dispatcher.save()
+            self._dispatcher.load(pid)
+            pcb_run['state'] = State.READY
+            self._ready.append(pcb_run['pid'])
+        else:
+            self._ready.append(pid)
+
+    def next(self):
+        minimo = sorted(self._ready, key=lambda pid: self._pcbTable.get_intructions_left(pid)).pop(0)
+        self._ready.remove(minimo)
+        return minimo
 
 
 class PriorityExp:

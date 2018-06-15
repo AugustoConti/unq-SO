@@ -34,3 +34,7 @@ class PCBTable:
 
     def get_priority(self, pid):
         return self._table[pid]['priority']
+
+    def get_intructions_left(self, pid):
+        pcb = self._table[pid]
+        return pcb['limit'] - pcb['pc']

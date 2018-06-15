@@ -22,6 +22,9 @@ def run_simulator():
     hardware.switch_on()
 
 
+# TODO implementar PCB
+
+# TODO agregar a STATS para cada pid, columna de retorno y espera
 # TODO MultiThreading
 # TODO Colores en logger de info
 # TODO asignacion continua ?
@@ -41,10 +44,10 @@ def runFcfsPaged():
     hardware.switch_on()
 
 if __name__ == '__main__':
-    runFcfsPaged()
+    # runFcfsPaged()
 
     # logo()
-    '''
+
     opt = input("1 - Statistics\n"
                 "2 - Run simulator\n"
                 "Choice: ")
@@ -52,5 +55,5 @@ if __name__ == '__main__':
         run_stats()
     else:
         run_simulator()
-    '''
+
     

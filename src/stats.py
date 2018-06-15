@@ -21,7 +21,7 @@ def run_stats():
     total = [['Scheduler', 'Ready', 'AWT']]
     for scheduler in SchedulerType.all():
         print('\n', colored(SchedulerType.str(scheduler), 'cyan'))
-        hardware = Hardware(35, 0, 0, 1)
+        hardware = Hardware(50, 0, 0, 1)
         load_programs(hardware.disk())
         kernel = Kernel(hardware, scheduler, 0, 0, 0)
         execute_programs(hardware.interrupt_vector())
@@ -53,7 +53,7 @@ class Timeline:
         return {
             State.NEW: colored('N', 'magenta'),
             State.READY: colored('R', 'green'),
-            State.RUNNING: colored('X', 'red'),
+            State.RUNNING: colored(' X ', 'red', attrs=['reverse']),
             State.TERMINATED: colored('T', 'white'),
             State.WAITING: colored('W', 'cyan')
         }[state]
