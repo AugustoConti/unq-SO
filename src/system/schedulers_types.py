@@ -45,6 +45,7 @@ class PriorityNoExp:
         self._ready[self._pcb_table.get_priority(pid) - 1].append(pid)
 
 
+# TODO hacer test para SJF
 class SJF:
     def __init__(self, pcb_table, dispatcher):
         self._pcbTable = pcb_table
