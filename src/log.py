@@ -70,7 +70,8 @@ def get_color(tipo):
 class Logger:
     @staticmethod
     def info(tipo, msj):
-        logging.getLogger(__name__).info("{tipo} >>> {msj}".format(tipo=get_color(tipo), msj=msj))
+        logging.getLogger(__name__).info("{tipo} {flecha} {msj}"
+                                         .format(tipo=get_color(tipo), flecha=colored('>>>', 'white'), msj=msj))
 
     @staticmethod
     def disabled():
