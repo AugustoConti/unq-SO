@@ -1,5 +1,5 @@
-from src.system.states import State
 from src.log import Logger
+from src.system.states import State
 
 
 class FCFS:
@@ -45,6 +45,23 @@ class PriorityNoExp:
         self._ready[self._pcb_table.get_priority(pid) - 1].append(pid)
 
 
+class Preemptive:
+    def __init__(self, pcb_table, dispatcher):
+        self._pcbTable = pcb_table
+        self._dispatcher = dispatcher
+
+    def add(self, pid):
+        pcb_run = self._pcbTable.get_running()
+        if self._pcbTable.get_priority(pid) < pcb_run['priority']:
+            Logger.info("Preemptive", "PCB entrante con mayor prioridad que running!")
+            self._dispatcher.save()
+            self._dispatcher.load(pid)
+            pcb_run['state'] = State.READY
+            return pcb_run['pid']
+        else:
+            return pid
+
+
 # TODO hacer test para SJF
 class SJF:
     def __init__(self, pcb_table, dispatcher):
@@ -67,7 +84,7 @@ class SJF:
             self._ready.append(pid)
 
     def next(self):
-        minimo = sorted(self._ready, key=lambda pid: self._pcbTable.get_intructions_left(pid)).pop(0)
+        minimo = sorted(self._ready, key=lambda pid: self._pcbTable.get_intructions_left(pid))[0]
         self._ready.remove(minimo)
         return minimo
 

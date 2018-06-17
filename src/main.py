@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
-from src.kernel import Kernel
-from src.system.schedulers import SchedulerType
-from src.hardware.mmu import *
 from src.hardware.hardware import Hardware
-from src.images import logo
+from src.hardware.mmu import *
+from src.kernel import Kernel
 from src.stats import run_stats
+from src.system.schedulers import SchedulerType
 from src.utils import *
 
 
@@ -22,17 +21,19 @@ def run_simulator():
     hardware.switch_on()
 
 
+# TODO implementar scheduler ShorterJobFirst !!
+# TODO Colores en logger de info
+
 # TODO implementar PCB
 
 # TODO agregar a STATS para cada pid, columna de retorno y espera
-# TODO MultiThreading
-# TODO Colores en logger de info
-# TODO asignacion continua ?
-# TODO implementar scheduler ShorterJobFirst !!
-# TODO file system
 # TODO proceso que empieze en un determinado tick
+# TODO MultiThreading
+# TODO asignacion continua ?
+# TODO file system
 
-def runFcfsPaged():
+
+def run_fcfs_paged():
     memory_size = 32
     frame_size = 4
     count_frames = memory_size // frame_size
@@ -44,7 +45,7 @@ def runFcfsPaged():
     hardware.switch_on()
 
 if __name__ == '__main__':
-    # runFcfsPaged()
+    # run_fcfs_paged()
 
     # logo()
 
