@@ -9,12 +9,12 @@ class Preemptive:
 
     def add(self, pid, comparer):
         pcb_run = self._pcbTable.get_running()
-        if comparer(pid) < comparer(pcb_run['pid']):
-            Logger.info("Preemptive", "PCB entrante con mayor prioridad que running!")
+        if comparer(pid) < comparer(pcb_run.pid):
+            Logger.info("Preemptive", "Realizando context switching")
             self._dispatcher.save()
             self._dispatcher.load(pid)
-            pcb_run['state'] = State.READY
-            return pcb_run['pid']
+            pcb_run.state = State.READY
+            return pcb_run.pid
         else:
             return pid
 

@@ -6,8 +6,8 @@ class DispatcherBasic:
         self._mmu = mmu
 
     def load(self, pcb):
-        self._mmu.set_base_dir(pcb['baseDir'])
-        self._mmu.set_limit(pcb['limit'])
+        self._mmu.set_base_dir(pcb.baseDir)
+        self._mmu.set_limit(pcb.limit)
 
     def save(self, pid):
         pass
@@ -19,7 +19,7 @@ class DispatcherPaged:
         self._mm = mm
 
     def load(self, pcb):
-        self._mmu.set_page_table(self._mm.get_page_table(pcb['pid']))
+        self._mmu.set_page_table(self._mm.get_page_table(pcb.pid))
 
     def save(self, pid):
         self._mm.add_page_table(pid, self._mmu.get_page_table())
@@ -34,13 +34,13 @@ class Dispatcher:
 
     def save(self):
         pcb = self._pcb_table.get_running()
-        pcb['pc'] = self._cpu.get_pc()
+        pcb.pc = self._cpu.get_pc()
         self._cpu.set_pc(-1)
-        self._base.save(pcb['pid'])
+        self._base.save(pcb.pid)
 
     def load(self, pid):
         pcb = self._pcb_table.set_running(pid)
         self._base.load(pcb)
-        self._cpu.set_pc(pcb['pc'])
+        self._cpu.set_pc(pcb.pc)
         self._timer.reset()
         Logger.info("Dispatcher", " CPU running: {currentPCB}".format(currentPCB=pcb))

@@ -1,6 +1,8 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
+
 from src.system.dispatcher import DispatcherPaged
+from src.system.pcb import PCB
 
 
 class TestDispatcherPaged(TestCase):
@@ -10,11 +12,11 @@ class TestDispatcherPaged(TestCase):
         self._dispatcher = DispatcherPaged(self._mm, self._mmu)
 
     def test_load_pid_1(self):
-        self._dispatcher.load({'pid': 1})
+        self._dispatcher.load(PCB(1))
         self._mmu.set_page_table.assert_called_once_with('MM_page_table')
 
     def test_load_pid_4(self):
-        self._dispatcher.load({'pid': 4})
+        self._dispatcher.load(PCB(4))
         self._mmu.set_page_table.assert_called_once_with('MM_page_table')
 
     def test_save_pid_1(self):

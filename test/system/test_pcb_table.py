@@ -1,5 +1,8 @@
 from unittest import TestCase
+
+from src.system.pcb import PCB
 from src.system.pcb_table import PCBTable
+from src.system.states import State
 
 
 class TestPCBTable(TestCase):
@@ -15,7 +18,7 @@ class TestPCBTable(TestCase):
         self.assertFalse(self._pcb_table.is_running())
 
     def test_is_running(self):
-        self._pcb_table.add_pcb({'pid': 1})
+        self._pcb_table.add_pcb(PCB(1))
         self._pcb_table.set_running(1)
         self.assertTrue(self._pcb_table.is_running())
 
@@ -23,21 +26,21 @@ class TestPCBTable(TestCase):
         self.assertEqual(None, self._pcb_table.get_running())
 
     def test_get_running(self):
-        self._pcb_table.add_pcb({'pid': 1})
+        self._pcb_table.add_pcb(PCB(1))
         self._pcb_table.set_running(1)
-        self.assertEqual({'pid': 1, 'state': 'RUNNING'}, self._pcb_table.get_running())
+        self.assertEqual(State.RUNNING, self._pcb_table.get_running().state)
 
     def test_getRunningPid(self):
-        self._pcb_table.add_pcb({'pid': 1})
+        self._pcb_table.add_pcb(PCB(1))
         self._pcb_table.set_running(1)
         self.assertEqual(1, self._pcb_table.get_running_pid())
 
     def test_set_PCBState(self):
-        self._pcb_table.add_pcb({'pid': 1})
+        self._pcb_table.add_pcb(PCB(1))
         self._pcb_table.set_running(1)
         self._pcb_table.set_pcb_state(1, "test")
-        self.assertEqual({'pid': 1, 'state': 'test'}, self._pcb_table.get_running())
+        self.assertEqual('test', self._pcb_table.get_running().state)
 
     def test_getPriority(self):
-        self._pcb_table.add_pcb({'pid': 1, 'priority': 3})
+        self._pcb_table.add_pcb(PCB(1, priority=3))
         self.assertEqual(3, self._pcb_table.get_priority(1))

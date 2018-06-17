@@ -1,13 +1,14 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock, Mock
 
+from src.system.pcb import PCB
 from src.system.schedulers_types import Preemptive
 
 
 class TestPreemptive(TestCase):
     def setUp(self):
         self._comparer = Mock(side_effect=lambda value: value)
-        self._table = NonCallableMock(get_running=Mock(return_value={'pid': 3}))
+        self._table = NonCallableMock(get_running=Mock(return_value=PCB(3)))
         self._dispatcher = NonCallableMock()
         self._sch = Preemptive(self._table, self._dispatcher)
 

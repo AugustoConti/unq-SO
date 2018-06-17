@@ -27,14 +27,14 @@ class PCBTable:
         return self.get_running()
 
     def add_pcb(self, pcb):
-        self._table[pcb['pid']] = pcb
+        self._table[pcb.pid] = pcb
 
     def set_pcb_state(self, pid, state):
-        self._table[pid]['state'] = state
+        self._table[pid].state = state
 
     def get_priority(self, pid):
-        return self._table[pid]['priority']
+        return self._table[pid].priority
 
     def get_intructions_left(self, pid):
         pcb = self._table[pid]
-        return pcb['limit'] - pcb['pc']
+        return pcb.limit - pcb.pc

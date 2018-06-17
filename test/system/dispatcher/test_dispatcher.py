@@ -1,11 +1,13 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
+
 from src.system.dispatcher import Dispatcher
+from src.system.pcb import PCB
 
 
 class TestDispatcher(TestCase):
     def setUp(self):
-        self._running = {'pid': 1, 'pc': 0, 'baseDir': 1, 'limit': 2}
+        self._running = PCB(base=1, limit=2)
         self._base = NonCallableMock()
         self._pcb_table = NonCallableMock(set_running=Mock(return_value=self._running),
                                           get_running=Mock(return_value=self._running))
@@ -15,7 +17,7 @@ class TestDispatcher(TestCase):
 
     def test_save(self):
         self._dispatcher.save()
-        self.assertEqual(8, self._running['pc'])
+        self.assertEqual(8, self._running.pc)
         self._cpu.set_pc.assert_called_once_with(-1)
 
     def test_load(self):

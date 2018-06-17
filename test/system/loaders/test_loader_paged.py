@@ -2,6 +2,7 @@ from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock, call
 
 from src.system.loader import LoaderPagedBase, LoaderPaged, LoaderPagedOnDemand
+from src.system.pcb import PCB
 
 
 class TestLoaderPagedBase(TestCase):
@@ -18,10 +19,10 @@ class TestLoaderPagedBase(TestCase):
         self._loader = LoaderPagedBase(self._tipo, self._disk, self._swap, self._memory, self._mm, 2)
 
     def test_load(self):
-        pcb = {'pid': 1, 'name': 3}
+        pcb = PCB(1, name=3)
         self._loader.load(pcb)
         self._mm.create_page_table.assert_called_once_with(1, [0, 1, 2])
-        self.assertEqual(3, pcb['limit'])
+        self.assertEqual(3, pcb.limit)
 
     def test_load_page(self):
         self._loader.load_page('pepe', 2, 5)

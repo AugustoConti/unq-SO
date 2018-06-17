@@ -1,5 +1,6 @@
 from src.hardware.interruptions import Interruption
 from src.log import Logger
+from src.system.pcb import PCB
 from src.system.states import State
 
 
@@ -54,14 +55,10 @@ class NewInterruptionHandler:
         self._loader = loader
 
     def execute(self, irq):
-        pcb = {'pid': self._pcbTable.get_pid(),
-               'priority': irq.parameters()['priority'],
-               'name': irq.parameters()['program'],
-               'pc': 0,
-               'state': State.NEW}
+        pcb = PCB(self._pcbTable.get_pid(), irq.parameters()['program'], priority=irq.parameters()['priority'])
         self._loader.load(pcb)
         self._pcbTable.add_pcb(pcb)
-        self._scheduler.run_or_add_queue(pcb['pid'])
+        self._scheduler.run_or_add_queue(pcb.pid)
 
 
 class IoOutInterruptionHandler:
@@ -88,7 +85,7 @@ class PageFaultInterruptionHandler:
         frame = self._mm.get_frame()
         idx = self._mm.get_swap_index(run, page)
         if idx == -1:
-            self._loader.load_page(self._pcbTable.get_running()['name'], page, frame)
+            self._loader.load_page(self._pcbTable.get_running().name, page, frame)
         else:
             self._loader.swap_out(idx, frame)
         self._mm.update_page(run, page, frame)

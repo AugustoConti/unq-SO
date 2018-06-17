@@ -1,6 +1,8 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock, Mock
+
 from src.system.interruption_handlers import PageFaultInterruptionHandler
+from src.system.pcb import PCB
 
 
 class TestPageFaultInterruptionHandler(TestCase):
@@ -9,7 +11,7 @@ class TestPageFaultInterruptionHandler(TestCase):
                                    get_swap_index=Mock(return_value=8),
                                    get_page_table=Mock(return_value='MM_page_table'))
         self._pcbTable = NonCallableMock(get_running_pid=Mock(return_value=1),
-                                         get_running=Mock(return_value={'name': 'name'}))
+                                         get_running=Mock(return_value=PCB(name='name')))
         self._loader = NonCallableMock()
         self._mmu = NonCallableMock(get_page_table=Mock(return_value='MMU_page_table'))
         self._page_fault = PageFaultInterruptionHandler(self._mm, self._pcbTable, self._loader, self._mmu)

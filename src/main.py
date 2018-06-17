@@ -21,10 +21,7 @@ def run_simulator():
     hardware.switch_on()
 
 
-# TODO implementar scheduler ShorterJobFirst !!
 # TODO Colores en logger de info
-
-# TODO implementar PCB
 
 # TODO agregar a STATS para cada pid, columna de retorno y espera
 # TODO proceso que empieze en un determinado tick

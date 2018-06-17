@@ -5,11 +5,11 @@ class LoaderBasic:
         self._memory = memory
 
     def _update_pcb(self, pcb, size):
-        pcb['baseDir'] = self._next_dir
-        pcb['limit'] = size
+        pcb.baseDir = self._next_dir
+        pcb.limit = size
 
     def load(self, pcb):
-        instructions = self._disk.get(pcb['name'])
+        instructions = self._disk.get(pcb.name)
         size = len(instructions)
         self._update_pcb(pcb, size)
         [self._memory.put(self._next_dir + i, instructions[i]) for i in range(size)]
@@ -33,9 +33,9 @@ class LoaderPagedBase:
         self._put(frame, self._disk.get_page(name, page))
 
     def load(self, pcb):
-        pcb['limit'] = self._disk.get_size(pcb['name'])
-        frames = [self._tipo.load(self, pcb['name'], page) for page in range(self._disk.get_nro_pages(pcb['name']))]
-        self._mm.create_page_table(pcb['pid'], frames)
+        pcb.limit = self._disk.get_size(pcb.name)
+        frames = [self._tipo.load(self, pcb.name, page) for page in range(self._disk.get_nro_pages(pcb.name))]
+        self._mm.create_page_table(pcb.pid, frames)
 
     def swap_out(self, idx, frame):
         self._put(frame, self._swap.swap_out(idx))
