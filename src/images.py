@@ -17,7 +17,7 @@ Y8,            8b       d8  88       88   88     88  88  88  88  88       88  88
 
 
 def blue_screen():
-    raise Exception('\n'+colored('''
+    raise Exception('\n' + colored('''
     
                           BLUE SCREEN OF DEATH
                          

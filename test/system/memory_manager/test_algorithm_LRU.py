@@ -1,6 +1,7 @@
 from unittest import TestCase
-from src.system.memory_manager.memory_manager import PageRow
+
 from src.system.memory_manager.algorithms import LRU
+from src.system.memory_manager.memory_manager import PageRow
 
 
 class TestLRU(TestCase):

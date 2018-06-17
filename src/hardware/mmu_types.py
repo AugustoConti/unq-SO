@@ -1,5 +1,5 @@
-from src.hardware.irq import IRQ
 from src.hardware.interruptions import Interruption
+from src.hardware.irq import IRQ
 from src.log import Logger
 
 

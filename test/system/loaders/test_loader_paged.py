@@ -1,12 +1,14 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock, call
+
 from src.system.loader import LoaderPagedBase, LoaderPaged, LoaderPagedOnDemand
 
 
 class TestLoaderPagedBase(TestCase):
     def setUp(self):
         self._tipo = NonCallableMock(load=Mock(side_effect=lambda a, b, c: c))
-        self._disk = NonCallableMock(get_nro_pages=Mock(side_effect=lambda s: s),
+        self._disk = NonCallableMock(get_size=Mock(side_effect=lambda a: a),
+                                     get_nro_pages=Mock(side_effect=lambda s: s),
                                      get_page=Mock(side_effect=lambda n, p: range(p)))
         self._swap = NonCallableMock(swap_out=Mock(side_effect=lambda a: range(a)),
                                      swap_in=Mock(side_effect=lambda p: p))
@@ -16,8 +18,10 @@ class TestLoaderPagedBase(TestCase):
         self._loader = LoaderPagedBase(self._tipo, self._disk, self._swap, self._memory, self._mm, 2)
 
     def test_load(self):
-        self._loader.load({'pid': 1, 'name': 3})
+        pcb = {'pid': 1, 'name': 3}
+        self._loader.load(pcb)
         self._mm.create_page_table.assert_called_once_with(1, [0, 1, 2])
+        self.assertEqual(3, pcb['limit'])
 
     def test_load_page(self):
         self._loader.load_page('pepe', 2, 5)
@@ -29,6 +33,7 @@ class TestLoaderPagedBase(TestCase):
 
     def test_swap_in(self):
         self.assertEqual([4, 5], self._loader.swap_in(2))
+
 
 class TestLoaderPaged(TestCase):
     def setUp(self):

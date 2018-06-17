@@ -1,5 +1,5 @@
-from src.log import Logger
 from src.hardware.interruptions import Interruption
+from src.log import Logger
 from src.system.states import State
 
 

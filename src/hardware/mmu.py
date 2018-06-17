@@ -1,8 +1,8 @@
 from src.hardware.mmu_types import *
-from src.system.loader import *
 from src.system.dispatcher import *
-from src.system.memory_manager.memory_manager import *
+from src.system.loader import *
 from src.system.memory_manager.algorithms import AlgorithmType
+from src.system.memory_manager.memory_manager import *
 
 
 class MMUType:

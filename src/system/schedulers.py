@@ -5,11 +5,11 @@ from src.system.states import State
 class SchedulerType:
     lista = ['Shorter Job First',
              'FCFS',
-             'Priority No Expropiativo',
-             'Priority Expropiativo',
+             'Priority No Preemptive',
+             'Priority Preemptive',
              'Round Robin',
-             'Round Robin Priority No Expropiativo',
-             'Round Robin Priority Expropiativo']
+             'Round Robin Priority No Preemptive',
+             'Round Robin Priority Preemptive']
 
     @staticmethod
     def str(tipo):
@@ -29,21 +29,23 @@ class SchedulerType:
     @staticmethod
     def new(tipo, pcb_table, dispatcher, timer):
         if tipo == 0:
-            return SJF(pcb_table, dispatcher)
+            return SJF(pcb_table, Preemptive(pcb_table, dispatcher))
         elif tipo == 1:
             return FCFS()
         elif tipo == 2:
-            return PriorityNoExp(pcb_table)
+            return PriorityNoPreemptive(pcb_table)
         elif tipo == 3:
-            return PriorityExp(pcb_table, dispatcher, PriorityNoExp(pcb_table))
+            return PriorityPreemptive(pcb_table, Preemptive(pcb_table, dispatcher), PriorityNoPreemptive(pcb_table))
         elif tipo == 4:
             return RoundRobin(FCFS(), 2, timer)
         elif tipo == 5:
-            return RoundRobin(PriorityNoExp(pcb_table), 2, timer)
+            return RoundRobin(PriorityNoPreemptive(pcb_table), 2, timer)
         elif tipo == 6:
-            return RoundRobin(PriorityExp(pcb_table, dispatcher, PriorityNoExp(pcb_table)), 2, timer)
+            return RoundRobin(
+                PriorityPreemptive(pcb_table, Preemptive(pcb_table, dispatcher), PriorityNoPreemptive(pcb_table)), 2,
+                timer)
         else:
-            raise Exception('scheduler type {sch} not recongnized'.format(sch=tipo))
+            raise Exception('Scheduler type {sch} not recongnized'.format(sch=tipo))
 
 
 class Scheduler:

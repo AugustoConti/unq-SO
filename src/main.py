@@ -44,6 +44,7 @@ def run_fcfs_paged():
     execute_programs(hardware.interrupt_vector())
     hardware.switch_on()
 
+
 if __name__ == '__main__':
     # run_fcfs_paged()
 
@@ -56,5 +57,3 @@ if __name__ == '__main__':
         run_stats()
     else:
         run_simulator()
-
-    

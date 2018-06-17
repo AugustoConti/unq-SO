@@ -33,7 +33,7 @@ class LoaderPagedBase:
         self._put(frame, self._disk.get_page(name, page))
 
     def load(self, pcb):
-        pcb['limit'] = len(self._disk.get(pcb['name']))
+        pcb['limit'] = self._disk.get_size(pcb['name'])
         frames = [self._tipo.load(self, pcb['name'], page) for page in range(self._disk.get_nro_pages(pcb['name']))]
         self._mm.create_page_table(pcb['pid'], frames)
 

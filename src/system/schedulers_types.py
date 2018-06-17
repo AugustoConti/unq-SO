@@ -2,6 +2,41 @@ from src.log import Logger
 from src.system.states import State
 
 
+class Preemptive:
+    def __init__(self, pcb_table, dispatcher):
+        self._pcbTable = pcb_table
+        self._dispatcher = dispatcher
+
+    def add(self, pid, comparer):
+        pcb_run = self._pcbTable.get_running()
+        if comparer(pid) < comparer(pcb_run['pid']):
+            Logger.info("Preemptive", "PCB entrante con mayor prioridad que running!")
+            self._dispatcher.save()
+            self._dispatcher.load(pid)
+            pcb_run['state'] = State.READY
+            return pcb_run['pid']
+        else:
+            return pid
+
+
+class SJF:
+    def __init__(self, pcb_table, preemptive):
+        self._pcbTable = pcb_table
+        self._preemptive = preemptive
+        self._ready = []
+
+    def is_empty(self):
+        return not self._ready
+
+    def add(self, pid):
+        self._ready.append(self._preemptive.add(pid, self._pcbTable.get_intructions_left))
+
+    def next(self):
+        minimo = sorted(self._ready, key=lambda pid: self._pcbTable.get_intructions_left(pid))[0]
+        self._ready.remove(minimo)
+        return minimo
+
+
 class FCFS:
     def __init__(self):
         self._ready = []
@@ -16,7 +51,7 @@ class FCFS:
         return self._ready.pop(0)
 
 
-class PriorityNoExp:
+class PriorityNoPreemptive:
     def __init__(self, pcb_table):
         self.__cant_priority = 5
         self.__doAging = 0
@@ -45,69 +80,17 @@ class PriorityNoExp:
         self._ready[self._pcb_table.get_priority(pid) - 1].append(pid)
 
 
-class Preemptive:
-    def __init__(self, pcb_table, dispatcher):
+class PriorityPreemptive:
+    def __init__(self, pcb_table, preemptive, base):
         self._pcbTable = pcb_table
-        self._dispatcher = dispatcher
-
-    def add(self, pid):
-        pcb_run = self._pcbTable.get_running()
-        if self._pcbTable.get_priority(pid) < pcb_run['priority']:
-            Logger.info("Preemptive", "PCB entrante con mayor prioridad que running!")
-            self._dispatcher.save()
-            self._dispatcher.load(pid)
-            pcb_run['state'] = State.READY
-            return pcb_run['pid']
-        else:
-            return pid
-
-
-# TODO hacer test para SJF
-class SJF:
-    def __init__(self, pcb_table, dispatcher):
-        self._pcbTable = pcb_table
-        self._dispatcher = dispatcher
-        self._ready = []
-
-    def is_empty(self):
-        return not self._ready
-
-    def add(self, pid):
-        pcb_run = self._pcbTable.get_running()
-        if self._pcbTable.get_intructions_left(pid) < self._pcbTable.get_intructions_left(pcb_run['pid']):
-            Logger.info("SJF", "PCB entrante con menor cantidad de instrucciones restantes que running!")
-            self._dispatcher.save()
-            self._dispatcher.load(pid)
-            pcb_run['state'] = State.READY
-            self._ready.append(pcb_run['pid'])
-        else:
-            self._ready.append(pid)
-
-    def next(self):
-        minimo = sorted(self._ready, key=lambda pid: self._pcbTable.get_intructions_left(pid))[0]
-        self._ready.remove(minimo)
-        return minimo
-
-
-class PriorityExp:
-    def __init__(self, pcb_table, dispatcher, base):
-        self._pcbTable = pcb_table
-        self._dispatcher = dispatcher
+        self._preemptive = preemptive
         self._base = base
 
     def is_empty(self):
         return self._base.is_empty()
 
     def add(self, pid):
-        pcb_run = self._pcbTable.get_running()
-        if self._pcbTable.get_priority(pid) < pcb_run['priority']:
-            Logger.info("PriorityExp", "PCB entrante con mayor prioridad que running!")
-            self._dispatcher.save()
-            self._dispatcher.load(pid)
-            pcb_run['state'] = State.READY
-            self._base.add(pcb_run['pid'])
-        else:
-            self._base.add(pid)
+        self._base.add(self._preemptive.add(pid, self._pcbTable.get_priority))
 
     def next(self):
         return self._base.next()

@@ -20,7 +20,8 @@ class IoDeviceController:
         return finished_pid
 
     def __load(self, pair):
-        Logger.info("IoDeviceController", " IO loading pid: {pid}, instruction: {inst}".format(pid=pair['pid'], inst=pair['inst']))
+        Logger.info("IoDeviceController",
+                    " IO loading pid: {pid}, instruction: {inst}".format(pid=pair['pid'], inst=pair['inst']))
         self._current_pid = pair['pid']
         self._device.execute(pair['inst'])
 

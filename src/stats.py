@@ -1,13 +1,25 @@
 from collections import defaultdict
+
 from termcolor import colored
-from src.system.states import State
-from src.kernel import Kernel
-from src.system.schedulers import SchedulerType
-from src.utils import *
+
 from src.hardware.hardware import *
+from src.kernel import Kernel
 from src.log import Logger
+from src.system.schedulers import SchedulerType
+from src.system.states import State
+from src.utils import *
 
 __all__ = ["run_stats"]
+
+
+def mapear(state):
+    return {
+        State.NEW: colored('N', 'magenta'),
+        State.READY: colored('R', 'green'),
+        State.RUNNING: colored(' X ', 'red', attrs=['reverse']),
+        State.TERMINATED: colored('T', 'white'),
+        State.WAITING: colored('W', 'cyan')
+    }[state]
 
 
 def run_stats():
@@ -44,19 +56,10 @@ class Timeline:
         return all(pcb['state'] == State.TERMINATED for pcb in self._pcb_table)
 
     def _save_states(self):
-        self._states[self._tick_nro] = ['PCB '+str(pcb['pid']) for pcb in self._pcb_table] if self._tick_nro == 0 \
-            else [self.__mapear(pcb['state']) for pcb in self._pcb_table]
-        self._count_ready += self._states[self._tick_nro].count(self.__mapear(State.READY))
+        self._states[self._tick_nro] = ['PCB ' + str(pcb['pid']) for pcb in self._pcb_table] if self._tick_nro == 0 \
+            else [mapear(pcb['state']) for pcb in self._pcb_table]
+        self._count_ready += self._states[self._tick_nro].count(mapear(State.READY))
         self._tick_nro += 1
-
-    def __mapear(self, state):
-        return {
-            State.NEW: colored('N', 'magenta'),
-            State.READY: colored('R', 'green'),
-            State.RUNNING: colored(' X ', 'red', attrs=['reverse']),
-            State.TERMINATED: colored('T', 'white'),
-            State.WAITING: colored('W', 'cyan')
-        }[state]
 
     def calc(self):
         while not self._terminated():

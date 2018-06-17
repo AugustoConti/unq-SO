@@ -1,10 +1,8 @@
 from tabulate import tabulate
-from termcolor import colored
 from time import sleep
-from src.hardware.mmu import *
-from src.hardware.irq import IRQ
+
 from src.hardware.instructions import Instruction
-from src.hardware.interruptions import Interruption
+from src.hardware.mmu import *
 from src.images import blue_screen
 
 
@@ -89,7 +87,7 @@ class Memory:
         return self._cells[addr]
 
     def __repr__(self):
-        return '\n'+tabulate(enumerate(self._cells), tablefmt='psql')
+        return '\n' + tabulate(enumerate(self._cells), tablefmt='psql')
 
 
 class Cpu:
@@ -182,6 +180,9 @@ class Disk:
 
     def get(self, name):
         return self._programs[name]
+
+    def get_size(self, name):
+        return len(self.get(name))
 
     def get_page(self, name, page):
         return self.get(name)[page * self._frame_size: (page + 1) * self._frame_size]

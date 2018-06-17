@@ -1,15 +1,18 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
-from src.system.schedulers import PriorityNoExp
+
+from src.system.schedulers import PriorityNoPreemptive
 
 
-class TestPriorityNoExp(TestCase):
+class TestPriorityNoPreemptive(TestCase):
     def setUp(self):
-        self._pcbTable = NonCallableMock(get_priority=Mock(side_effect=lambda value: value))
-        self._scheduler = PriorityNoExp(self._pcbTable)
+        self._pcbTable = NonCallableMock(get_priority=Mock(side_effect=lambda v: v))
+        self._scheduler = PriorityNoPreemptive(self._pcbTable)
 
-    def test_isEmpty(self):
+    def test_is_empty(self):
         self.assertTrue(self._scheduler.is_empty())
+
+    def test_not_is_empty(self):
         self._scheduler.add(1)
         self.assertFalse(self._scheduler.is_empty())
 

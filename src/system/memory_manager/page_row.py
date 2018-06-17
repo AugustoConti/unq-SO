@@ -10,5 +10,5 @@ class PageRow:
         self.SC = sc
 
     def __repr__(self):
-        return "PageRow( Frame: {f}, Swap: {s}, LoadTime: {lt}, LastAccess: {la}, SC: {sc} )"\
+        return "PageRow( Frame: {f}, Swap: {s}, LoadTime: {lt}, LastAccess: {la}, SC: {sc} )" \
             .format(f=self.frame, s=self.swap, lt=self.loadTime, la=self.lastAccessTime, sc=self.SC)

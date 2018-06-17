@@ -6,8 +6,9 @@ class AlgorithmType:
     def choose():
         lista = ['FCFS', 'LRU', 'Second Chance']
         return [FCFS, LRU, SC][int(input("\n\nType Algorithm:\n"
-             + "".join(["{i} - {alg}\n".format(i=i, alg=lista[i]) for i in range(len(lista))])
-             + "Choice: "))]()
+                                         + "".join(
+            ["{i} - {alg}\n".format(i=i, alg=lista[i]) for i in range(len(lista))])
+                                         + "Choice: "))]()
 
 
 class FCFS:
