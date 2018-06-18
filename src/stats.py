@@ -30,7 +30,7 @@ def run_stats():
                           ['X', State.RUNNING],
                           ['T', State.TERMINATED],
                           ['W', State.WAITING]], headers="firstrow"), '\n')
-    total = [['Scheduler', 'Ready', 'AWT']]
+    total = [['Scheduler', 'Retorno', 'Ready']]
     for scheduler in SchedulerType.all():
         print('\n', colored(SchedulerType.str(scheduler), 'cyan'))
         hardware = Hardware(50, 0, 0, 1)
@@ -49,7 +49,8 @@ class Timeline:
         self._clock = clock
         self._pcb_table = pcb_table
         self._tick_nro = 0
-        self._count_ready = 0
+        self._ready = defaultdict(int)
+        self._retorno = defaultdict(int)
         self._states = defaultdict(list)
 
     def _terminated(self):
@@ -58,12 +59,19 @@ class Timeline:
     def _save_states(self):
         self._states[self._tick_nro] = ['PCB ' + str(pcb.pid) for pcb in self._pcb_table] if self._tick_nro == 0 \
             else [mapear(pcb.state) for pcb in self._pcb_table]
-        self._count_ready += self._states[self._tick_nro].count(mapear(State.READY))
+        if self._tick_nro > 0:
+            for pcb in self._pcb_table:
+                self._retorno[pcb.pid] += 1 if pcb.state != State.TERMINATED else 0
+                self._ready[pcb.pid] += 1 if pcb.state == State.READY else 0
         self._tick_nro += 1
 
     def calc(self):
         while not self._terminated():
             self._save_states()
             self._clock.do_ticks(1)
+        self._states['Retorno'] = self._retorno.values()
+        self._states['Espera'] = self._ready.values()
+        totalEspera = sum(self._ready.values())
+        totalRetorno = sum(self._ready.values())
         print(tabulate(self._states, headers="keys", tablefmt="fancy_grid"))
-        return [self._count_ready, self._count_ready / len(self._pcb_table)]
+        return [totalRetorno / len(self._pcb_table), totalEspera / len(self._pcb_table)]
