@@ -1,7 +1,8 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock, Mock
-from src.system.states import State
+
 from src.system.schedulers import Scheduler
+from src.system.states import State
 
 
 class TestScheduler(TestCase):
@@ -16,8 +17,8 @@ class TestScheduler(TestCase):
         self._tipo.add.assert_called_once_with(pid)
         self._table.set_pcb_state.assert_called_once_with(pid, State.READY)
 
-    def test_add_running(self):
-        self._scheduler.add_running()
+    def test_add_running_and_load(self):
+        self._scheduler.add_running_and_load()
         self.check_add(1)
 
     def test_run_or_add_queue_is_running(self):

@@ -7,30 +7,27 @@ from src.system.states import State
 class KillInterruptionHandler:
     def __init__(self, scheduler, pcb_table, dispatcher, mm):
         self._scheduler = scheduler
-        self._pcbTable = pcb_table
+        self._pcb_table = pcb_table
         self._dispatcher = dispatcher
         self._mm = mm
 
     def execute(self, irq):
-        self._dispatcher.save()
-        running = self._pcbTable.get_running_pid()
-        self._pcbTable.set_pcb_state(running, State.TERMINATED)
-        self._mm.kill(running)
-        Logger.info("Kill", " Finished: {currentPCB}".format(currentPCB=self._pcbTable.get_running()))
+        self._dispatcher.save(State.TERMINATED)
+        self._mm.kill(self._pcb_table.get_running_pid())
+        Logger.info("Kill", " Finished: {currentPCB}".format(currentPCB=self._pcb_table.get_running()))
         self._scheduler.load_from_ready()
 
 
 class IoInInterruptionHandler:
     def __init__(self, scheduler, pcb_table, io_device_controller, dispatcher):
         self._scheduler = scheduler
-        self._pcbTable = pcb_table
+        self._pcb_table = pcb_table
         self._ioDeviceController = io_device_controller
         self._dispatcher = dispatcher
 
     def execute(self, irq):
-        self._pcbTable.set_pcb_state(self._pcbTable.get_running_pid(), State.WAITING)
-        self._dispatcher.save()
-        self._ioDeviceController.run_operation(self._pcbTable.get_running_pid(), irq.parameters())
+        self._dispatcher.save(State.WAITING)
+        self._ioDeviceController.run_operation(self._pcb_table.get_running_pid(), irq.parameters())
         self._scheduler.load_from_ready()
 
 
@@ -42,22 +39,22 @@ class TimeOutInterruptionHandler:
 
     def execute(self, irq):
         Logger.info("TimeOut", "TimeOut Interruption")
-        self._dispatcher.save()
-        self._scheduler.add_running()
-        self._scheduler.load_from_ready()
+        self._dispatcher.save(State.READY)
+        self._scheduler.add_running_and_load()
         self._timer.reset(True)
 
 
 class NewInterruptionHandler:
     def __init__(self, scheduler, pcb_table, loader):
         self._scheduler = scheduler
-        self._pcbTable = pcb_table
+        self._pcb_table = pcb_table
         self._loader = loader
 
     def execute(self, irq):
-        pcb = PCB(self._pcbTable.get_pid(), irq.parameters()['program'], priority=irq.parameters()['priority'])
+        params = irq.parameters()
+        pcb = PCB(self._pcb_table.get_pid(), params['program'], priority=params['priority'])
         self._loader.load(pcb)
-        self._pcbTable.add_pcb(pcb)
+        self._pcb_table.add_pcb(pcb)
         self._scheduler.run_or_add_queue(pcb.pid)
 
 
@@ -74,22 +71,22 @@ class IoOutInterruptionHandler:
 class PageFaultInterruptionHandler:
     def __init__(self, mm, pcb_table, loader, mmu):
         self._mm = mm
-        self._pcbTable = pcb_table
+        self._pcb_table = pcb_table
         self._loader = loader
         self._mmu = mmu
 
     def execute(self, irq):
-        run = self._pcbTable.get_running_pid()
-        self._mm.add_page_table(run, self._mmu.get_page_table())
+        pcb_run = self._pcb_table.get_running()
+        self._mm.add_page_table(pcb_run.pid, self._mmu.get_page_table())
         page = irq.parameters()
         frame = self._mm.get_frame()
-        idx = self._mm.get_swap_index(run, page)
+        idx = self._mm.get_swap_index(pcb_run.pid, page)
         if idx == -1:
-            self._loader.load_page(self._pcbTable.get_running().name, page, frame)
+            self._loader.load_page(pcb_run.name, page, frame)
         else:
             self._loader.swap_out(idx, frame)
-        self._mm.update_page(run, page, frame)
-        self._mmu.set_page_table(self._mm.get_page_table(run))
+        self._mm.update_page(pcb_run.pid, page, frame)
+        self._mmu.set_page_table(self._mm.get_page_table(pcb_run.pid))
 
 
 def register_handlers(interrupt_vector, scheduler, pcb_table, loader, dispatcher, io_device_controller, timer, mm, mmu):

@@ -8,13 +8,12 @@ class Preemptive:
         self._dispatcher = dispatcher
 
     def add(self, pid, comparer):
-        pcb_run = self._pcbTable.get_running()
-        if comparer(pid) < comparer(pcb_run.pid):
+        pid_run = self._pcbTable.get_running_pid()
+        if comparer(pid) < comparer(pid_run):
             Logger.info("Preemptive", "Realizando context switching")
-            self._dispatcher.save()
+            self._dispatcher.save(State.READY)
             self._dispatcher.load(pid)
-            pcb_run.state = State.READY
-            return pcb_run.pid
+            return pid_run
         else:
             return pid
 

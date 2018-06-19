@@ -16,8 +16,9 @@ class TestDispatcher(TestCase):
         self._dispatcher = Dispatcher(self._base, self._pcb_table, self._cpu, self._timer)
 
     def test_save(self):
-        self._dispatcher.save()
+        self._dispatcher.save('test')
         self.assertEqual(8, self._running.pc)
+        self.assertEqual('test', self._running.state)
         self._cpu.set_pc.assert_called_once_with(-1)
 
     def test_load(self):

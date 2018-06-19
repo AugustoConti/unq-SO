@@ -59,8 +59,9 @@ class Scheduler:
         self._pcbTable.set_pcb_state(pid, State.READY)
         self.__tipo.add(pid)
 
-    def add_running(self):
+    def add_running_and_load(self):
         self.__add(self._pcbTable.get_running_pid())
+        self.load_from_ready()
 
     def run_or_add_queue(self, pid):
         if self._pcbTable.is_running():

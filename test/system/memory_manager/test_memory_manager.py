@@ -1,5 +1,6 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
+
 from src.system.memory_manager.memory_manager import MemoryManager, PageRow
 
 
@@ -39,6 +40,13 @@ class TestMemoryManager(TestCase):
         self.assertEqual(5, self._mm.get_frame())
         with self.assertRaises(KeyError):
             self._mm.get_page_table(1)
+
+    def test_kill_with_some_frames(self):
+        p1 = PageRow(-1)
+        p2 = PageRow(-1)
+        self._mm.add_page_table(1, [p1, p2])
+        self._mm.kill(1)
+        self.assertEqual(1, self._mm.get_frame())
 
     def test_kill_call_delete_swap_from_base(self):
         p1 = PageRow(4, swap=1)
