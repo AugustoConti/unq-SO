@@ -1,3 +1,6 @@
+from src.log import Logger
+
+
 class LoaderBasic:
     def __init__(self, disk, memory):
         self._disk = disk
@@ -31,11 +34,14 @@ class LoaderPagedBase:
 
     def load_page(self, name, page, frame):
         self._put(frame, self._disk.get_page(name, page))
+        Logger.info('Loader',
+                    'load page {page} in frame {frame} from prg: {name}'.format(name=name, page=page, frame=frame))
 
     def load(self, pcb):
         pcb.limit = self._disk.get_size(pcb.name)
         frames = [self._tipo.load(self, pcb.name, page) for page in range(self._disk.get_nro_pages(pcb.name))]
         self._mm.create_page_table(pcb.pid, frames)
+        Logger.info('Loader', 'loaded {pcb} in frames: {frames}'.format(pcb=pcb, frames=frames))
 
     def swap_out(self, idx, frame):
         self._put(frame, self._swap.swap_out(idx))
@@ -43,6 +49,7 @@ class LoaderPagedBase:
     def swap_in(self, frame):
         base_dir = self._frame_size * frame
         page = [self._memory.get(base_dir + i) for i in range(self._frame_size)]
+        Logger.info('Loader', 'swap in frame: {frame}, page: {page}'.format(frame=frame, page=page))
         return self._swap.swap_in(page)
 
 
