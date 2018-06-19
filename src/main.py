@@ -9,7 +9,7 @@ from src.utils import *
 
 
 def run_simulator():
-    memory_size = 16
+    memory_size = 12
     frame_size = 4
     count_frames = memory_size // frame_size
     sch = SchedulerType.choose()
@@ -22,8 +22,6 @@ def run_simulator():
 
 
 # TODO Colores en logger de info
-
-# TODO Second chance, ordenar por frame, guardar aguja en ultimo frame
 
 # TODO proceso que empieze en un determinado tick
 # TODO MultiThreading
