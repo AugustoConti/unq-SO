@@ -12,11 +12,11 @@ class KillInterruptionHandler:
         self._mm = mm
 
     def execute(self, irq):
-        Logger.info("Kill", " Finished: {currentPCB}".format(currentPCB=self._pcbTable.get_running()))
-        running = self._pcbTable.get_running_pid()
-        self._mm.kill(running)
-        self._pcbTable.set_pcb_state(running, State.TERMINATED)
         self._dispatcher.save()
+        running = self._pcbTable.get_running_pid()
+        self._pcbTable.set_pcb_state(running, State.TERMINATED)
+        self._mm.kill(running)
+        Logger.info("Kill", " Finished: {currentPCB}".format(currentPCB=self._pcbTable.get_running()))
         self._scheduler.load_from_ready()
 
 
