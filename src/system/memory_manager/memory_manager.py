@@ -52,8 +52,8 @@ class MemoryManager:
 
     def kill(self, pid):
         if pid in self._page_table:
-            self._free_frames.extend([r.frame for r in self._page_table[pid]])
-            self._base.delete_swap([r.swap for r in self._page_table[pid] if r.swap != -1])
+            self._free_frames.extend([r.frame for r in self._page_table[pid] if r.frame >= 0])
+            self._base.delete_swap([r.swap for r in self._page_table[pid] if r.swap >= 0])
             del self._page_table[pid]
 
     def get_swap_index(self, pid, page):
