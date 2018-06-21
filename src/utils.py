@@ -1,17 +1,34 @@
+from consolemenu import SelectionMenu, MenuFormatBuilder
+from consolemenu.format import MenuBorderStyleType
+from consolemenu.menu_component import Dimension
+
 from src.hardware.hardware import IRQ, ASM
 from src.hardware.interruptions import Interruption
 
-__all__ = ["load_programs", "execute_programs"]
+__all__ = ["load_programs", "execute_programs", "selection_menu", "menu_format"]
+
+menu_format = MenuFormatBuilder(max_dimension=Dimension(width=55, height=40)) \
+    .set_border_style_type(MenuBorderStyleType.HEAVY_BORDER) \
+    .set_title_align('center') \
+    .set_subtitle_align('center') \
+    .show_header_bottom_border(True)
+
+
+def selection_menu(strings, title):
+    menu = SelectionMenu(strings, title, '', False, menu_format)
+    menu.show()
+    menu.join()
+    return menu.selected_option
 
 
 def load_programs(disk):
     disk.add_all({
-        'prg1.exe': expand([ASM.cpu(2), ASM.io(), ASM.cpu(3), ASM.io(), ASM.cpu(2)])
-        , 'prg2.exe': expand([ASM.cpu(4), ASM.io(), ASM.cpu(1)])
-        , 'prg3.exe': expand([ASM.cpu(3), ASM.io()])
-        , 'prg4.exe': expand([ASM.cpu(3)])
-        , 'prg5.exe': expand([ASM.cpu(5)])
-        , 'prg6.exe': expand([ASM.cpu(3), ASM.io()])
+        'prg1.exe': expand([ASM.cpu(2), ASM.io(), ASM.cpu(3), ASM.io(), ASM.cpu(2)]),
+        'prg2.exe': expand([ASM.cpu(4), ASM.io(), ASM.cpu(1)]),
+        'prg3.exe': expand([ASM.cpu(3), ASM.io()]),
+        'prg4.exe': expand([ASM.cpu(3)]),
+        'prg5.exe': expand([ASM.cpu(5)]),
+        'prg6.exe': expand([ASM.cpu(3), ASM.io()])
     })
 
 

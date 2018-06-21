@@ -1,5 +1,6 @@
 from src.system.schedulers_types import *
 from src.system.states import State
+from src.utils import selection_menu
 
 
 class SchedulerType:
@@ -21,10 +22,7 @@ class SchedulerType:
 
     @staticmethod
     def choose():
-        return int(input("\n\nType Scheduler:\n"
-                         + "".join(["{i} - {sch}\n".format(i=i, sch=SchedulerType.str(i))
-                                    for i in SchedulerType.all()])
-                         + "Choice: "))
+        return selection_menu(SchedulerType.lista, "Scheduler Type")
 
     @staticmethod
     def new(tipo, pcb_table, dispatcher, timer):
