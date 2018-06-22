@@ -24,14 +24,15 @@ logging.config.dictConfig({
         },
     },
     'handlers': {
-        'default': {
+        'file':{
+            'filename': 'info.log',
             'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
+            'class': 'logging.FileHandler',
         },
     },
     'loggers': {
         '': {
-            'handlers': ['default'],
+            'handlers': ['file'],
             'level': 'DEBUG',
             'propagate': True
         }
@@ -89,18 +90,24 @@ class _Logger:
         # os.system('cls' if os.name == 'nt' else 'clear')
         pass
 
+    def msj(self, msj):
+        self._log.info(msj)
+
     def indice(self):
-        self._log.info('\nIndice de colores:\n'+
-            tabulate([[_get_color('Hardware')],
-                      [_get_color('Software')],
-                      [_get_color('Interruption')],
-                      [_get_color('Otro')]])+'\n')
+        self.msj('\nIndice de colores:\n' +
+                 tabulate([[_get_color('Hardware')],
+                           [_get_color('Software')],
+                           [_get_color('Interruption')],
+                           [_get_color('Otro')]]) + '\n')
 
     def info(self, tipo, msj):
-        self._log.info("{tipo} {flecha} {msj}".format(tipo=_get_color(tipo), flecha=colored('>>>', 'white'), msj=msj))
+        self.msj("{tipo} {flecha} {msj}".format(tipo=_get_color(tipo), flecha=colored('>>>', 'white'), msj=msj))
 
     def disabled(self):
         self._log.propagate = False
+
+    def enabled(self):
+        self._log.propagate = True
 
 
 logger = _Logger()

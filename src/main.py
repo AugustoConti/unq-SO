@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from src.hardware.hardware import Hardware
 from src.hardware.mmu import *
 from src.images import logo
@@ -7,8 +7,6 @@ from src.stats import run_stats
 from src.system.schedulers import SchedulerType
 from src.utils import *
 from src.menu import *
-from consolemenu import *
-from consolemenu.items import *
 
 
 # TODO al comienzo del simulador, limpiar pantalla y cartel con info del so (tipo sch, tipo mem, tamaño mem, etc)
@@ -25,12 +23,13 @@ from consolemenu.items import *
 
 
 def run_simulator():
+    logger.enabled()
     memory_size = 12
     frame_size = 4
     count_frames = memory_size // frame_size
     sch = SchedulerType.choose()
     mmu = MMUType.choose()
-    hardware = Hardware(memory_size, 0.1, mmu, frame_size)
+    hardware = Hardware(memory_size, 1, mmu, frame_size)
     load_programs(hardware.disk())
     Kernel(hardware, sch, mmu, frame_size, count_frames)
     logger.indice()
@@ -53,10 +52,13 @@ def run_fcfs_paged():
 def main():
     # run_fcfs_paged()
     logo()
-    menu = ConsoleMenu("Contillini OS", formatter=menu_format)
-    menu.append_item(FunctionItem("Estadísticas", run_stats))
-    menu.append_item(FunctionItem("Simulador", run_simulator))
-    menu.show()
+
+    while True:
+        opt = selection_menu(["Estadísticas", "Simulador", "Exit"], "Contillini OS")
+        if opt == 2:
+            return
+        if opt in [0, 1]:
+            {0: run_stats, 1: run_simulator}[opt]()
 
 
 if __name__ == '__main__':

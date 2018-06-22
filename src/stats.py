@@ -16,7 +16,7 @@ def mapear(state):
     return {
         State.NEW: colored('N', 'magenta'),
         State.READY: colored('R', 'green'),
-        State.RUNNING: colored(' X ', 'red', attrs=['reverse']),
+        State.RUNNING: colored('X', 'red', attrs=['reverse']),
         State.TERMINATED: colored('T', 'white'),
         State.WAITING: colored('W', 'cyan')
     }[state]
