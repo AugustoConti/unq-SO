@@ -48,10 +48,14 @@ def run_fcfs_paged():
     hardware.switch_on()
 
 
-if __name__ == '__main__':
+def main():
     # run_fcfs_paged()
     logo()
     menu = ConsoleMenu("Contillini OS", formatter=menu_format)
     menu.append_item(FunctionItem("Estadísticas", run_stats))
     menu.append_item(FunctionItem("Simulador", run_simulator))
     menu.show()
+
+
+if __name__ == '__main__':
+    main()
