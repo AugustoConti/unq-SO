@@ -1,5 +1,6 @@
 import logging.config
 
+from tabulate import tabulate
 from termcolor import colored
 
 """
@@ -43,7 +44,8 @@ def do_color(tipo, color):
 
 
 def get_color(tipo):
-    hard = ['MMUPaged',
+    hard = ['Hardware',
+            'MMUPaged',
             'InterruptVector',
             'Clock',
             'CPU',
@@ -51,10 +53,12 @@ def get_color(tipo):
             'Timer',
             'Hardware',
             'Printer']
-    soft = ['Dispatcher',
+    soft = ['Software',
+            'Dispatcher',
             'PriorityExp',
             'IoDeviceController']
-    interrupt = ['Kill',
+    interrupt = ['Interruption',
+                 'Kill',
                  'TimeOut',
                  'IoOut']
     if tipo in hard:
@@ -68,6 +72,14 @@ def get_color(tipo):
 
 
 class Logger:
+    @staticmethod
+    def indice():
+        print('\nIndice de colores:\n',
+            tabulate([[get_color('Hardware')],
+                      [get_color('Software')],
+                      [get_color('Interruption')],
+                      [get_color('Otro')]]),'\n')
+
     @staticmethod
     def info(tipo, msj):
         logging.getLogger(__name__).info("{tipo} {flecha} {msj}"

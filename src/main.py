@@ -20,13 +20,14 @@ def run_simulator():
     hardware = Hardware(memory_size, 0.1, mmu, frame_size)
     load_programs(hardware.disk())
     Kernel(hardware, sch, mmu, frame_size, count_frames)
+    clear_screen()
+    Logger.indice()
     execute_programs(hardware.interrupt_vector())
     hardware.switch_on()
 
 
 # TODO Colores en logger de info
 
-# TODO en logger, indice de que es cada color al principio de simulacion
 # TODO al comienzo del simulador, limpiar pantalla y cartel con info del so (tipo sch, tipo mem, tamaño mem, etc)
 
 # TODO proceso que empieze en un determinado tick
