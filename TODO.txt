@@ -1,22 +1,6 @@
-PAGINACIÓN: estrategia de admin de memoria, basada en frames.
-tamaño de marco #=4 (cantidad de celdas x frame)
-cada proceso cargado en paginas, cada pagina asociada a un frames.
-
-Preguntas teoricas:
-que es SO y para que sirve
-scheduler proceso
-manejo de memoria: asignacion continua y paginacion
-para un sistema batch que tipo de memoria usarias?
-
------------------------------------------------------------------------------------
-
-
 FECHAS:
 
 JUNIO:
-19 PARCIAL (que es un SO, scheduler y memoria)
-21 Complemento teoria (interfaz grafica con python)
-
 26 -
 28 ENTREGA FINAL TP
 
@@ -46,5 +30,4 @@ Codigo en el PowerPoint
 
 
 Documento, informe con pros y contras del TP
-
 

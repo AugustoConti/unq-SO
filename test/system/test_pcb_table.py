@@ -44,3 +44,11 @@ class TestPCBTable(TestCase):
     def test_getPriority(self):
         self._pcb_table.add_pcb(PCB(1, priority=3))
         self.assertEqual(3, self._pcb_table.get_priority(1))
+
+    def test_get_intructions_left_0(self):
+        self._pcb_table.add_pcb(PCB(1))
+        self.assertEqual(0, self._pcb_table.get_intructions_left(1))
+
+    def test_get_intructions_left_5(self):
+        self._pcb_table.add_pcb(PCB(1, limit=5))
+        self.assertEqual(5, self._pcb_table.get_intructions_left(1))
