@@ -39,11 +39,11 @@ logging.config.dictConfig({
 })
 
 
-def do_color(tipo, color):
+def _do_color(tipo, color):
     return colored('[' + tipo + ']', color, attrs=['bold'])
 
 
-def get_color(tipo):
+def _get_color(tipo):
     hard = ['Hardware',
             'MMUPaged',
             'InterruptVector',
@@ -53,38 +53,54 @@ def get_color(tipo):
             'Timer',
             'Hardware',
             'Printer']
+
     soft = ['Software',
+            'Loader',
             'Dispatcher',
+            'Scheduler',
             'PriorityExp',
+            'Preemptive',
+            'MemoryManager',
             'IoDeviceController']
+
     interrupt = ['Interruption',
                  'Kill',
                  'TimeOut',
-                 'IoOut']
+                 'IoIn',
+                 'IoOut',
+                 'PageFault',
+                 'New']
+
     if tipo in hard:
-        return do_color(tipo, 'magenta')
+        return _do_color(tipo, 'magenta')
     elif tipo in soft:
-        return do_color(tipo, 'cyan')
+        return _do_color(tipo, 'cyan')
     elif tipo in interrupt:
-        return do_color(tipo, 'green')
+        return _do_color(tipo, 'green')
     else:
-        return do_color(tipo, 'red')
+        return _do_color(tipo, 'red')
 
 
-class Logger:
-    @staticmethod
-    def indice():
-        print('\nIndice de colores:\n',
-            tabulate([[get_color('Hardware')],
-                      [get_color('Software')],
-                      [get_color('Interruption')],
-                      [get_color('Otro')]]),'\n')
+class _Logger:
+    def __init__(self):
+        self._log = logging.getLogger(__name__)
 
-    @staticmethod
-    def info(tipo, msj):
-        logging.getLogger(__name__).info("{tipo} {flecha} {msj}"
-                                         .format(tipo=get_color(tipo), flecha=colored('>>>', 'white'), msj=msj))
+    def clear(self):
+        # os.system('cls' if os.name == 'nt' else 'clear')
+        pass
 
-    @staticmethod
-    def disabled():
-        logging.getLogger(__name__).propagate = False
+    def indice(self):
+        self._log.info('\nIndice de colores:\n'+
+            tabulate([[_get_color('Hardware')],
+                      [_get_color('Software')],
+                      [_get_color('Interruption')],
+                      [_get_color('Otro')]])+'\n')
+
+    def info(self, tipo, msj):
+        self._log.info("{tipo} {flecha} {msj}".format(tipo=_get_color(tipo), flecha=colored('>>>', 'white'), msj=msj))
+
+    def disabled(self):
+        self._log.propagate = False
+
+
+logger = _Logger()

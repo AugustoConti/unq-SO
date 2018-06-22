@@ -4,11 +4,8 @@ from src.hardware.asm import ASM
 from src.hardware.irq import IRQ
 from src.hardware.interruptions import Interruption
 
-__all__ = ["load_programs", "execute_programs", "clear_screen"]
+__all__ = ["load_programs", "execute_programs"]
 
-
-def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
 
 def load_programs(disk):
     disk.add_all({

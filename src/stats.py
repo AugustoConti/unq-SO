@@ -4,7 +4,7 @@ from termcolor import colored
 
 from src.hardware.hardware import *
 from src.kernel import Kernel
-from src.log import Logger
+from src.log import logger
 from src.system.schedulers import SchedulerType
 from src.system.states import State
 from src.utils import *
@@ -23,7 +23,7 @@ def mapear(state):
 
 
 def run_stats():
-    Logger.disabled()
+    logger.disabled()
     print('\n', tabulate([['Letra', 'Estado'],
                           ['N', State.NEW],
                           ['R', State.READY],

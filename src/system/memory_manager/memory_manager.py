@@ -1,4 +1,5 @@
 from src.images import blue_screen
+from src.log import logger
 from src.system.memory_manager.page_row import PageRow
 
 
@@ -24,6 +25,7 @@ class MemoryManagerPagedOnDemand:
         free_frame = row.frame
         row.swap = self._loader.swap_in(row.frame)
         row.frame = -1
+        logger.info('MemoryManager', 'Free frame: {nro}'.format(nro=free_frame))
         return free_frame
 
 

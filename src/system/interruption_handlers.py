@@ -1,5 +1,5 @@
 from src.hardware.interruptions import Interruption
-from src.log import Logger
+from src.log import logger
 from src.system.pcb import PCB
 from src.system.states import State
 
@@ -12,9 +12,9 @@ class KillInterruptionHandler:
         self._mm = mm
 
     def execute(self, irq):
+        logger.info("Kill", "Finished: {currentPCB}".format(currentPCB=self._pcb_table.get_running()))
         self._dispatcher.save(State.TERMINATED)
         self._mm.kill(self._pcb_table.get_running_pid())
-        Logger.info("Kill", " Finished: {currentPCB}".format(currentPCB=self._pcb_table.get_running()))
         self._scheduler.load_from_ready()
 
 
@@ -26,6 +26,7 @@ class IoInInterruptionHandler:
         self._dispatcher = dispatcher
 
     def execute(self, irq):
+        logger.info("IoIn", "Wait for io: {currentPCB}".format(currentPCB=self._pcb_table.get_running()))
         self._dispatcher.save(State.WAITING)
         self._ioDeviceController.run_operation(self._pcb_table.get_running_pid(), irq.parameters())
         self._scheduler.load_from_ready()
@@ -38,7 +39,7 @@ class TimeOutInterruptionHandler:
         self._timer = timer
 
     def execute(self, irq):
-        Logger.info("TimeOut", "TimeOut Interruption")
+        logger.info("TimeOut", "TimeOut Interruption")
         self._dispatcher.save(State.READY)
         self._scheduler.add_running_and_load()
         self._timer.reset(True)
@@ -53,6 +54,7 @@ class NewInterruptionHandler:
     def execute(self, irq):
         params = irq.parameters()
         pcb = PCB(self._pcb_table.get_pid(), params['program'], priority=params['priority'])
+        logger.info("New", "{pcb}".format(pcb=pcb))
         self._loader.load(pcb)
         self._pcb_table.add_pcb(pcb)
         self._scheduler.run_or_add_queue(pcb.pid)
@@ -64,8 +66,8 @@ class IoOutInterruptionHandler:
         self._io_device_controller = io_device_controller
 
     def execute(self, irq):
+        logger.info("IoOut", self._io_device_controller)
         self._scheduler.run_or_add_queue(self._io_device_controller.get_finished_pid())
-        Logger.info("IoOut", self._io_device_controller)
 
 
 class PageFaultInterruptionHandler:
@@ -79,6 +81,7 @@ class PageFaultInterruptionHandler:
         pcb_run = self._pcb_table.get_running()
         self._mm.add_page_table(pcb_run.pid, self._mmu.get_page_table())
         page = irq.parameters()
+        logger.info("PageFault", "Page {page}".format(page=page))
         frame = self._mm.get_frame()
         idx = self._mm.get_swap_index(pcb_run.pid, page)
         if idx == -1:

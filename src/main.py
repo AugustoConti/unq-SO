@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 from src.hardware.hardware import Hardware
 from src.hardware.mmu import *
 from src.images import logo
@@ -12,19 +11,17 @@ from consolemenu import *
 from consolemenu.items import *
 
 
-# TODO Colores en logger de info
-
 # TODO al comienzo del simulador, limpiar pantalla y cartel con info del so (tipo sch, tipo mem, tamaño mem, etc)
 
-# TODO proceso que empieze en un determinado tick
+# TODO proceso que empiece en un determinado tick
 # TODO MultiThreading, 2 CPU ?? Tengo 2 running, Cada device en un thread?
 # TODO asignacion continua ?
 # TODO file system
 
-# TODO comandos ps -a, mem, mostrame la memoria, tabla de paginas
+# TODO COMANDOS: ps -a, mem, mostrame la memoria, tabla de paginas
 
 # TODO TP: Introduccion, desarrollo y conclusion. Codigo en el PowerPoint.
-# TODO Informe con pros y contras del TP
+# TODO INFORME con pros y contras del TP
 
 
 def run_simulator():
@@ -36,8 +33,7 @@ def run_simulator():
     hardware = Hardware(memory_size, 0.1, mmu, frame_size)
     load_programs(hardware.disk())
     Kernel(hardware, sch, mmu, frame_size, count_frames)
-    clear_screen()
-    Logger.indice()
+    logger.indice()
     execute_programs(hardware.interrupt_vector())
     hardware.switch_on()
 

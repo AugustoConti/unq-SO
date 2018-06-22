@@ -70,5 +70,8 @@ class Scheduler:
     def load_from_ready(self):
         self._pcbTable.set_running(None)
         self._timer.stop()
-        if not self.__tipo.is_empty():
+        if self.__tipo.is_empty():
+            logger.info('Scheduler', 'Ready: Empty')
+        else:
+            logger.info('Scheduler', self.__tipo)
             self._dispatcher.load(self.__tipo.next())

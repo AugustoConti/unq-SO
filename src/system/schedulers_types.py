@@ -1,4 +1,6 @@
-from src.log import Logger
+from tabulate import tabulate
+
+from src.log import logger
 from src.system.states import State
 
 
@@ -10,7 +12,7 @@ class Preemptive:
     def add(self, pid, comparer):
         pid_run = self._pcbTable.get_running_pid()
         if comparer(pid) < comparer(pid_run):
-            Logger.info("Preemptive", "Realizando context switching")
+            logger.info("Preemptive", "Realizando context switching")
             self._dispatcher.save(State.READY)
             self._dispatcher.load(pid)
             return pid_run
@@ -35,6 +37,9 @@ class SJF:
         self._ready.remove(minimo)
         return minimo
 
+    def __repr__(self):
+        return 'SJF: {ready}'.format(ready=self._ready)
+
 
 class FCFS:
     def __init__(self):
@@ -48,6 +53,9 @@ class FCFS:
 
     def next(self):
         return self._ready.pop(0)
+
+    def __repr__(self):
+        return 'FCFS: {ready}'.format(ready=self._ready)
 
 
 class PriorityNoPreemptive:
@@ -68,6 +76,7 @@ class PriorityNoPreemptive:
     def __aging(self):
         self.__doAging += 1
         if self.__doAging % 4 == 0:
+            logger.info('PriorityNoPreemptive', 'Doing aging!')
             [self._ready[i - 1].append(self._ready[i].pop(0)) for i in range(1, self.__cant_priority) if self._ready[i]]
 
     def next(self):
@@ -77,6 +86,10 @@ class PriorityNoPreemptive:
 
     def add(self, pid):
         self._ready[self._pcb_table.get_priority(pid) - 1].append(pid)
+
+    def __repr__(self):
+        return 'PriorityNoPreemptive:\n{ready}'.format(
+            ready=tabulate(self._ready, tablefmt='grid'))
 
 
 class PriorityPreemptive:
@@ -94,6 +107,9 @@ class PriorityPreemptive:
     def next(self):
         return self._base.next()
 
+    def __repr__(self):
+        return 'PriorityPreemptive: {ready}'.format(ready=self._base)
+
 
 class RoundRobin:
     def __init__(self, base, quantum, timer):
@@ -108,3 +124,6 @@ class RoundRobin:
 
     def next(self):
         return self._base.next()
+
+    def __repr__(self):
+        return 'RoundRobin: {ready}'.format(ready=self._base)
