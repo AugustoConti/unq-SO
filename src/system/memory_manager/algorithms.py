@@ -1,9 +1,10 @@
+from src.menu import selection_menu
+
+
 class AlgorithmType:
     @staticmethod
     def choose():
-        lista = ['FCFS', 'LRU', 'Second Chance']
-        return [FCFS, LRU, SC][int(input("\n\nType Algorithm:\n{0}Choice: ".format("".join(
-            ["{i} - {alg}\n".format(i=i, alg=lista[i]) for i in range(len(lista))]))))]()
+        return [FCFS, LRU, SC][selection_menu(['FCFS', 'LRU', 'Second Chance'], "Algorithm Type")]()
 
 
 class FCFS:

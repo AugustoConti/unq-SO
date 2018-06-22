@@ -3,6 +3,7 @@ from src.system.dispatcher import *
 from src.system.loader import *
 from src.system.memory_manager.algorithms import AlgorithmType
 from src.system.memory_manager.memory_manager import *
+from src.menu import selection_menu
 
 
 class MMUType:
@@ -18,10 +19,7 @@ class MMUType:
 
     @staticmethod
     def choose():
-        return int(input("\n\nType MMU:\n"
-                         + "".join(["{i} - {mmu}\n".format(i=i, mmu=MMUType.str(i))
-                                    for i in MMUType.all()])
-                         + "Choice: "))
+        return selection_menu(MMUType.lista, "MMU Type")
 
     @staticmethod
     def new_mmu(tipo, memory, frame_size, interrupt_vector):

@@ -14,9 +14,6 @@ para un sistema batch que tipo de memoria usarias?
 FECHAS:
 
 JUNIO:
-12 Parcial Practica - scheduler
-14 Parcial Practiva - memoria
-
 19 PARCIAL (que es un SO, scheduler y memoria)
 21 Complemento teoria (interfaz grafica con python)
 
@@ -28,22 +25,26 @@ JULIO:
 12 Cierre (Notas)
 
 
+--------------------------------------------------------------------------------------------
 
-    Lleg  CPU
-P1  0      3
-P2  2      3
+TP
 
-    0   1   2   3   4   5   6       Esp     Ret
-p1  3   2   1   .   -   -   -       0       3
-p2  -   -   E   3   2   1   .       1       4
-                                Tot 0.5     3.5
-Redy        2
-
+comandos:
+ps -a
+mem
+mostrame la memoria
+tabla de paginas
 
 
+2 CPU ?? Tengo 2 running
+
+Concurrente, multiprogramacion: Cada device en un thread
+
+TP: Introduccion, desarrollo y conclusion
+
+Codigo en el PowerPoint
 
 
-
-
+Documento, informe con pros y contras del TP
 
 

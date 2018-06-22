@@ -1,6 +1,6 @@
 from src.system.schedulers_types import *
 from src.system.states import State
-from src.utils import selection_menu
+from src.menu import selection_menu
 
 
 class SchedulerType:

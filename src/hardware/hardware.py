@@ -1,31 +1,9 @@
 from tabulate import tabulate
 from time import sleep
 
-from src.hardware.instructions import Instruction
+from src.hardware.asm import ASM
 from src.hardware.mmu import *
 from src.images import blue_screen
-
-
-class ASM:
-    @classmethod
-    def exit(cls):
-        return [Instruction.EXIT]
-
-    @classmethod
-    def io(cls):
-        return [Instruction.IO]
-
-    @classmethod
-    def cpu(cls, times):
-        return [Instruction.CPU] * times
-
-    @classmethod
-    def is_exit(cls, instruction):
-        return Instruction.EXIT == instruction
-
-    @classmethod
-    def is_io(cls, instruction):
-        return Instruction.IO == instruction
 
 
 class InterruptVector:

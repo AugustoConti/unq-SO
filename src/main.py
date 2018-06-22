@@ -7,6 +7,7 @@ from src.kernel import Kernel
 from src.stats import run_stats
 from src.system.schedulers import SchedulerType
 from src.utils import *
+from src.menu import *
 from consolemenu import *
 from consolemenu.items import *
 
@@ -24,8 +25,6 @@ def run_simulator():
 
 
 # TODO Colores en logger de info
-
-# TODO menu de MMU y ALGORITMOS pasarlos a SELECTMENU
 
 # TODO en logger, indice de que es cada color al principio de simulacion
 # TODO al comienzo del simulador, limpiar pantalla y cartel con info del so (tipo sch, tipo mem, tamaño mem, etc)
@@ -50,21 +49,8 @@ def run_fcfs_paged():
 
 if __name__ == '__main__':
     # run_fcfs_paged()
-
     logo()
-
     menu = ConsoleMenu("Contillini OS", formatter=menu_format)
     menu.append_item(FunctionItem("Estadísticas", run_stats))
     menu.append_item(FunctionItem("Simulador", run_simulator))
     menu.show()
-
-
-    '''
-    opt = input("1 - Statistics\n"
-                "2 - Run simulator\n"
-                "Choice: ")
-    if opt == '1':
-        run_stats()
-    else:
-        run_simulator()
-    '''
