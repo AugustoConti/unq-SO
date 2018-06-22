@@ -11,6 +11,22 @@ from src.menu import *
 from consolemenu import *
 from consolemenu.items import *
 
+
+# TODO Colores en logger de info
+
+# TODO al comienzo del simulador, limpiar pantalla y cartel con info del so (tipo sch, tipo mem, tamaño mem, etc)
+
+# TODO proceso que empieze en un determinado tick
+# TODO MultiThreading, 2 CPU ?? Tengo 2 running, Cada device en un thread?
+# TODO asignacion continua ?
+# TODO file system
+
+# TODO comandos ps -a, mem, mostrame la memoria, tabla de paginas
+
+# TODO TP: Introduccion, desarrollo y conclusion. Codigo en el PowerPoint.
+# TODO Informe con pros y contras del TP
+
+
 def run_simulator():
     memory_size = 12
     frame_size = 4
@@ -24,16 +40,6 @@ def run_simulator():
     Logger.indice()
     execute_programs(hardware.interrupt_vector())
     hardware.switch_on()
-
-
-# TODO Colores en logger de info
-
-# TODO al comienzo del simulador, limpiar pantalla y cartel con info del so (tipo sch, tipo mem, tamaño mem, etc)
-
-# TODO proceso que empieze en un determinado tick
-# TODO MultiThreading
-# TODO asignacion continua ?
-# TODO file system
 
 
 def run_fcfs_paged():
