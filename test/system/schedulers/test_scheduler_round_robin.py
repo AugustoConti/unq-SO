@@ -1,5 +1,6 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
+
 from src.system.schedulers import RoundRobin
 
 
@@ -7,7 +8,7 @@ class TestRoundRobin(TestCase):
     def setUp(self):
         self._base = NonCallableMock(next=Mock(return_value=1), isEmpty=Mock(return_value=True))
         self._timer = NonCallableMock()
-        self._scheduler = RoundRobin(self._base, 2, self._timer)
+        self._scheduler = RoundRobin(self._base, self._timer, 2)
 
     def test_created_call_timer_start(self):
         self._timer.start.assert_called_once_with(2)

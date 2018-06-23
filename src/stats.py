@@ -30,12 +30,12 @@ def run_stats():
                           ['X', State.RUNNING],
                           ['T', State.TERMINATED],
                           ['W', State.WAITING]], headers="firstrow"), '\n')
-    total = [['Scheduler', 'Retorno', 'Ready']]
+    total = [['Scheduler', 'Retorno', 'Espera']]
     for scheduler in SchedulerType.all():
         print('\n', colored(SchedulerType.str(scheduler), 'cyan'))
         hardware = Hardware(50, 0, 0, 1)
         load_programs(hardware.disk())
-        kernel = Kernel(hardware, scheduler, 0, 0, 0)
+        kernel = Kernel(hardware, scheduler, 0, 0, 0, 2)
         execute_programs(hardware.interrupt_vector())
 
         gant = Timeline(hardware.clock(), kernel.pcb_list()).calc()
@@ -71,7 +71,7 @@ class Timeline:
             self._clock.do_ticks(1)
         self._states['Retorno'] = self._retorno.values()
         self._states['Espera'] = self._ready.values()
+        totalRetorno = sum(self._retorno.values())
         totalEspera = sum(self._ready.values())
-        totalRetorno = sum(self._ready.values())
         print(tabulate(self._states, headers="keys", tablefmt="fancy_grid"))
-        return [totalRetorno / len(self._pcb_table), totalEspera / len(self._pcb_table)]
+        return [round(totalRetorno / len(self._pcb_table), 2), round(totalEspera / len(self._pcb_table), 2)]

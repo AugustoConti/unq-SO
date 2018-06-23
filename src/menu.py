@@ -1,4 +1,4 @@
-from consolemenu import SelectionMenu, MenuFormatBuilder
+from consolemenu import SelectionMenu, MenuFormatBuilder, ConsoleMenu
 from consolemenu.format import MenuBorderStyleType
 from consolemenu.menu_component import Dimension
 
@@ -12,6 +12,12 @@ menu_format = MenuFormatBuilder(max_dimension=Dimension(width=50, height=40)) \
     .set_items_top_padding(0)\
     .set_items_bottom_padding(0)\
     .set_items_right_padding(0)
+
+
+def console_menu(title, items):
+    menu = ConsoleMenu(title, formatter=menu_format)
+    [menu.append_item(i) for i in items]
+    menu.show()
 
 
 def selection_menu(strings, title):

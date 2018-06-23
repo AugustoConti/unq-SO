@@ -1,4 +1,5 @@
 import logging.config
+from subprocess import Popen
 
 from tabulate import tabulate
 from termcolor import colored
@@ -86,6 +87,12 @@ class _Logger:
     def __init__(self):
         self._log = logging.getLogger(__name__)
 
+    def show(self):
+        self._proc = Popen(['x-terminal-emulator', '-e', 'tail -s 0.5 -f info.log'])
+
+    def terminate(self):
+        self._proc.terminate()
+
     def clear(self):
         # os.system('cls' if os.name == 'nt' else 'clear')
         pass
@@ -94,7 +101,7 @@ class _Logger:
         self._log.info(msj)
 
     def indice(self):
-        self.msj('\nIndice de colores:\n' +
+        self.msj('\nIndice de colores de Logger:\n' +
                  tabulate([[_get_color('Hardware')],
                            [_get_color('Software')],
                            [_get_color('Interruption')],

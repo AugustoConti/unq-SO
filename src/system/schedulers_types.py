@@ -112,9 +112,9 @@ class PriorityPreemptive:
 
 
 class RoundRobin:
-    def __init__(self, base, quantum, timer):
-        timer.start(quantum)
+    def __init__(self, base, timer, quantum):
         self._base = base
+        timer.start(quantum)
 
     def is_empty(self):
         return self._base.is_empty()

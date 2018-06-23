@@ -1,5 +1,6 @@
-from tabulate import tabulate
 from time import sleep
+
+from tabulate import tabulate
 
 from src.hardware.asm import ASM
 from src.hardware.mmu import *
@@ -216,7 +217,6 @@ class Timer:
             raise Exception("Quantum: {q} is smaller than 1".format(q=quantum))
         self._quantum = quantum
         self._running = True
-        self.reset()
 
 
 class Hardware:

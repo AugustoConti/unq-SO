@@ -1,5 +1,6 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock
+
 from src.hardware.hardware import Timer
 from src.hardware.interruptions import Interruption
 
@@ -11,11 +12,13 @@ class TestTimer(TestCase):
 
     def test_tick_discount1_tickCount(self):
         self._timer.start(2)
+        self._timer.reset()
         self._timer.tick(0)
         self.assertEqual(1, self._timer._tickCount)
 
     def test_tick_raise_time_out(self):
         self._timer.start(1)
+        self._timer.reset()
         self._timer.tick(0)
         self._timer.tick(0)
         self.assertEqual(Interruption.TIME_OUT, self._inter.handle.call_args[0][0].type())

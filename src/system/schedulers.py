@@ -1,6 +1,6 @@
+from src.menu import selection_menu
 from src.system.schedulers_types import *
 from src.system.states import State
-from src.menu import selection_menu
 
 
 class SchedulerType:
@@ -11,6 +11,10 @@ class SchedulerType:
              'Round Robin',
              'Round Robin Priority No Preemptive',
              'Round Robin Priority Preemptive']
+
+    @staticmethod
+    def isRR(tipo):
+        return tipo in [4, 5, 6]
 
     @staticmethod
     def str(tipo):
@@ -25,25 +29,25 @@ class SchedulerType:
         return selection_menu(SchedulerType.lista, "Scheduler Type")
 
     @staticmethod
-    def new(tipo, pcb_table, dispatcher, timer):
+    def new(tipo, pcb_table, dispatcher, timer, quantum):
         if tipo == 0:
-            return SJF(pcb_table, Preemptive(pcb_table, dispatcher))
+            sch = SJF(pcb_table, Preemptive(pcb_table, dispatcher))
         elif tipo == 1:
-            return FCFS()
+            sch = FCFS()
         elif tipo == 2:
-            return PriorityNoPreemptive(pcb_table)
+            sch = PriorityNoPreemptive(pcb_table)
         elif tipo == 3:
-            return PriorityPreemptive(pcb_table, Preemptive(pcb_table, dispatcher), PriorityNoPreemptive(pcb_table))
+            sch = PriorityPreemptive(pcb_table, Preemptive(pcb_table, dispatcher), PriorityNoPreemptive(pcb_table))
         elif tipo == 4:
-            return RoundRobin(FCFS(), 2, timer)
+            sch = RoundRobin(FCFS(), timer, quantum)
         elif tipo == 5:
-            return RoundRobin(PriorityNoPreemptive(pcb_table), 2, timer)
+            sch = RoundRobin(PriorityNoPreemptive(pcb_table), timer, quantum)
         elif tipo == 6:
-            return RoundRobin(
-                PriorityPreemptive(pcb_table, Preemptive(pcb_table, dispatcher), PriorityNoPreemptive(pcb_table)), 2,
-                timer)
+            sch = RoundRobin(PriorityPreemptive(pcb_table, Preemptive(pcb_table, dispatcher),
+                                                PriorityNoPreemptive(pcb_table)), timer, quantum)
         else:
             raise Exception('Scheduler type {sch} not recongnized'.format(sch=tipo))
+        return Scheduler(pcb_table, dispatcher, timer, sch)
 
 
 class Scheduler:
