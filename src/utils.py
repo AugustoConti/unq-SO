@@ -1,10 +1,12 @@
-import os
-
 from src.hardware.asm import ASM
-from src.hardware.irq import IRQ
 from src.hardware.interruptions import Interruption
+from src.hardware.irq import IRQ
 
-__all__ = ["load_programs", "execute_programs"]
+__all__ = ['load_programs', 'execute_programs', 'input_default']
+
+
+def input_default(msj, default):
+    return int(input('{msj} [{default}] '.format(msj=msj, default=default)) or default)
 
 
 def load_programs(disk):
