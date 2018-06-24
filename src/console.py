@@ -1,3 +1,6 @@
+from termcolor import colored
+
+
 def process_input(command_line):
     print(' processing command: ' + command_line)
 
@@ -5,7 +8,11 @@ def process_input(command_line):
 def start_console():
     running = True
     while running:
-        command_line = input("$ ")
+        folder = ''
+        command_line = input(
+            colored('root', 'magenta') + '@' +
+            colored('contillini', 'green') +
+            colored(' ~' + folder + ' $', 'blue'))
         if command_line == 'exit':
             running = False
         else:

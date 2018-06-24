@@ -1,13 +1,16 @@
 from src.hardware.mmu_types import *
+from src.menu import selection_menu
 from src.system.dispatcher import *
 from src.system.loader import *
-from src.system.memory_manager.algorithms import AlgorithmType
 from src.system.memory_manager.memory_manager import *
-from src.menu import selection_menu
 
 
 class MMUType:
     lista = ['Asignación Continua', 'Paginación', 'Paginación bajo demanda']
+
+    @staticmethod
+    def isOnDemand(tipo):
+        return tipo == 2
 
     @staticmethod
     def str(tipo):
@@ -51,11 +54,11 @@ class MMUType:
             raise Exception('Dispatcher type {dispatcher} not recongnized'.format(dispatcher=tipo))
 
     @staticmethod
-    def new_memory_manager(tipo, loader, swap):
+    def new_memory_manager(tipo, loader, swap, algorithm):
         if tipo in [0, 1]:
             return MemoryManagerPaged()
         elif tipo == 2:
-            return MemoryManagerPagedOnDemand(AlgorithmType.choose(), loader, swap)
+            return MemoryManagerPagedOnDemand(algorithm, loader, swap)
         else:
             raise Exception('Memory Manager type {mm} not recongnized'.format(mm=tipo))
 

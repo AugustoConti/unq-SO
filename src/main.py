@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
-from consolemenu.items import FunctionItem
 
-from src.images import logo
-from src.menu import *
-from src.simulator import run_simulator
-from src.stats import run_stats
+from src.simulator import run_priority
 
 
 # TODO proceso que empiece en un determinado tick
@@ -19,10 +15,11 @@ from src.stats import run_stats
 
 
 def main():
-    logo()
-    console_menu("Contillini OS",
-                 [FunctionItem("Estadísticas", run_stats),
-                  FunctionItem("Simulador", run_simulator)])
+    # logo()
+    # console_menu("Contillini OS",
+    #             [FunctionItem("Estadísticas", run_stats),
+    #              FunctionItem("Simulador", run_simulator)])
+    run_priority()
 
 
 if __name__ == '__main__':

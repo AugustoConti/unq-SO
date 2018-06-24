@@ -7,7 +7,7 @@ from src.system.schedulers import *
 
 
 class Kernel:
-    def __init__(self, hardware, scheduler_type, mmu_type, frame_size, count_frames, quantum):
+    def __init__(self, hardware, scheduler_type, mmu_type, frame_size, count_frames, quantum, algorithm):
         self._scheduler_type = scheduler_type
         self._mmu_type = mmu_type
         self._count_frames = count_frames
@@ -18,7 +18,7 @@ class Kernel:
         self._io_device_controller = IoDeviceController(hardware.io_device())
         self._loader = MMUType.new_loader(mmu_type, hardware.disk(), hardware.memory(), self._mm, frame_size,
                                           hardware.swap())
-        self._mm.set_base(MMUType.new_memory_manager(mmu_type, self._loader, hardware.swap()))
+        self._mm.set_base(MMUType.new_memory_manager(mmu_type, self._loader, hardware.swap(), algorithm))
         self._dispatcher = Dispatcher(MMUType.new_dispatcher(mmu_type, self._mm, hardware.mmu()), self._pcb_table,
                                       hardware.cpu(), hardware.timer())
         self._scheduler = SchedulerType.new(scheduler_type, self._pcb_table, self._dispatcher, hardware.timer(),
