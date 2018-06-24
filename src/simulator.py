@@ -1,3 +1,6 @@
+from threading import Thread
+
+from src.console import start_console
 from src.hardware.hardware import Hardware
 from src.hardware.mmu import MMUType
 from src.kernel import Kernel
@@ -22,4 +25,9 @@ def run_simulator():
     logger.indice()
     logger.show()
     input('Iniciar sistema...')
-    hardware.switch_on()
+    t_system = Thread(target=hardware.switch_on)
+    t_system.start()
+    start_console()
+    hardware.switch_off()
+    t_system.join()
+    logger.terminate()

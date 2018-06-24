@@ -93,19 +93,15 @@ class _Logger:
     def terminate(self):
         self._proc.terminate()
 
-    def clear(self):
-        # os.system('cls' if os.name == 'nt' else 'clear')
-        pass
-
     def msj(self, msj):
         self._log.info(msj)
 
     def indice(self):
-        self.msj('\nIndice de colores de Logger:\n' +
-                 tabulate([[_get_color('Hardware')],
-                           [_get_color('Software')],
-                           [_get_color('Interruption')],
-                           [_get_color('Otro')]]) + '\n')
+        print('\nIndice de colores de Logger:\n',
+              tabulate([[_get_color('Hardware')],
+                        [_get_color('Software')],
+                        [_get_color('Interruption')],
+                        [_get_color('Otro')]]), '\n')
 
     def info(self, tipo, msj):
         self.msj("{tipo} {flecha} {msj}".format(tipo=_get_color(tipo), flecha=colored('>>>', 'white'), msj=msj))
