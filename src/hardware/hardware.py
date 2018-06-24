@@ -245,7 +245,12 @@ class Hardware:
 
     def switch_off(self):
         self._clock.stop()
+        logger.info("Hardware", "SWITCHING OFF in:")
+        for i in [3, 2, 1]:
+            logger.info("Hardware", i)
+            sleep(1)
         logger.info("Hardware", " ---- SWITCH OFF ---- ")
+        sleep(0.5)
 
     def cpu(self):
         return self._cpu

@@ -8,8 +8,6 @@ from src.simulator import run_priority
 # TODO asignacion continua ?
 # TODO file system
 
-# TODO COMANDOS: ps -a, mem, mostrame la memoria, tabla de paginas
-
 # TODO TP: Introduccion, desarrollo y conclusion. Codigo en el PowerPoint.
 # TODO INFORME con pros y contras del TP
 
