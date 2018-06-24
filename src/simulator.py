@@ -1,5 +1,8 @@
 from threading import Thread
 
+from tabulate import tabulate
+from termcolor import colored
+
 from src.console import start_console
 from src.hardware.hardware import Hardware
 from src.hardware.mmu import MMUType
@@ -21,10 +24,11 @@ def run_simulator():
     mmu = MMUType.choose()
     hardware = Hardware(memory_size, 1, mmu, frame_size)
     load_programs(hardware.disk())
-    Kernel(hardware, sch, mmu, frame_size, count_frames, quantum)
-    logger.indice()
+    kernel = Kernel(hardware, sch, mmu, frame_size, count_frames, quantum)
     logger.show()
-    input('Iniciar sistema...')
+    logger.indice()
+    print('\n', colored('System Info:', 'cyan'), '\n', tabulate(hardware.info() + kernel.info()), '\n')
+    input('Enter to start...')
     t_system = Thread(target=hardware.switch_on)
     t_system.start()
     start_console()

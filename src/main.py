@@ -7,8 +7,6 @@ from src.simulator import run_simulator
 from src.stats import run_stats
 
 
-# TODO al comienzo del simulador, limpiar pantalla y cartel con info del so (tipo sch, tipo mem, tamaño mem, etc)
-
 # TODO proceso que empiece en un determinado tick
 # TODO MultiThreading, 2 CPU ?? Tengo 2 running, Cada device en un thread?
 # TODO asignacion continua ?

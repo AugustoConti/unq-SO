@@ -221,6 +221,8 @@ class Timer:
 
 class Hardware:
     def __init__(self, memory_size, delay, mmu_type, frame_size):
+        self._memory_size = memory_size
+        self._frame_size = frame_size
         self._memory = Memory(memory_size)
         self._interrupt_vector = InterruptVector()
         self._clock = Clock(delay)
@@ -231,6 +233,10 @@ class Hardware:
         self._cpu = Cpu(self._mmu, self._interrupt_vector)
         self._timer = Timer(self._interrupt_vector)
         self._clock.add_subscribers([self._mmu, self._io_device, self._timer, self._cpu])
+
+    def info(self):
+        return [['Memory Size', self._memory_size],
+                ['Frame Size', self._frame_size]]
 
     def switch_on(self):
         logger.info("Hardware", self)
