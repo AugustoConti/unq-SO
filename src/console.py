@@ -1,10 +1,41 @@
 from termcolor import colored
 
 
-# TODO COMANDOS: ls, ps -a, mem, mostrame la memoria, tabla de paginas
+# TODO implementar comandos
 
 def process_input(command_line):
+    {
+        'ls': ls,
+        'mem': mem,
+        'top': top,
+        'pagetable': page_table,
+        'help': ayuda,
+    }[command_line]()
     print(' processing command: ' + command_line)
+
+
+def ls():
+    pass
+
+
+def ps():
+    pass
+
+
+def mem():
+    pass
+
+
+def top():
+    pass
+
+
+def page_table():
+    pass
+
+
+def ayuda():
+    pass
 
 
 def read():
