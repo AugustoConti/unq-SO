@@ -25,11 +25,11 @@ def mapear(state):
 def run_stats():
     logger.disabled()
     print('\n', tabulate([['Letra', 'Estado'],
-                          ['N', State.NEW],
-                          ['R', State.READY],
-                          ['X', State.RUNNING],
-                          ['T', State.TERMINATED],
-                          ['W', State.WAITING]], headers="firstrow"), '\n')
+                          [mapear(State.NEW), State.NEW],
+                          [mapear(State.READY), State.READY],
+                          [mapear(State.RUNNING), State.RUNNING],
+                          [mapear(State.WAITING), State.WAITING],
+                          [mapear(State.TERMINATED), State.TERMINATED]], headers="firstrow"), '\n')
     total = [['Scheduler', 'Retorno', 'Espera']]
     for scheduler in SchedulerType.all():
         print('\n', colored(SchedulerType.str(scheduler), 'cyan'))
@@ -57,7 +57,7 @@ class Timeline:
         return all(pcb.state == State.TERMINATED for pcb in self._pcb_table)
 
     def _save_states(self):
-        self._states[self._tick_nro] = ['PCB ' + str(pcb.pid) for pcb in self._pcb_table] if self._tick_nro == 0 \
+        self._states[self._tick_nro - 1] = ['PCB ' + str(pcb.pid) for pcb in self._pcb_table] if self._tick_nro == 0 \
             else [mapear(pcb.state) for pcb in self._pcb_table]
         if self._tick_nro > 0:
             for pcb in self._pcb_table:
