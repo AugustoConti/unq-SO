@@ -12,9 +12,10 @@ class Consola:
 
     def process_input(self, command_line):
         comandos = {'ls': self._ls,
+                    'cd': self._cd,
                     'mem': self._mem,
                     'top': self._top,
-                    'pagetable': self._page_table,
+                    'pt': self._pt,
                     'exe': self._exe}
         if command_line in comandos:
             comandos[command_line]()
@@ -27,6 +28,9 @@ class Consola:
     def _ls(self):
         print('FALTA IMPLEMENTAR')
 
+    def _cd(self):
+        print('FALTA IMPLEMENTAR')
+
     def _mem(self):
         print(self._hard.memory())
 
@@ -36,7 +40,7 @@ class Consola:
             lista.append(pcb.to_dict())
         print(tabulate(lista, headers='keys', tablefmt='fancy_grid') if lista else 'Empty')
 
-    def _page_table(self):
+    def _pt(self):
         table = []
         for pid, pageTable in self._kernel.page_table().items():
             for idx, row in enumerate(pageTable):
@@ -46,7 +50,14 @@ class Consola:
         print(tabulate(table, headers='keys', tablefmt='fancy_grid'))
 
     def _ayuda(self):
-        print('FALTA IMPLEMENTAR')
+        comandos = [['Comando', 'Descripción'],
+                    ['ls', 'Listar archivos del directorio actual.'],
+                    ['cd', 'Cambiar directorio actual.'],
+                    ['mem', 'Mostrar memoria actual del sistema'],
+                    ['top', 'Mostrar procesos activos del sistema.'],
+                    ['pt', 'Mostrar Page Table.'],
+                    ['exit', 'Apagar el sistema']]
+        print(tabulate(comandos, tablefmt='fancy_grid'))
 
     def _read(self):
         folder = ''
