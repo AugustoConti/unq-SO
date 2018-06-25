@@ -10,14 +10,13 @@ from src.kernel import Kernel
 from src.log import logger
 from src.system.memory_manager.algorithms import AlgorithmType, FCFS
 from src.system.schedulers import SchedulerType
-from src.utils import load_programs, input_default
+from src.utils import input_default
 
 
 def _run_system(memory_size, frame_size, scheduler, quantum, mmu, algorithm):
     logger.enabled()
     count_frames = memory_size // frame_size
     hardware = Hardware(memory_size, 1, mmu, frame_size)
-    load_programs(hardware.disk())
     kernel = Kernel(hardware, scheduler, mmu, frame_size, count_frames, quantum, algorithm)
     logger.show()
     logger.indice()

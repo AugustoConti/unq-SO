@@ -4,6 +4,7 @@ from time import sleep
 from src.hardware.asm import ASM
 from src.hardware.mmu import *
 from src.images import blue_screen
+from src.utils import expand
 
 
 class InterruptVector:
@@ -146,6 +147,14 @@ class Disk:
     def __init__(self, frame_size):
         self._frame_size = frame_size
         self._programs = dict()
+        self.add_all({
+            'prg1.exe': expand([ASM.cpu(2), ASM.io(), ASM.cpu(3), ASM.io(), ASM.cpu(2)]),
+            'prg2.exe': expand([ASM.cpu(4), ASM.io(), ASM.cpu(1)]),
+            'prg3.exe': expand([ASM.cpu(3), ASM.io()]),
+            'prg4.exe': expand([ASM.cpu(3)]),
+            'prg5.exe': expand([ASM.cpu(5)]),
+            'prg6.exe': expand([ASM.cpu(3), ASM.io()])
+        })
 
     def add(self, name, program):
         self._programs[name] = program
