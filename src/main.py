@@ -3,7 +3,7 @@
 from src.simulator import run_priority
 
 
-# TODO proceso que empiece en un determinado tick
+# TODO proceso que empiece en un determinado tick, para stats
 # TODO MultiThreading, 2 CPU ?? Tengo 2 running, Cada device en un thread?
 # TODO asignacion continua ?
 # TODO file system
