@@ -35,6 +35,9 @@ class MemoryManager:
         self._base = None
         self._page_table = dict()
 
+    def page_table(self):
+        return self._page_table
+
     def set_base(self, base):
         self._base = base
 

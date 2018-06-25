@@ -9,6 +9,13 @@ class PageRow:
         # SC - cada vez que mmu accede, pone en 1, se crea en 0 (Second chance)
         self.SC = sc
 
+    def to_dict(self):
+        return {'frame': self.frame,
+                'swap': self.swap,
+                'loadTime': self.loadTime,
+                'lastAccess': self.lastAccessTime,
+                'SC': self.SC}
+
     def __repr__(self):
         return "PageRow( Frame: {f}, Swap: {s}, LoadTime: {lt}, LastAccess: {la}, SC: {sc} )" \
             .format(f=self.frame, s=self.swap, lt=self.loadTime, la=self.lastAccessTime, sc=self.SC)

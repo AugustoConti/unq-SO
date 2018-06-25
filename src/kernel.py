@@ -34,3 +34,6 @@ class Kernel:
 
     def pcb_list(self):
         return self._table.values()
+
+    def page_table(self):
+        return self._mm.page_table()

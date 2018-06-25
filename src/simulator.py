@@ -3,12 +3,12 @@ from threading import Thread
 from tabulate import tabulate
 from termcolor import colored
 
-from src.console import start_console
+from src.console import Consola
 from src.hardware.hardware import Hardware
 from src.hardware.mmu import MMUType
 from src.kernel import Kernel
 from src.log import logger
-from src.system.memory_manager.algorithms import AlgorithmType
+from src.system.memory_manager.algorithms import AlgorithmType, FCFS
 from src.system.schedulers import SchedulerType
 from src.utils import load_programs, input_default
 
@@ -25,7 +25,7 @@ def _run_system(memory_size, frame_size, scheduler, quantum, mmu, algorithm):
     input('\nEnter to start...')
     t_system = Thread(target=hardware.switch_on)
     t_system.start()
-    start_console()
+    Consola(hardware, kernel).start_console()
     hardware.switch_off()
     t_system.join()
     logger.terminate()
@@ -46,4 +46,4 @@ def run_simulator():
 
 
 def run_priority():
-    _run_system(16, 4, 2, 2, 2, 1)
+    _run_system(16, 4, 2, 2, 2, FCFS())

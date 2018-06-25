@@ -11,6 +11,15 @@ class PCB:
         self.limit = limit
         self.priority = priority
 
+    def to_dict(self):
+        return {'pid': self.pid,
+                'name': self.name,
+                'state': self.state,
+                'pc': self.pc,
+                'baseDir': self.baseDir,
+                'limit': self.limit,
+                'priority': self.priority}
+
     def __repr__(self):
         return "PCB {p} - {n} (State: {s}, pc: {pc}, baseDir: {bd}, limit: {lm}, priority: {pr} )" \
             .format(p=self.pid, n=self.name, s=self.state, pc=self.pc, bd=self.baseDir, lm=self.limit, pr=self.priority)

@@ -1,6 +1,5 @@
-from time import sleep
-
 from tabulate import tabulate
+from time import sleep
 
 from src.hardware.asm import ASM
 from src.hardware.mmu import *
@@ -64,7 +63,7 @@ class Memory:
         return self._cells[addr]
 
     def __repr__(self):
-        return '\n' + tabulate(enumerate(self._cells), tablefmt='psql')
+        return 'RAM:\n' + tabulate(enumerate(self._cells), tablefmt='psql')
 
 
 class Cpu:
