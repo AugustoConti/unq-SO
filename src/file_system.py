@@ -1,6 +1,10 @@
 from termcolor import colored
 
 
+# TODO print(name), listar(archivos que contiene), execute, cd
+# TODO directorio actual
+
+
 class FileSystem:
     def __init__(self):
         pass
