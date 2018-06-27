@@ -2,6 +2,8 @@ from unittest import TestCase
 from src.file_system import *
 
 
+# TODO testead "cd .."
+
 class TestFileSystem(TestCase):
     def setUp(self):
         games = Folder('games', [File('cs'), File('fifa')])
@@ -20,11 +22,15 @@ class TestFileSystem(TestCase):
             self._fs.cd('git')
 
     def test_ls(self):
-        self.assertEqual([], self._fs.ls())
+        self.assertEqual([colored('games', 'cyan'), 'git'], self._fs.ls())
+
+    def test_ls_only_files(self):
+        self._fs.cd('games')
+        self.assertEqual(['cs', 'fifa'], self._fs.ls())
 
     def test_exe_folder(self):
         with self.assertRaises(Exception):
             self._fs.exe('games')
 
     def test_exe_file(self):
-        self.fail()
+        self.assertEqual('git', self._fs.exe('git'))

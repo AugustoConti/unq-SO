@@ -9,8 +9,11 @@ from src.simulator import run_priority
 # TODO file system
 
 # TODO TP: Introduccion, desarrollo y conclusion. Codigo en el PowerPoint.
-# TODO INFORME con pros y contras del TP
+# TODO INFORME con pros y contras del TP, que hicismos, en que cosnta,
+# TODO que problemas, hasta donde llegamos, el alcance, problemas que no pudimos resolver
+# TODO y una conclusión
 
+# TODO decodificar instrucciones
 
 def main():
     # logo()
