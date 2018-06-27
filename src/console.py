@@ -1,13 +1,12 @@
 from tabulate import tabulate
 from termcolor import colored
 
+from src.utils import execute_programs
+
 
 # TODO implementar comandos
 # TODO comandos: cambiar la prioridad
 # TODO fish - autocompleta comandos de linux
-
-
-from src.utils import execute_programs
 
 
 class CMD:

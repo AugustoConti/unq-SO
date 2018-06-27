@@ -20,16 +20,14 @@ class FileSystem:
     def name(self):
         return self._actual.name
 
-    def cd(self, folder):
-        self._actual = self._actual.cd(folder)
-
     def ls(self):
         return self._actual.ls()
 
+    def cd(self, folder):
+        self._actual = self._actual.cd(folder)
+
     def exe(self, prog):
-        if not self._actual.contains(prog):
-            raise Exception('{c}: command not found'.format(c=prog))
-        return prog
+        return self._actual.exe(prog)
 
 
 class File:
@@ -51,11 +49,8 @@ class Folder:
     def can_cd(self):
         return True
 
-    def _filtrar(self, f):
-        return [p for p in self._files if p.name == f]
-
-    def contains(self, prog):
-        
+    def ls(self):
+        return [f.print() for f in self._files]
 
     def cd(self, folder):
         res = [f for f in self._files if f.name == folder and f.can_cd()]
@@ -63,8 +58,11 @@ class Folder:
             raise Exception('cd: {f}: No such directory'.format(f=folder))
         return res[0]
 
-    def ls(self):
-        return [f.print() for f in self._files]
+    def exe(self, prog):
+        res = [f for f in self._files if f.name == prog and not f.can_cd()]
+        if len(res) < 1:
+            raise Exception('{c}: command not found'.format(c=prog))
+        return prog
 
     def print(self):
         return colored(self.name, 'cyan')
