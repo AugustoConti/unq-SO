@@ -1,7 +1,8 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock
+
 from src.hardware.hardware import IODevice
-from src.hardware.interruptions import Interruption
+from src.structures.interruptions import Interruption
 
 
 class TestIODevice(TestCase):

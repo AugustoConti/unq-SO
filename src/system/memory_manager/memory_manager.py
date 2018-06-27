@@ -1,6 +1,6 @@
 from src.images import blue_screen
 from src.log import logger
-from src.system.memory_manager.page_row import PageRow
+from src.structures.page_row import PageRow
 
 
 class MemoryManagerPaged:

@@ -1,8 +1,9 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock, Mock
-from src.hardware.interruptions import Interruption
+
 from src.hardware.mmu_types import MMUPaged
-from src.system.memory_manager.page_row import PageRow
+from src.structures.interruptions import Interruption
+from src.structures.page_row import PageRow
 
 
 class TestMMUPagedOnDemand(TestCase):

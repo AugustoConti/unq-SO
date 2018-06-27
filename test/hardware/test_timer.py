@@ -2,7 +2,7 @@ from unittest import TestCase
 from unittest.mock import NonCallableMock
 
 from src.hardware.hardware import Timer
-from src.hardware.interruptions import Interruption
+from src.structures.interruptions import Interruption
 
 
 class TestTimer(TestCase):

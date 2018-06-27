@@ -1,6 +1,6 @@
-from src.hardware.asm import ASM
-from src.hardware.interruptions import Interruption
-from src.hardware.irq import IRQ
+from src.structures.asm import ASM
+from src.structures.interruptions import Interruption
+from src.structures.irq import IRQ
 
 __all__ = ['execute_programs', 'execute_program', 'input_default']
 

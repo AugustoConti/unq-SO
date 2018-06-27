@@ -1,7 +1,8 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock, call
+
+from src.structures.page_row import PageRow
 from src.system.memory_manager.memory_manager import MemoryManagerPagedOnDemand
-from src.system.memory_manager.page_row import PageRow
 
 
 class TestMemoryManagerPagedOnDemand(TestCase):

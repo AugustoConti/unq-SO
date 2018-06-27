@@ -1,8 +1,8 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock, Mock
 
+from src.structures.pcb import PCB
 from src.system.interruption_handlers import PageFaultInterruptionHandler
-from src.system.pcb import PCB
 
 
 class TestPageFaultInterruptionHandler(TestCase):

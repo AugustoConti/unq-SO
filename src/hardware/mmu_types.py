@@ -1,6 +1,6 @@
-from src.hardware.interruptions import Interruption
-from src.hardware.irq import IRQ
 from src.log import logger
+from src.structures.interruptions import Interruption
+from src.structures.irq import IRQ
 
 
 class MMUBasic:

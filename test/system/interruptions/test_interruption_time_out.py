@@ -1,8 +1,8 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock
 
+from src.structures.states import State
 from src.system.interruption_handlers import TimeOutInterruptionHandler
-from src.system.states import State
 
 
 class TestTimeOutInterruptionHandler(TestCase):

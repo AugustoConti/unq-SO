@@ -1,8 +1,8 @@
 from unittest import TestCase
 
-from src.system.pcb import PCB
+from src.structures.pcb import PCB
+from src.structures.states import State
 from src.system.pcb_table import PCBTable
-from src.system.states import State
 
 
 class TestPCBTable(TestCase):

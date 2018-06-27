@@ -3,11 +3,11 @@ from time import sleep
 from tabulate import tabulate
 
 from src.configuration.mmu import MMUType
-from src.hardware.asm import ASM
-from src.hardware.interruptions import Interruption
-from src.hardware.irq import IRQ
 from src.images import blue_screen
 from src.log import logger
+from src.structures.asm import ASM
+from src.structures.interruptions import Interruption
+from src.structures.irq import IRQ
 from src.utils import expand
 
 
@@ -56,12 +56,13 @@ class Clock:
 
 
 class Memory:
+    # TODO test memory
     def __init__(self, size):
         self._cells = [''] * size
 
     def put(self, addr, value):
         if addr >= len(self._cells):
-            blue_screen()
+            raise Exception('Memory PUT out of memory size')
         self._cells[addr] = value
 
     def get(self, addr):

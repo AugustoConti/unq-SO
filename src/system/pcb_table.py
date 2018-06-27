@@ -1,4 +1,4 @@
-from src.system.states import State
+from src.structures.states import State
 
 
 class PCBTable:

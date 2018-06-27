@@ -1,11 +1,13 @@
+from time import sleep
+
 from tabulate import tabulate
 from termcolor import colored
-from time import sleep
+
 from src.hardware.mmu import *
-from src.hardware.irq import IRQ
-from src.hardware.instructions import Instruction
-from src.hardware.interruptions import Interruption
 from src.images import blue_screen
+from src.structures.instructions import Instruction
+from src.structures.interruptions import Interruption
+from src.structures.irq import IRQ
 
 
 class ASM:

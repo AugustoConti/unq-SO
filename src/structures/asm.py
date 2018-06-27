@@ -1,4 +1,4 @@
-from src.hardware.instructions import Instruction
+from src.structures.instructions import Instruction
 
 
 class ASM:

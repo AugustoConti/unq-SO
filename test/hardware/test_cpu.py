@@ -3,8 +3,8 @@ from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
 
 from src.hardware.hardware import Cpu
-from src.hardware.instructions import Instruction
-from src.hardware.interruptions import Interruption
+from src.structures.instructions import Instruction
+from src.structures.interruptions import Interruption
 
 logging.disable(logging.CRITICAL)
 

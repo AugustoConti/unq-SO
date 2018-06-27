@@ -1,7 +1,7 @@
-from src.hardware.interruptions import Interruption
 from src.log import logger
-from src.system.pcb import PCB
-from src.system.states import State
+from src.structures.interruptions import Interruption
+from src.structures.pcb import PCB
+from src.structures.states import State
 
 
 class KillInterruptionHandler:

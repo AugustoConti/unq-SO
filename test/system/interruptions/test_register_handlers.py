@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock, call, ANY
 
-from src.hardware.interruptions import Interruption
+from src.structures.interruptions import Interruption
 from src.system.interruption_handlers import register_handlers
 
 

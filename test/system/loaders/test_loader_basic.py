@@ -1,8 +1,8 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock, call
 
+from src.structures.pcb import PCB
 from src.system.loader import LoaderBasic
-from src.system.pcb import PCB
 
 
 class TestLoaderBasic(TestCase):

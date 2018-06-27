@@ -1,5 +1,5 @@
 from src.hardware.hardware import IRQ, ASM
-from src.hardware.interruptions import Interruption
+from src.structures.interruptions import Interruption
 
 __all__ = ["load_programs", "execute_programs"]
 

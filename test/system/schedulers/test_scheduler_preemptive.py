@@ -1,8 +1,8 @@
 from unittest import TestCase
 from unittest.mock import NonCallableMock, Mock
 
+from src.structures.states import State
 from src.system.schedulers_types import Preemptive
-from src.system.states import State
 
 
 class TestPreemptive(TestCase):

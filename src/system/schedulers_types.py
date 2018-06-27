@@ -1,7 +1,7 @@
 from tabulate import tabulate
 
 from src.log import logger
-from src.system.states import State
+from src.structures.states import State
 
 
 class Preemptive:

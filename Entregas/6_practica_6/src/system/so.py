@@ -1,5 +1,5 @@
-from src.system.states import State
 from src.log import logger
+from src.structures.states import State
 
 
 class IoDeviceController:

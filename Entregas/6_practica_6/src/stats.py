@@ -1,11 +1,13 @@
 from collections import defaultdict
+
 from termcolor import colored
-from src.system.states import State
+
+from src.hardware.hardware import *
 from src.kernel import Kernel
+from src.log import logger
+from src.structures.states import State
 from src.system.schedulers import SchedulerType
 from src.utils import *
-from src.hardware.hardware import *
-from src.log import logger
 
 __all__ = ["run_stats"]
 

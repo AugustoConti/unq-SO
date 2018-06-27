@@ -1,8 +1,8 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
 
+from src.structures.pcb import PCB
 from src.system.dispatcher import Dispatcher
-from src.system.pcb import PCB
 
 
 class TestDispatcher(TestCase):

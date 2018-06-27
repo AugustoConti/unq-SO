@@ -1,6 +1,6 @@
 from src.log import logger
-from src.hardware.interruptions import Interruption
-from src.system.states import State
+from src.structures.interruptions import Interruption
+from src.structures.states import State
 
 
 class KillInterruptionHandler:
