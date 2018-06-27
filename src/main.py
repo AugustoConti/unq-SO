@@ -9,13 +9,21 @@ from src.simulator import run_priority
 # TODO proceso que empiece en un determinado tick, para stats
 # TODO MultiThreading, 2 CPU ?? Tengo 2 running, Cada device en un thread?
 # TODO asignacion continua ?
-
-# TODO TP: Introduccion, desarrollo y conclusion. Codigo en el PowerPoint.
-# TODO INFORME con pros y contras del TP, que hicismos, en que cosnta,
-# TODO que problemas, hasta donde llegamos, el alcance, problemas que no pudimos resolver
-# TODO y una conclusión
-
 # TODO decodificar instrucciones?
+
+# TODO configuracion? Patron factory? Una clase MMUPaged y otra MMUBasic que cada una retorne sus instancias de loader, dispatcher, etc???
+
+'''
+TP: Introduccion, desarrollo y conclusion. Codigo en el PowerPoint.
+INFORME con pros y contras del TP, que hicismos, en que cosnta,
+que problemas, hasta donde llegamos, el alcance, problemas que no pudimos resolver
+y una conclusión
+EXPO: Que hicimos, Que falta implementar, Que haríamos si tuvieramos 6 meses mas para seguir programando
+Vender nuestro SO, que tiene de copado que lo diferencia??
+Alguna clase bien implementada para mostrar? 
+- Configuracion del sistema, como se configura?
+'''
+
 
 def main():
     # logo()
