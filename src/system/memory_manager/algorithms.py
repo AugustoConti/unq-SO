@@ -1,12 +1,3 @@
-from src.menu import selection_menu
-
-
-class AlgorithmType:
-    @staticmethod
-    def choose():
-        return [FCFS, LRU, SC][selection_menu(['FCFS', 'LRU', 'Second Chance'], "Algorithm Type")]()
-
-
 class FCFS:
     def get_victim(self, page_table):
         return sorted(page_table, key=lambda row: row.loadTime).pop(0)

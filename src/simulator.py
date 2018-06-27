@@ -3,13 +3,14 @@ from threading import Thread
 from tabulate import tabulate
 from termcolor import colored
 
+from src.configuration.algorithm import AlgorithmType
+from src.configuration.mmu import MMUType
+from src.configuration.scheduler import SchedulerType
 from src.console import Consola
 from src.hardware.hardware import Hardware
-from src.hardware.mmu import MMUType
 from src.kernel import Kernel
 from src.log import logger
-from src.system.memory_manager.algorithms import AlgorithmType, FCFS
-from src.system.schedulers import SchedulerType
+from src.system.memory_manager.algorithms import FCFS
 from src.utils import input_default
 
 
@@ -35,11 +36,11 @@ def run_simulator():
     frame_size = input_default('Tamaño de frame?', '4')
     quantum = 2
     scheduler = SchedulerType.choose()
-    if SchedulerType.isRR(scheduler):
+    if SchedulerType.is_rr(scheduler):
         quantum = input_default('RoundRobin Quantum?', '2')
     algorithm = 1
     mmu = MMUType.choose()
-    if MMUType.isOnDemand(mmu):
+    if MMUType.is_on_demand(mmu):
         algorithm = AlgorithmType.choose()
     _run_system(memory_size, frame_size, scheduler, quantum, mmu, algorithm)
 
