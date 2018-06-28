@@ -2,7 +2,7 @@
 from consolemenu.items import FunctionItem
 
 from src.menu import console_menu
-from src.simulator import run_simulator
+from src.simulator import run_simulator, run_priority
 from src.stats import run_stats
 
 # TODO file system
@@ -27,10 +27,10 @@ Alguna clase bien implementada para mostrar?
 
 def main():
     # logo()
-    console_menu("Contillini OS",
-                 [FunctionItem("Estadísticas", run_stats),
-                  FunctionItem("Simulador", run_simulator)])
-    # run_priority()
+    #console_menu("Contillini OS",
+    #             [FunctionItem("Estadísticas", run_stats),
+    #              FunctionItem("Simulador", run_simulator)])
+    run_priority()
 
 
 if __name__ == '__main__':

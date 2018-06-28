@@ -1,6 +1,7 @@
 from tabulate import tabulate
 from termcolor import colored
 
+from src.file_system import FileSystem, File, Folder
 from src.utils import execute_programs
 
 
@@ -18,7 +19,12 @@ class Consola:
     def __init__(self, hardware, kernel):
         self._hard = hardware
         self._kernel = kernel
-        self._cmds = {'ls': CMD(self._ls, 'Listar archivos del directorio actual.'),
+        games = Folder('games', [], [File('cs'), File('fifa'), File('wow')])
+        documents = Folder('documents', [], [File('book'), File('xls')])
+        utils = Folder('utils', [], [File('calc')])
+        self._fs = FileSystem(Folder('/', [documents, games, utils], [File('git')]))
+        self._cmds = {'help': CMD(self._ayuda, 'Mostrar esta ayuda.'),
+                      'ls': CMD(self._ls, 'Listar archivos del directorio actual.'),
                       'cd': CMD(self._cd, 'Cambiar directorio actual.'),
                       'stop': CMD(self._stop, 'Detener ejecución.'),
                       'resume': CMD(self._resume, 'Reanudar ejecución.'),
@@ -36,7 +42,7 @@ class Consola:
             self._cmds[command_line].func()
         else:
             print('{c}: command not found'.format(c=command_line))
-            self._ayuda()
+            print('Use "help" to see the command list.')
 
     def _exe(self):
         execute_programs(self._hard.interrupt_vector())
@@ -48,10 +54,13 @@ class Consola:
         print('FALTA IMPLEMENTAR')
 
     def _ls(self):
-        print('FALTA IMPLEMENTAR')
+        folders, files = self._fs.ls()
+        output = ''
+        [output+colored(f, 'cyan') for f in folders]
+        print(output)
 
     def _cd(self):
-        print('FALTA IMPLEMENTAR')
+        print(self._fs.cd('PONER PARAMETRO'))
 
     def _stop(self):
         print('FALTA IMPLEMENTAR')
@@ -82,8 +91,8 @@ class Consola:
                        headers=['Comando', 'Descripción']))
 
     def _read(self):
-        folder = ''
-        user = '{u}@{pc} {f} '.format(u=colored('root', 'magenta'), pc=colored('contilliniOS', 'green'),
+        folder = self._fs.path()
+        user = '{u}@{pc}:{f} '.format(u=colored('root', 'magenta'), pc=colored('contilliniOS', 'green'),
                                       f=colored('~{f} $'.format(f=folder), 'blue'))
         return input(user)
 

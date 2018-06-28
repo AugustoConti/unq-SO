@@ -1,11 +1,3 @@
-"""
-    games = Folder('games', [File('cs'), File('fifa'), File('wow')])
-    documents = Folder('documents', [File('book'), File('xls')])
-    utils = Folder('utils', [File('calc')])
-    fs = FileSystem(Folder('/', [documents, games, utils, File('git')]))
-"""
-
-
 class FileSystem:
     def __init__(self, raiz):
         self._raiz = raiz
@@ -44,8 +36,7 @@ class Folder:
         if self._up == self:
             return self.name
         else:
-            return self._up.path()+self.name+'/'
-
+            return self._up.path() + self.name + '/'
 
     def ls(self):
         return [f.name for f in self._folders], [f.name for f in self._files]
