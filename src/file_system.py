@@ -1,6 +1,3 @@
-# TODO execute
-# TODO directorio actual
-
 """
     games = Folder('games', [File('cs'), File('fifa'), File('wow')])
     documents = Folder('documents', [File('book'), File('xls')])
@@ -14,8 +11,8 @@ class FileSystem:
         self._raiz = raiz
         self._actual = raiz
 
-    def name(self):
-        return self._actual.name
+    def path(self):
+        return self._actual.path()
 
     def ls(self):
         return self._actual.ls()
@@ -42,6 +39,13 @@ class Folder:
 
     def set_up(self, up):
         self._up = up
+
+    def path(self):
+        if self._up == self:
+            return self.name
+        else:
+            return self._up.path()+self.name+'/'
+
 
     def ls(self):
         return [f.name for f in self._folders], [f.name for f in self._files]
