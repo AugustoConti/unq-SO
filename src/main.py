@@ -13,7 +13,7 @@ from src.stats import run_stats
 # TODO asignacion continua ?
 # TODO decodificar instrucciones?
 
-'''
+"""
 TP: Introduccion, desarrollo y conclusion. Codigo en el PowerPoint.
 INFORME con pros y contras del TP, que hicismos, en que cosnta,
 que problemas, hasta donde llegamos, el alcance, problemas que no pudimos resolver
@@ -22,7 +22,7 @@ EXPO: Que hicimos, Que falta implementar, Que haríamos si tuvieramos 6 meses ma
 Vender nuestro SO, que tiene de copado que lo diferencia??
 Alguna clase bien implementada para mostrar? 
 - Configuracion del sistema, como se configura?
-'''
+"""
 
 
 def main():
