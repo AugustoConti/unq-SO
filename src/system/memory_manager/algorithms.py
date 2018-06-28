@@ -1,11 +1,17 @@
 class FCFS:
+    def __init__(self):
+        self._filtro = lambda row: row.loadTime
+
     def get_victim(self, page_table):
-        return sorted(page_table, key=lambda row: row.loadTime).pop(0)
+        return sorted(page_table, key=self._filtro).pop(0)
 
 
 class LRU:
+    def __init__(self):
+        self._filtro = lambda row: row.lastAccessTime
+
     def get_victim(self, page_table):
-        return sorted(page_table, key=lambda row: row.lastAccessTime).pop(0)
+        return sorted(page_table, key=self._filtro).pop(0)
 
 
 class SC:

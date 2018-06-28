@@ -25,7 +25,7 @@ logging.config.dictConfig({
         },
     },
     'handlers': {
-        'file':{
+        'file': {
             'filename': 'info.log',
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
@@ -86,6 +86,8 @@ def _get_color(tipo):
 class _Logger:
     def __init__(self):
         self._log = logging.getLogger(__name__)
+        self._proc = None
+        self._indices = tabulate([[_get_color(i)] for i in ['Hardware', 'Software', 'Interruption', 'Otro']])
 
     def show(self):
         self._proc = Popen(['x-terminal-emulator', '-e', 'tail -s 0.5 -f info.log'])
@@ -97,11 +99,7 @@ class _Logger:
         self._log.info(msj)
 
     def indice(self):
-        print('\nIndice colores de Logger:\n',
-              tabulate([[_get_color('Hardware')],
-                        [_get_color('Software')],
-                        [_get_color('Interruption')],
-                        [_get_color('Otro')]]))
+        print('\nIndice colores de Logger:\n', self._indices)
 
     def info(self, tipo, msj):
         self.msj("{tipo} {flecha} {msj}".format(tipo=_get_color(tipo), flecha=colored('>>>', 'white'), msj=msj))

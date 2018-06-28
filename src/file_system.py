@@ -1,6 +1,5 @@
 from termcolor import colored
 
-
 # TODO execute
 # TODO directorio actual
 
@@ -54,7 +53,7 @@ class Folder:
 
     def cd(self, folder):
         res = [f for f in self._files if f.name == folder and f.can_cd()]
-        if len(res)<1:
+        if len(res) < 1:
             raise Exception('cd: {f}: No such directory'.format(f=folder))
         return res[0]
 
