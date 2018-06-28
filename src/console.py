@@ -6,7 +6,6 @@ from src.utils import execute_programs
 
 # TODO implementar comandos
 # TODO comandos: cambiar la prioridad
-# TODO fish - autocompleta comandos de linux
 
 
 class CMD:

@@ -2,11 +2,12 @@ from collections import defaultdict
 
 from termcolor import colored
 
+from src.configuration.mmu_factory import AsignacionContinuaFactory
+from src.configuration.scheduler import SchedulerType
 from src.hardware.hardware import *
 from src.kernel import Kernel
 from src.log import logger
 from src.structures.states import State
-from src.system.schedulers import SchedulerType
 from src.utils import *
 
 __all__ = ["run_stats"]
@@ -31,11 +32,11 @@ def run_stats():
                           [mapear(State.WAITING), State.WAITING],
                           [mapear(State.TERMINATED), State.TERMINATED]], headers="firstrow"), '\n')
     total = [['Scheduler', 'Retorno', 'Espera']]
+    mmu_type = AsignacionContinuaFactory
     for scheduler in SchedulerType.all():
         print('\n', colored(SchedulerType.str(scheduler), 'cyan'))
-        hardware = Hardware(50, 0, 0, 1)
-        load_programs(hardware.disk())
-        kernel = Kernel(hardware, scheduler, 0, 0, 0, 2)
+        hardware = Hardware(50, 0, mmu_type, 1)
+        kernel = Kernel(hardware, scheduler, mmu_type, 0, 0, 2, None)
         execute_programs(hardware.interrupt_vector())
 
         gant = Timeline(hardware.clock(), kernel.pcb_list()).calc()

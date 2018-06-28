@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 from src.simulator import run_priority
 
 
@@ -11,7 +10,6 @@ from src.simulator import run_priority
 # TODO asignacion continua ?
 # TODO decodificar instrucciones?
 
-# TODO configuracion? Patron factory? Una clase MMUPaged y otra MMUBasic que cada una retorne sus instancias de loader, dispatcher, etc???
 
 '''
 TP: Introduccion, desarrollo y conclusion. Codigo en el PowerPoint.

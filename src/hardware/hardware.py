@@ -2,7 +2,6 @@ from time import sleep
 
 from tabulate import tabulate
 
-from src.configuration.mmu import MMUType
 from src.images import blue_screen
 from src.log import logger
 from src.structures.asm import ASM
@@ -242,7 +241,7 @@ class Hardware:
         self._io_device = IODevice(self._interrupt_vector, "Printer", 3)
         self._disk = Disk(frame_size)
         self._swap = Swap(memory_size, frame_size)
-        self._mmu = MMUType.new_mmu(mmu_type, self._memory, frame_size, self._interrupt_vector)
+        self._mmu = mmu_type.new_mmu(self._memory, frame_size, self._interrupt_vector)
         self._cpu = Cpu(self._mmu, self._interrupt_vector)
         self._timer = Timer(self._interrupt_vector)
         self._clock.add_subscribers([self._mmu, self._io_device, self._timer, self._cpu])
