@@ -21,10 +21,7 @@ class FileSystem:
         return self._actual.ls()
 
     def cd(self, folder):
-        if folder == '..':
-            self._actual = self._actual.get_up()
-        else:
-            self._actual = self._actual.cd(folder)
+        self._actual = self._actual.cd(folder)
 
     def exe(self, prog):
         return self._actual.exe(prog)
@@ -46,13 +43,12 @@ class Folder:
     def set_up(self, up):
         self._up = up
 
-    def get_up(self):
-        return self._up
-
     def ls(self):
         return [f.name for f in self._folders], [f.name for f in self._files]
 
     def cd(self, folder):
+        if folder == '..':
+            return self._up
         res = [f for f in self._folders if f.name == folder]
         if len(res) < 1:
             raise Exception('cd: {f}: No such directory'.format(f=folder))
