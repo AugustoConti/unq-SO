@@ -38,46 +38,50 @@ class Consola:
                       'exit': CMD(None, 'Apagar el sistema.')}
 
     def process_input(self, command_line):
-        if command_line in self._cmds:
-            self._cmds[command_line].func()
+        if command_line == '':
+            return
+        args = command_line.split()
+        cmd = args.pop(0)
+        if cmd in self._cmds:
+            self._cmds[cmd].func(args)
         else:
             print('{c}: command not found'.format(c=command_line))
             print('Use "help" to see the command list.')
 
-    def _exe(self):
+    def _exe(self, args):
         execute_programs(self._hard.interrupt_vector())
 
-    def _kill(self):
+    def _kill(self, args):
         print('FALTA IMPLEMENTAR')
 
-    def _clear(self):
+    def _clear(self, args):
         print('FALTA IMPLEMENTAR')
 
-    def _ls(self):
+    def _ls(self, args):
         folders, files = self._fs.ls()
-        output = ''
-        [output+colored(f, 'cyan') for f in folders]
-        print(output)
+        output = [[colored(f, 'cyan')] for f in folders]
+        output.extend([[f] for f in files])
+        print(tabulate(output))
 
-    def _cd(self):
-        print(self._fs.cd('PONER PARAMETRO'))
+    def _cd(self, args):
+        self._fs.cd(args[0])
 
-    def _stop(self):
+    def _stop(self, args):
         print('FALTA IMPLEMENTAR')
 
-    def _resume(self):
+    def _resume(self, args):
         print('FALTA IMPLEMENTAR')
 
-    def _mem(self):
+    def _mem(self, args):
         print(self._hard.memory())
 
-    def _top(self):
+    def _top(self, args):
         lista = []
         for pcb in self._kernel.pcb_list():
             lista.append(pcb.to_dict())
         print(tabulate(lista, headers='keys', tablefmt='psql') if lista else 'Empty')
 
-    def _pt(self):
+    def _pt(self, args):
         table = []
         for pid, pageTable in self._kernel.page_table().items():
             for idx, row in enumerate(pageTable):
@@ -86,7 +90,7 @@ class Consola:
                 table.append(page)
         print(tabulate(table, headers='keys', tablefmt='psql'))
 
-    def _ayuda(self):
+    def _ayuda(self, args):
         print(tabulate([[cmd, v.desc] for cmd, v in self._cmds.items()],
                        headers=['Comando', 'Descripción']))
 
