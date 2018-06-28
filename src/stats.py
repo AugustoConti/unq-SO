@@ -13,24 +13,9 @@ from src.utils import *
 __all__ = ["run_stats"]
 
 
-def mapear(state):
-    return {
-        State.NEW: colored('N', 'magenta'),
-        State.READY: colored('R', 'green'),
-        State.RUNNING: colored('X', 'red', attrs=['reverse']),
-        State.TERMINATED: colored('T', 'white'),
-        State.WAITING: colored('W', 'cyan')
-    }[state]
-
-
 def run_stats():
     logger.disabled()
-    print('\n', tabulate([['Letra', 'Estado'],
-                          [mapear(State.NEW), State.NEW],
-                          [mapear(State.READY), State.READY],
-                          [mapear(State.RUNNING), State.RUNNING],
-                          [mapear(State.WAITING), State.WAITING],
-                          [mapear(State.TERMINATED), State.TERMINATED]], headers="firstrow"), '\n')
+    print('\n', State.map_all(), '\n')
     total = [['Scheduler', 'Retorno', 'Espera']]
     mmu_type = AsignacionContinuaFactory
     for scheduler in SchedulerType.all():
@@ -38,7 +23,6 @@ def run_stats():
         hardware = Hardware(50, 0, mmu_type, 1)
         kernel = Kernel(hardware, scheduler, mmu_type, 0, 0, 2, None)
         execute_programs(hardware.interrupt_vector())
-
         gant = Timeline(hardware.clock(), kernel.pcb_list()).calc()
         total.append([SchedulerType.str(scheduler)] + gant)
     print('\n')
@@ -59,7 +43,7 @@ class Timeline:
 
     def _save_states(self):
         self._states[self._tick_nro - 1] = ['PCB ' + str(pcb.pid) for pcb in self._pcb_table] if self._tick_nro == 0 \
-            else [mapear(pcb.state) for pcb in self._pcb_table]
+            else [State.mapear(pcb.state) for pcb in self._pcb_table]
         if self._tick_nro > 0:
             for pcb in self._pcb_table:
                 self._retorno[pcb.pid] += 1 if pcb.state != State.TERMINATED else 0
@@ -72,7 +56,7 @@ class Timeline:
             self._clock.do_ticks(1)
         self._states['Retorno'] = self._retorno.values()
         self._states['Espera'] = self._ready.values()
-        totalRetorno = sum(self._retorno.values())
-        totalEspera = sum(self._ready.values())
+        total_retorno = sum(self._retorno.values())
+        total_espera = sum(self._ready.values())
         print(tabulate(self._states, headers="keys", tablefmt="fancy_grid"))
-        return [round(totalRetorno / len(self._pcb_table), 2), round(totalEspera / len(self._pcb_table), 2)]
+        return [round(total_retorno / len(self._pcb_table), 2), round(total_espera / len(self._pcb_table), 2)]

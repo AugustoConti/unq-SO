@@ -28,8 +28,8 @@ class Kernel:
     def info(self):
         return [['Cantidad de Frames', self._count_frames],
                 ['MMU', self._mmu_type],
-                ['Scheduler', SchedulerType.str(self._scheduler_type)]] \
-               + ([['Quantum', self._quantum]] if SchedulerType.is_rr(self._scheduler_type) else [])
+                ['Scheduler', SchedulerType.str(self._scheduler_type)],
+                ['Quantum', self._quantum]]
 
     def pcb_list(self):
         return self._table.values()

@@ -47,4 +47,4 @@ def run_simulator():
 
 
 def run_priority():
-    _run_system(16, 4, 2, 2, PagedOnDemandFactory, FCFS())
+    _run_system(16, 4, 2, None, PagedOnDemandFactory, FCFS())

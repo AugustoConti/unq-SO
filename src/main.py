@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
-from src.simulator import run_priority
+from consolemenu.items import FunctionItem
 
+from src.menu import console_menu
+from src.simulator import run_simulator
+from src.stats import run_stats
 
 # TODO file system
 # TODO Sonidos en el sistema (cpu ejecuta algo, kill, etc)
@@ -9,7 +12,6 @@ from src.simulator import run_priority
 # TODO MultiThreading, 2 CPU ?? Tengo 2 running, Cada device en un thread?
 # TODO asignacion continua ?
 # TODO decodificar instrucciones?
-
 
 '''
 TP: Introduccion, desarrollo y conclusion. Codigo en el PowerPoint.
@@ -25,10 +27,12 @@ Alguna clase bien implementada para mostrar?
 
 def main():
     # logo()
-    # console_menu("Contillini OS",
-    #             [FunctionItem("Estadísticas", run_stats),
-    #              FunctionItem("Simulador", run_simulator)])
-    run_priority()
+    console_menu("Contillini OS",
+                 [FunctionItem("Estadísticas", run_stats),
+                  FunctionItem("Simulador", run_simulator)])
+
+
+# run_priority()
 
 
 if __name__ == '__main__':
