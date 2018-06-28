@@ -30,9 +30,7 @@ def main():
     console_menu("Contillini OS",
                  [FunctionItem("Estadísticas", run_stats),
                   FunctionItem("Simulador", run_simulator)])
-
-
-# run_priority()
+    #run_priority()
 
 
 if __name__ == '__main__':

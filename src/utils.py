@@ -2,8 +2,6 @@ from src.structures.asm import ASM
 from src.structures.interruptions import Interruption
 from src.structures.irq import IRQ
 
-__all__ = ['execute_programs', 'execute_program', 'input_default']
-
 
 def input_default(msj, default):
     return int(input('{msj} [{default}] '.format(msj=msj, default=default)) or default)

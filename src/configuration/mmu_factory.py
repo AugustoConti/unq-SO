@@ -32,7 +32,7 @@ class AsignacionContinuaFactory(metaclass=Meta):
         return Dispatcher(DispatcherBasic(mmu), pcb_table, cpu, timer)
 
     @staticmethod
-    def new_memory_manager(loader, swap, algorithm):
+    def new_mm(loader, swap, algorithm):
         return MemoryManagerPaged()
 
 
@@ -58,7 +58,7 @@ class PagedFactory(metaclass=Meta):
         return Dispatcher(DispatcherPaged(mm, mmu), pcb_table, cpu, timer)
 
     @staticmethod
-    def new_memory_manager(loader, swap, algorithm):
+    def new_mm(loader, swap, algorithm):
         return MemoryManagerPaged()
 
 
@@ -84,5 +84,5 @@ class PagedOnDemandFactory(metaclass=Meta):
         return Dispatcher(DispatcherPaged(mm, mmu), pcb_table, cpu, timer)
 
     @staticmethod
-    def new_memory_manager(loader, swap, algorithm):
+    def new_mm(loader, swap, algorithm):
         return MemoryManagerPagedOnDemand(algorithm, loader, swap)

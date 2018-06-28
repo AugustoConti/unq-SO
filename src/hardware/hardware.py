@@ -1,7 +1,6 @@
 from time import sleep
 
-from tabulate import tabulate
-
+from src.hardware.memory import Memory
 from src.images import blue_screen
 from src.log import logger
 from src.structures.asm import ASM
@@ -52,23 +51,6 @@ class Clock:
     def do_ticks(self, times):
         logger.info("Clock", "---- :::: CLOCK do_ticks: {times} ::: -----".format(times=times))
         [self.tick(tickNbr) for tickNbr in range(times)]
-
-
-class Memory:
-    # TODO test memory
-    def __init__(self, size):
-        self._cells = [''] * size
-
-    def put(self, addr, value):
-        if addr >= len(self._cells):
-            raise Exception('Memory PUT out of memory size')
-        self._cells[addr] = value
-
-    def get(self, addr):
-        return self._cells[addr]
-
-    def __repr__(self):
-        return 'RAM:\n' + tabulate(enumerate(self._cells), tablefmt='psql')
 
 
 class Cpu:

@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+from tabulate import tabulate
 from termcolor import colored
 
 from src.configuration.mmu_factory import AsignacionContinuaFactory
