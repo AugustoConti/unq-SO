@@ -1,3 +1,6 @@
+# TODO implementar mkdir, touch, rm !!!
+
+
 class FileSystem:
     def __init__(self, raiz):
         self._raiz = raiz

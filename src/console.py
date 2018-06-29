@@ -2,11 +2,12 @@ from tabulate import tabulate
 from termcolor import colored
 
 from src.file_system import FileSystem, File, Folder
-from src.utils import execute_programs
+from src.utils import execute_program
 
 
 # TODO implementar comandos
 # TODO comandos: cambiar la prioridad
+# TODO separar comandos por categoria: FileSystem, Kernel, Otro
 
 
 class CMD:
@@ -19,8 +20,9 @@ class Consola:
     def __init__(self, hardware, kernel):
         self._hard = hardware
         self._kernel = kernel
-        games = Folder('games', [], [File('cs'), File('fifa'), File('wow')])
-        documents = Folder('documents', [], [File('book'), File('xls')])
+        games = Folder('games', [], [File('cs'), File('fifa')])
+        unq = Folder('unq', [], [])
+        documents = Folder('documents', [unq], [File('book'), File('xls')])
         utils = Folder('utils', [], [File('calc')])
         self._fs = FileSystem(Folder('/', [documents, games, utils], [File('git')]))
         self._cmds = {'help': CMD(self._ayuda, 'Mostrar esta ayuda.'),
@@ -32,7 +34,7 @@ class Consola:
                       'ps': CMD(self._top, 'Mostrar procesos.'),
                       'top': CMD(self._top, 'Mostrar procesos.'),
                       'pt': CMD(self._pt, 'Mostrar Page Table.'),
-                      'exe': CMD(self._exe, 'Ejectuar programa.'),
+                      'exe': CMD(self._exe, 'exe prog priority - Ejectuar programa con prioridad, default 3.'),
                       'kill': CMD(self._kill, 'Matar proceso con pid'),
                       'clear': CMD(self._clear, 'Limpiar pantalla'),
                       'exit': CMD(None, 'Apagar el sistema.')}
@@ -49,7 +51,13 @@ class Consola:
             print('Use "help" to see the command list.')
 
     def _exe(self, args):
-        execute_programs(self._hard.interrupt_vector())
+        if len(args) == 0:
+            print('Usage: exe program [priority]')
+            return
+        priority = 3
+        if len(args) > 1:
+            priority = args[1]
+        execute_program(self._hard.interrupt_vector(), args[0], priority)
 
     def _kill(self, args):
         print('FALTA IMPLEMENTAR')
@@ -64,7 +72,8 @@ class Consola:
         print(tabulate(output))
 
     def _cd(self, args):
-        self._fs.cd(args[0])
+        if len(args) > 0:
+            self._fs.cd(args[0])
 
     def _stop(self, args):
         print('FALTA IMPLEMENTAR')
@@ -91,8 +100,7 @@ class Consola:
         print(tabulate(table, headers='keys', tablefmt='psql'))
 
     def _ayuda(self, args):
-        print(tabulate([[cmd, v.desc] for cmd, v in self._cmds.items()],
-                       headers=['Comando', 'Descripción']))
+        print(tabulate([[cmd, v.desc] for cmd, v in self._cmds.items()], headers=['Comando', 'Descripción']))
 
     def _read(self):
         folder = self._fs.path()

@@ -9,12 +9,12 @@ class Disk:
         self._frame_size = frame_size
         self._programs = dict()
         self.add_all({
-            'prg1.exe': expand([ASM.cpu(2), ASM.io(), ASM.cpu(3), ASM.io(), ASM.cpu(2)]),
-            'prg2.exe': expand([ASM.cpu(4), ASM.io(), ASM.cpu(1)]),
-            'prg3.exe': expand([ASM.cpu(3), ASM.io()]),
-            'prg4.exe': expand([ASM.cpu(3)]),
-            'prg5.exe': expand([ASM.cpu(5)]),
-            'prg6.exe': expand([ASM.cpu(3), ASM.io()])
+            'fifa': expand([ASM.cpu(2), ASM.io(), ASM.cpu(3), ASM.io(), ASM.cpu(2)]),
+            'cs': expand([ASM.cpu(4), ASM.io(), ASM.cpu(1)]),
+            'book': expand([ASM.cpu(3), ASM.io()]),
+            'calc': expand([ASM.cpu(3)]),
+            'xls': expand([ASM.cpu(5)]),
+            'git': expand([ASM.cpu(3), ASM.io()])
         })
 
     def add(self, name, program):

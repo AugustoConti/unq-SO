@@ -2,7 +2,7 @@ from termcolor import colored
 
 
 def logo():
-    print(colored('''
+    img = '''
     
   ,ad8888ba,                                     88  88  88  88               88       ,ad8888ba,     ad88888ba  
  d8"     `"8b                             ,d     ""  88  88  ""               ""      d8"     `"8b   d8"     "8b 
@@ -13,11 +13,12 @@ Y8,            8b       d8  88       88   88     88  88  88  88  88       88  88
  Y8a.    .a8P  "8a,   ,a8"  88       88   88,    88  88  88  88  88       88  88      Y8a.    .a8P   Y8a     a8P 
   `"Y8888Y"     `"YbbdP"    88       88   "Y888  88  88  88  88  88       88  88       `"Y8888Y"      "Y88888P"  
 
-''', 'cyan', attrs=['bold', 'reverse']))
+'''
+    print(colored(img, 'cyan', attrs=['bold', 'reverse']))
 
 
 def blue_screen():
-    raise Exception('\n' + colored('''
+    img = '''
     
                           BLUE SCREEN OF DEATH
                          
@@ -49,4 +50,5 @@ def blue_screen():
                     $$$"                         $$$$"
 
 
-''', 'cyan', attrs=['bold', 'reverse']))
+'''
+    raise Exception('\n' + colored(img, 'cyan', attrs=['bold', 'reverse']))
