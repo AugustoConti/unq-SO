@@ -7,7 +7,7 @@ class MemoryManagerPaged:
     def delete_swap(self, lista):
         pass
 
-    def get_frame(self, page_table):
+    def get_frame(self, _):
         blue_screen()
 
 

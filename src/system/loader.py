@@ -64,5 +64,5 @@ class LoaderPaged:
 
 
 class LoaderPagedOnDemand:
-    def load(self, base, name, page):
+    def load(self, _, _a, _b):
         return -1

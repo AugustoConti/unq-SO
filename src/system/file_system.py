@@ -13,7 +13,15 @@ class FileSystem:
         return self._actual.ls()
 
     def cd(self, folder):
-        self._actual = self._actual.cd(folder)
+        if folder == '/':
+            self._actual = self._raiz
+        elif folder == '..':
+            self._actual = self._actual.get_up()
+        elif self._actual.has_folder(folder):
+            self._actual = self._actual.cd(folder)
+        else:
+            return False
+        return True
 
     def exe(self, prog):
         return self._actual.exe(prog)

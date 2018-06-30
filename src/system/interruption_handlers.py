@@ -11,7 +11,7 @@ class KillInterruptionHandler:
         self._dispatcher = dispatcher
         self._mm = mm
 
-    def execute(self, irq):
+    def execute(self, _):
         logger.info("Kill", "Finished: {currentPCB}".format(currentPCB=self._pcb_table.get_running()))
         self._dispatcher.save(State.TERMINATED)
         self._mm.kill(self._pcb_table.get_running_pid())
@@ -38,7 +38,7 @@ class TimeOutInterruptionHandler:
         self._dispatcher = dispatcher
         self._timer = timer
 
-    def execute(self, irq):
+    def execute(self, _):
         logger.info("TimeOut", "TimeOut Interruption")
         self._dispatcher.save(State.READY)
         self._scheduler.add_running_and_load()
@@ -65,7 +65,7 @@ class IoOutInterruptionHandler:
         self._scheduler = scheduler
         self._io_device_controller = io_device_controller
 
-    def execute(self, irq):
+    def execute(self, _):
         logger.info("IoOut", self._io_device_controller)
         self._scheduler.run_or_add_queue(self._io_device_controller.get_finished_pid())
 

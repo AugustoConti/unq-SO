@@ -26,16 +26,14 @@ class TestFileSystem(TestCase):
         self.assertEqual('/games/', self._fs.path())
 
     def test_cd_carpeta_existente(self):
-        self._fs.cd('games')
+        self.assertTrue(self._fs.cd('games'))
         self.assertEqual('/games/', self._fs.path())
 
     def test_cd_carpeta_inexistente(self):
-        with self.assertRaises(Exception):
-            self._fs.cd('windows')
+        self.assertFalse(self._fs.cd('windows'))
 
     def test_cd_archivo(self):
-        with self.assertRaises(Exception):
-            self._fs.cd('git')
+        self.assertFalse(self._fs.cd('git'))
 
     def test_ls_root(self):
         self.assertEqual((['games'], ['git']), self._fs.ls())
@@ -50,8 +48,7 @@ class TestFileSystem(TestCase):
         self.assertEqual(([], []), self._fs.ls())
 
     def test_exe_folder(self):
-        with self.assertRaises(Exception):
-            self._fs.exe('games')
+        self.assertFalse(self._fs.exe('games'))
 
     def test_exe_file(self):
-        self.assertEqual('git', self._fs.exe('git'))
+        self.assertTrue(self._fs.exe('git'))

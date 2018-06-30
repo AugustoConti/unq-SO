@@ -59,7 +59,7 @@ class Cpu:
         self._pc = -1
         self._ir = None
 
-    def tick(self, tick_nbr):
+    def tick(self, _):
         if self._pc > -1:
             self._fetch()
             self._decode()
@@ -116,7 +116,7 @@ class IODevice:
         self._ticks_count = 0
         self._operation = operation
 
-    def tick(self, tick_nbr):
+    def tick(self, _):
         if not self._busy:
             return
         self._ticks_count += 1
@@ -135,7 +135,7 @@ class Timer:
         self._tickCount = -1
         self._interrupt_vector = interrupt_vector
 
-    def tick(self, tick_nbr):
+    def tick(self, _):
         if not self._running or self._tickCount < 0:
             return
         logger.info("Timer", "tick: {Count} of {Quantum}".format(Count=self._tickCount, Quantum=self._quantum))

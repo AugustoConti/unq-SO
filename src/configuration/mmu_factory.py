@@ -20,19 +20,19 @@ class AsignacionContinuaFactory(metaclass=Meta):
         return False
 
     @staticmethod
-    def new_mmu(memory, frame_size, interrupt_vector):
+    def new_mmu(memory, _, _a):
         return MMU(MMUBasic(memory))
 
     @staticmethod
-    def new_loader(disk, memory, mm, frame_size, swap):
+    def new_loader(disk, memory, _, _a, _b):
         return LoaderBasic(disk, memory)
 
     @staticmethod
-    def new_dispatcher(mm, mmu, pcb_table, cpu, timer):
+    def new_dispatcher(_, mmu, pcb_table, cpu, timer):
         return Dispatcher(DispatcherBasic(mmu), pcb_table, cpu, timer)
 
     @staticmethod
-    def new_mm(loader, swap, algorithm):
+    def new_mm(_, _a, _b):
         return MemoryManagerPaged()
 
 
@@ -58,7 +58,7 @@ class PagedFactory(metaclass=Meta):
         return Dispatcher(DispatcherPaged(mm, mmu), pcb_table, cpu, timer)
 
     @staticmethod
-    def new_mm(loader, swap, algorithm):
+    def new_mm(_, _a, _b):
         return MemoryManagerPaged()
 
 

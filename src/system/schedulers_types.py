@@ -63,7 +63,7 @@ class PriorityNoPreemptive:
         self.__cant_priority = 5
         self.__doAging = 0
         self._pcb_table = pcb_table
-        self._ready = [[] for x in range(self.__cant_priority)]
+        self._ready = [[] for _ in range(self.__cant_priority)]
 
     def is_empty(self):
         return not any(self._ready)

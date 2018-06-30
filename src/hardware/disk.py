@@ -17,6 +17,9 @@ class Folder:
         self._files = files
         [f.set_up(self) for f in folders]
 
+    def get_up(self):
+        return self._up
+
     def set_up(self, up):
         self._up = up
 
@@ -29,19 +32,18 @@ class Folder:
     def ls(self):
         return [f.name for f in self._folders], [f.name for f in self._files]
 
+    def _filter_folder(self, folder):
+        return [f for f in self._folders if f.name == folder]
+
+    def has_folder(self, folder):
+        return len(self._filter_folder(folder)) > 0
+
     def cd(self, folder):
-        if folder == '..':
-            return self._up
-        res = [f for f in self._folders if f.name == folder]
-        if len(res) < 1:
-            raise Exception('cd: {f}: No such directory'.format(f=folder))
-        return res[0]
+        return self._filter_folder(folder)[0]
 
     def exe(self, prog):
         res = [f for f in self._files if f.name == prog]
-        if len(res) < 1:
-            raise Exception('{c}: command not found'.format(c=prog))
-        return prog
+        return len(res) > 0
 
 
 class Disk:

@@ -53,6 +53,11 @@ class Console:
         if len(args) == 0:
             print('Usage: exe program [priority]')
             return
+
+        if not self._exe(args[0]):
+            print('{c}: file not found'.format(c=args[0]))
+            return
+
         priority = 3
         if len(args) > 1:
             priority = args[1]
@@ -64,7 +69,7 @@ class Console:
     def _clear(self, args):
         print('FALTA IMPLEMENTAR')
 
-    def _ls(self, args):
+    def _ls(self, _):
         folders, files = self._fs.ls()
         output = [[colored(f, 'cyan')] for f in folders]
         output.extend([[f] for f in files])
@@ -72,7 +77,8 @@ class Console:
 
     def _cd(self, args):
         if len(args) > 0:
-            self._fs.cd(args[0])
+            if not self._fs.cd(args[0]):
+                print('cd: {f}: No such directory'.format(f=args[0]))
 
     def _stop(self, args):
         print('FALTA IMPLEMENTAR')
@@ -80,16 +86,16 @@ class Console:
     def _resume(self, args):
         print('FALTA IMPLEMENTAR')
 
-    def _mem(self, args):
+    def _mem(self, _):
         print(self._hard.memory())
 
-    def _top(self, args):
+    def _top(self, _):
         lista = []
         for pcb in self._kernel.pcb_list():
             lista.append(pcb.to_dict())
         print(tabulate(lista, headers='keys', tablefmt='psql') if lista else 'Empty')
 
-    def _pt(self, args):
+    def _pt(self, _):
         table = []
         for pid, pageTable in self._kernel.page_table().items():
             for idx, row in enumerate(pageTable):
@@ -98,7 +104,7 @@ class Console:
                 table.append(page)
         print(tabulate(table, headers='keys', tablefmt='psql'))
 
-    def _ayuda(self, args):
+    def _ayuda(self, _):
         print(tabulate([[cmd, v.desc] for cmd, v in self._cmds.items()], headers=['Comando', 'Descripción']))
 
     def _read(self):
