@@ -85,9 +85,7 @@ class Console:
 
     def _ls(self, _):
         folders, files = self._fs.ls()
-        output = [[colored(f, 'cyan')] for f in folders]
-        output.extend([[f] for f in files])
-        print(tabulate(output))
+        print(' '.join([colored(f, 'cyan') for f in folders] + [f for f in files]))
 
     def _cd(self, args):
         if len(args) > 0:
