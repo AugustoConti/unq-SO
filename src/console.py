@@ -54,7 +54,7 @@ class Console:
             print('Usage: exe program [priority]')
             return
 
-        if not self._exe(args[0]):
+        if not self._fs.exe(args[0]):
             print('{c}: file not found'.format(c=args[0]))
             return
 
@@ -123,7 +123,7 @@ class Console:
             ('class:at', '@'),
             ('class:host', 'contilliniOS'),
             ('class:colon', ':'),
-            ('class:path', self._fs.path()),
+            ('class:path', ' ~' + self._fs.path()),
             ('class:pound', ' $ '),
         ]
 
