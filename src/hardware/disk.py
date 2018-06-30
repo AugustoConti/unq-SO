@@ -4,8 +4,53 @@ from src.structures.asm import ASM
 from src.utils import expand
 
 
+class File:
+    def __init__(self, name):
+        self.name = name
+
+
+class Folder:
+    def __init__(self, name, folders, files):
+        self.name = name
+        self._up = self
+        self._folders = folders
+        self._files = files
+        [f.set_up(self) for f in folders]
+
+    def set_up(self, up):
+        self._up = up
+
+    def path(self):
+        if self._up == self:
+            return self.name
+        else:
+            return self._up.path() + self.name + '/'
+
+    def ls(self):
+        return [f.name for f in self._folders], [f.name for f in self._files]
+
+    def cd(self, folder):
+        if folder == '..':
+            return self._up
+        res = [f for f in self._folders if f.name == folder]
+        if len(res) < 1:
+            raise Exception('cd: {f}: No such directory'.format(f=folder))
+        return res[0]
+
+    def exe(self, prog):
+        res = [f for f in self._files if f.name == prog]
+        if len(res) < 1:
+            raise Exception('{c}: command not found'.format(c=prog))
+        return prog
+
+
 class Disk:
     def __init__(self, frame_size):
+        games = Folder('games', [], [File('cs'), File('fifa')])
+        unq = Folder('unq', [], [])
+        documents = Folder('documents', [unq], [File('book'), File('xls')])
+        utils = Folder('utils', [], [File('calc')])
+        self._root = Folder('/', [documents, games, utils], [File('git')])
         self._frame_size = frame_size
         self._programs = dict()
         self.add_all({
@@ -16,6 +61,9 @@ class Disk:
             'xls': expand([ASM.cpu(5)]),
             'git': expand([ASM.cpu(3), ASM.io()])
         })
+
+    def get_root(self):
+        return self._root
 
     def add(self, name, program):
         self._programs[name] = program

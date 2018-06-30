@@ -1,5 +1,7 @@
 from unittest import TestCase
-from src.file_system import *
+
+from src.hardware.disk import Folder, File
+from src.system.file_system import *
 
 
 class TestFileSystem(TestCase):

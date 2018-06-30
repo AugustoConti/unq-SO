@@ -1,7 +1,7 @@
 from tabulate import tabulate
 from termcolor import colored
 
-from src.file_system import FileSystem, File, Folder
+from src.system.file_system import FileSystem
 from src.utils import execute_program
 
 
@@ -20,11 +20,7 @@ class Consola:
     def __init__(self, hardware, kernel):
         self._hard = hardware
         self._kernel = kernel
-        games = Folder('games', [], [File('cs'), File('fifa')])
-        unq = Folder('unq', [], [])
-        documents = Folder('documents', [unq], [File('book'), File('xls')])
-        utils = Folder('utils', [], [File('calc')])
-        self._fs = FileSystem(Folder('/', [documents, games, utils], [File('git')]))
+        self._fs = FileSystem(hardware.disk().get_root())
         self._cmds = {'help': CMD(self._ayuda, 'Mostrar esta ayuda.'),
                       'ls': CMD(self._ls, 'Listar archivos del directorio actual.'),
                       'cd': CMD(self._cd, 'Cambiar directorio actual.'),
