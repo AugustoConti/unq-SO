@@ -7,10 +7,11 @@ from src.configuration.algorithm import AlgorithmType
 from src.configuration.mmu import MMUType
 from src.configuration.mmu_factory import PagedOnDemandFactory
 from src.configuration.scheduler import SchedulerType
-from src.console import Consola
+from src.console import Console
 from src.hardware.hardware import Hardware
 from src.kernel import Kernel
 from src.log import logger
+from src.system.file_system import FileSystem
 from src.system.memory_manager.algorithms import FCFS
 from src.utils import input_default
 
@@ -26,7 +27,7 @@ def _run_system(memory_size, frame_size, scheduler, quantum, mmu_type, algorithm
     input('\nEnter to start...')
     t_system = Thread(target=hardware.switch_on)
     t_system.start()
-    Consola(hardware, kernel).start_console()
+    Console(hardware, kernel, FileSystem(hardware.disk().get_root())).start_console()
     hardware.switch_off()
     t_system.join()
     logger.terminate()

@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
-from consolemenu.items import FunctionItem
 
-from src.images import logo
-from src.menu import console_menu
-from src.simulator import run_simulator, run_priority
-from src.stats import run_stats
+from src.simulator import run_priority
 
 # TODO Sonidos en el sistema (cpu ejecuta algo, kill, etc)
 

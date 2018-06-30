@@ -1,7 +1,6 @@
 from tabulate import tabulate
 from termcolor import colored
 
-from src.system.file_system import FileSystem
 from src.utils import execute_program
 
 
@@ -16,24 +15,26 @@ class CMD:
         self.desc = desc
 
 
-class Consola:
-    def __init__(self, hardware, kernel):
+class Console:
+    def __init__(self, hardware, kernel, fs):
         self._hard = hardware
         self._kernel = kernel
-        self._fs = FileSystem(hardware.disk().get_root())
-        self._cmds = {'help': CMD(self._ayuda, 'Mostrar esta ayuda.'),
+        self._fs = fs
+        self._cmds = {
+            'cd': CMD(self._cd, 'Cambiar directorio actual.'),
+            'clear': CMD(self._clear, 'Limpiar pantalla'),
+            'exe': CMD(self._exe, 'exe prog priority - Ejectuar programa con prioridad, default 3.'),
+            'exit': CMD(None, 'Apagar el sistema.'),
+            'help': CMD(self._ayuda, 'Mostrar esta ayuda.'),
+            'kill': CMD(self._kill, 'Matar proceso con pid'),
                       'ls': CMD(self._ls, 'Listar archivos del directorio actual.'),
-                      'cd': CMD(self._cd, 'Cambiar directorio actual.'),
-                      'stop': CMD(self._stop, 'Detener ejecución.'),
-                      'resume': CMD(self._resume, 'Reanudar ejecución.'),
                       'mem': CMD(self._mem, 'Mostrar memoria actual.'),
                       'ps': CMD(self._top, 'Mostrar procesos.'),
+            'pt': CMD(self._pt, 'Mostrar Page Table.'),
+            'resume': CMD(self._resume, 'Reanudar ejecución.'),
+            'stop': CMD(self._stop, 'Detener ejecución.'),
                       'top': CMD(self._top, 'Mostrar procesos.'),
-                      'pt': CMD(self._pt, 'Mostrar Page Table.'),
-                      'exe': CMD(self._exe, 'exe prog priority - Ejectuar programa con prioridad, default 3.'),
-                      'kill': CMD(self._kill, 'Matar proceso con pid'),
-                      'clear': CMD(self._clear, 'Limpiar pantalla'),
-                      'exit': CMD(None, 'Apagar el sistema.')}
+        }
 
     def process_input(self, command_line):
         if command_line == '':
