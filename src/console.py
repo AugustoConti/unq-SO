@@ -12,8 +12,9 @@ from src.utils import execute_program
 
 
 class CMD:
-    def __init__(self, func, desc):
+    def __init__(self, func, usage, desc):
         self.func = func
+        self.usage = usage
         self.desc = desc
 
 
@@ -23,19 +24,20 @@ class Console:
         self._kernel = kernel
         self._fs = fs
         self._cmds = {
-            'cd': CMD(self._cd, 'Cambiar directorio actual.'),
-            'clear': CMD(self._clear, 'Limpiar pantalla'),
-            'exe': CMD(self._exe, 'exe prog priority - Ejectuar programa con prioridad, default 3.'),
-            'exit': CMD(None, 'Apagar el sistema.'),
-            'help': CMD(self._ayuda, 'Mostrar esta ayuda.'),
-            'kill': CMD(self._kill, 'Matar proceso con pid'),
-            'ls': CMD(self._ls, 'Listar archivos del directorio actual.'),
-            'mem': CMD(self._mem, 'Mostrar memoria actual.'),
-            'ps': CMD(self._top, 'Mostrar procesos.'),
-            'pt': CMD(self._pt, 'Mostrar Page Table.'),
-            'resume': CMD(self._resume, 'Reanudar ejecución.'),
-            'stop': CMD(self._stop, 'Detener ejecución.'),
-            'top': CMD(self._top, 'Mostrar procesos.'),
+            'cd': CMD(self._cd, 'cd <folder>', 'Cambiar directorio actual.'),
+            'clear': CMD(self._clear, 'clear', 'Limpiar pantalla'),
+            'exe': CMD(self._exe, 'exe <program> [priority=3]', 'Ejectuar programa con prioridad.'),
+            'exit': CMD(None, 'exit', 'Apagar el sistema.'),
+            'gant': CMD(self._gant, 'gant', 'Ver diagrama de gant hasta el momento.'),
+            'help': CMD(self._ayuda, 'help', 'Mostrar esta ayuda.'),
+            'kill': CMD(self._kill, 'kill <pid>', 'Matar proceso con pid'),
+            'ls': CMD(self._ls, 'ls', 'Listar archivos del directorio actual.'),
+            'mem': CMD(self._mem, 'mem', 'Mostrar memoria actual.'),
+            'ps': CMD(self._top, 'ps', 'Mostrar procesos.'),
+            'pt': CMD(self._pt, 'pt', 'Mostrar Page Table.'),
+            'resume': CMD(self._resume, 'resume', 'Reanudar ejecución.'),
+            'stop': CMD(self._stop, 'stop', 'Detener ejecución.'),
+            'top': CMD(self._top, 'top', 'Mostrar procesos.'),
         }
 
     def process_input(self, command_line):
@@ -49,9 +51,27 @@ class Console:
             print('{c}: command not found'.format(c=command_line))
             print('Use "help" to see the command list.')
 
+    def _gant(self, _):
+        print('FALTA IMPLEMENTAR')
+
+    def _kill(self, args):
+        if len(args) == 0:
+            print('Usage: {u}'.format(u=self._cmds['kill'].usage))
+            return
+        print('FALTA IMPLEMENTAR')
+
+    def _clear(self, _):
+        print('FALTA IMPLEMENTAR')
+
+    def _stop(self, _):
+        print('FALTA IMPLEMENTAR')
+
+    def _resume(self, _):
+        print('FALTA IMPLEMENTAR')
+
     def _exe(self, args):
         if len(args) == 0:
-            print('Usage: exe program [priority]')
+            print('Usage: {u}'.format(u=self._cmds['exe'].usage))
             return
 
         if not self._fs.exe(args[0]):
@@ -63,12 +83,6 @@ class Console:
             priority = args[1]
         execute_program(self._hard.interrupt_vector(), args[0], priority)
 
-    def _kill(self, args):
-        print('FALTA IMPLEMENTAR')
-
-    def _clear(self, args):
-        print('FALTA IMPLEMENTAR')
-
     def _ls(self, _):
         folders, files = self._fs.ls()
         output = [[colored(f, 'cyan')] for f in folders]
@@ -79,12 +93,6 @@ class Console:
         if len(args) > 0:
             if not self._fs.cd(args[0]):
                 print('cd: {f}: No such directory'.format(f=args[0]))
-
-    def _stop(self, args):
-        print('FALTA IMPLEMENTAR')
-
-    def _resume(self, args):
-        print('FALTA IMPLEMENTAR')
 
     def _mem(self, _):
         print(self._hard.memory())
@@ -105,7 +113,7 @@ class Console:
         print(tabulate(table, headers='keys', tablefmt='psql'))
 
     def _ayuda(self, _):
-        print(tabulate([[cmd, v.desc] for cmd, v in self._cmds.items()], headers=['Comando', 'Descripción']))
+        print(tabulate([[v.usage, v.desc] for cmd, v in self._cmds.items()], headers=['Comando', 'Descripción']))
 
     def _read(self):
         style = Style.from_dict({
