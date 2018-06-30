@@ -1,3 +1,5 @@
+from prompt_toolkit.shortcuts import prompt
+from prompt_toolkit.styles import Style
 from tabulate import tabulate
 from termcolor import colored
 
@@ -27,13 +29,13 @@ class Console:
             'exit': CMD(None, 'Apagar el sistema.'),
             'help': CMD(self._ayuda, 'Mostrar esta ayuda.'),
             'kill': CMD(self._kill, 'Matar proceso con pid'),
-                      'ls': CMD(self._ls, 'Listar archivos del directorio actual.'),
-                      'mem': CMD(self._mem, 'Mostrar memoria actual.'),
-                      'ps': CMD(self._top, 'Mostrar procesos.'),
+            'ls': CMD(self._ls, 'Listar archivos del directorio actual.'),
+            'mem': CMD(self._mem, 'Mostrar memoria actual.'),
+            'ps': CMD(self._top, 'Mostrar procesos.'),
             'pt': CMD(self._pt, 'Mostrar Page Table.'),
             'resume': CMD(self._resume, 'Reanudar ejecución.'),
             'stop': CMD(self._stop, 'Detener ejecución.'),
-                      'top': CMD(self._top, 'Mostrar procesos.'),
+            'top': CMD(self._top, 'Mostrar procesos.'),
         }
 
     def process_input(self, command_line):
@@ -100,10 +102,26 @@ class Console:
         print(tabulate([[cmd, v.desc] for cmd, v in self._cmds.items()], headers=['Comando', 'Descripción']))
 
     def _read(self):
-        folder = self._fs.path()
-        user = '{u}@{pc}:{f} '.format(u=colored('root', 'magenta'), pc=colored('contilliniOS', 'green'),
-                                      f=colored('~{f} $'.format(f=folder), 'blue'))
-        return input(user)
+        style = Style.from_dict({
+            '': 'ansibrightgreen',  # User input (default text).
+            'username': 'ansibrightmagenta',
+            'at': 'ansiwhite',
+            'colon': 'ansiwhite',
+            'pound': 'ansibrightyellow',
+            'host': 'ansibrightgreen',
+            'path': 'ansibrightblue',
+        })
+
+        message = [
+            ('class:username', 'root'),
+            ('class:at', '@'),
+            ('class:host', 'contilliniOS'),
+            ('class:colon', ':'),
+            ('class:path', self._fs.path()),
+            ('class:pound', ' $ '),
+        ]
+
+        return prompt(message, style=style)
 
     def start_console(self):
         command_line = self._read()
