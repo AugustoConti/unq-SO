@@ -72,16 +72,13 @@ class Console:
     def _exe(self, args):
         if len(args) == 0:
             print('Usage: {u}'.format(u=self._cmds['exe'].usage))
-            return
-
-        if not self._fs.exe(args[0]):
+        elif not self._fs.exe(args[0]):
             print('{c}: file not found'.format(c=args[0]))
-            return
-
-        priority = 3
-        if len(args) > 1:
-            priority = args[1]
-        execute_program(self._hard.interrupt_vector(), args[0], priority)
+        else:
+            priority = 3
+            if len(args) > 1:
+                priority = args[1]
+            execute_program(self._hard.interrupt_vector(), args[0], priority)
 
     def _ls(self, _):
         folders, files = self._fs.ls()
