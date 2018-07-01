@@ -1,5 +1,5 @@
 from prompt_toolkit.completion import WordCompleter
-from prompt_toolkit.shortcuts import prompt, CompleteStyle, clear
+from prompt_toolkit.shortcuts import PromptSession, CompleteStyle, clear
 from prompt_toolkit.styles import Style
 from tabulate import tabulate
 
@@ -18,30 +18,54 @@ class CMD:
         self.desc = desc
 
 
+class CMDWithParam:
+    def __init__(self, cmd):
+        self._cmd = cmd
+        self.usage = cmd.usage
+        self.desc = cmd.desc
+
+    def func(self, args):
+        if len(args) == 0:
+            print('Usage: {u}'.format(u=self.usage))
+        else:
+            self._cmd.func(args)
+
+
 class Console:
     def __init__(self, hardware, kernel, fs):
         self._hard = hardware
         self._kernel = kernel
         self._fs = fs
+        style = Style.from_dict({
+            '': 'ansibrightgreen',  # User input (default text).
+            'username': 'ansibrightmagenta',
+            'at': 'ansiwhite',
+            'colon': 'ansiwhite',
+            'pound': 'ansibrightyellow',
+            'host': 'ansibrightgreen',
+            'path': '#4848ff',
+        })
+        self._session = PromptSession(style=style, completer=WordCompleter(self._get_completer),
+                                      complete_style=CompleteStyle.READLINE_LIKE, enable_history_search=True)
         self._cmds = {
-            'cat': CMD(self._cat, 'cat <file>', 'Ver contenido del archivo.'),
+            'cat': CMDWithParam(CMD(self._cat, 'cat <file>', 'Ver contenido del archivo.')),
             'cd': CMD(self._cd, 'cd <folder>', 'Cambiar directorio actual.'),
             'clear': CMD(self._clear, 'clear', 'Limpiar pantalla'),
-            'exe': CMD(self._exe, 'exe <program> [priority=3]', 'Ejectuar programa con prioridad.'),
+            'exe': CMDWithParam(CMD(self._exe, 'exe <program> [priority=3]', 'Ejectuar programa con prioridad.')),
             'exit': CMD(None, 'exit', 'Apagar el sistema.'),
             'gant': CMD(self._gant, 'gant', 'Ver diagrama de gant hasta el momento.'),
             'help': CMD(self._ayuda, 'help', 'Mostrar esta ayuda.'),
-            'kill': CMD(self._kill, 'kill <pid>', 'Matar proceso con pid'),
+            'kill': CMDWithParam(CMD(self._kill, 'kill <pid>', 'Matar proceso con pid')),
             'ls': CMD(self._ls, 'ls', 'Listar archivos del directorio actual.'),
             'mem': CMD(self._mem, 'mem', 'Mostrar memoria actual.'),
-            'mkdir': CMD(self._mkdir, 'mkdir <carpeta>', 'Crear carpeta si no existe.'),
+            'mkdir': CMDWithParam(CMD(self._mkdir, 'mkdir <carpeta>', 'Crear carpeta si no existe.')),
             'ps': CMD(self._top, 'ps', 'Mostrar procesos.'),
             'pt': CMD(self._pt, 'pt', 'Mostrar Page Table.'),
             'resume': CMD(self._resume, 'resume', 'Reanudar ejecución.'),
-            'rm': CMD(self._rm, 'rm (<directory|<file>)', 'Remover archivo o carpeta.'),
+            'rm': CMDWithParam(CMD(self._rm, 'rm (<directory|<file>)', 'Remover archivo o carpeta.')),
             'stop': CMD(self._stop, 'stop', 'Detener ejecución.'),
             'top': CMD(self._top, 'top', 'Mostrar procesos.'),
-            'touch': CMD(self._touch, 'touch <file>', 'Crear archivo.'),
+            'touch': CMDWithParam(CMD(self._touch, 'touch <file>', 'Crear archivo.')),
         }
 
     def process_input(self, command_line):
@@ -68,46 +92,35 @@ class Console:
         clear()
 
     def _cat(self, args):
-        if len(args) == 0:
-            print('Usage: {u}'.format(u=self._cmds['cat'].usage))
-        elif self._fs.exe(args[0]):
+        if self._fs.exe(args[0]):
             print(self._hard.disk().get(args[0]))
         else:
             print('cat: {f}: No such file or directory'.format(f=args[0]))
 
     def _mkdir(self, args):
-        if len(args) == 0:
-            print('Usage: {u}'.format(u=self._cmds['mkdir'].usage))
-        elif not self._fs.mkdir(args[0]):
+        if not self._fs.mkdir(args[0]):
             print('mkdir: cannot create directory "{f}": File exists'.format(f=args[0]))
 
     def _touch(self, args):
-        if len(args) == 0:
-            print('Usage: {u}'.format(u=self._cmds['touch'].usage))
-        else:
-            self._fs.touch(args[0])
+        self._fs.touch(args[0])
 
     def _rm(self, args):
-        if len(args) == 0:
-            print('Usage: {u}'.format(u=self._cmds['rm'].usage))
-        elif not self._fs.rm(args[0]):
+        if not self._fs.rm(args[0]):
             print('rm: cannot remove "{f}": No such file or directory'.format(f=args[0]))
 
     def _exe(self, args):
-        if len(args) == 0:
-            print('Usage: {u}'.format(u=self._cmds['exe'].usage))
-        elif not self._fs.exe(args[0]):
+        if not self._fs.exe(args[0]):
             print('{c}: file not found'.format(c=args[0]))
         else:
-            priority = 3
-            if len(args) > 1:
-                priority = args[1]
-            execute_program(self._hard.interrupt_vector(), args[0], priority)
+            try:
+                priority = 3
+                if len(args) > 1:
+                    priority = int(args[1])
+                execute_program(self._hard.interrupt_vector(), args[0], priority)
+            except ValueError:
+                print('exe: {prog} {pri}: priority argument must be a number'.format(prog=args[0], pri=args[1]))
 
     def _kill(self, args):
-        if len(args) == 0:
-            print('Usage: {u}'.format(u=self._cmds['kill'].usage))
-            return
         try:
             pid = int(args[0])
             if not self._kernel.contains_pid(pid):
@@ -150,16 +163,6 @@ class Console:
         return list(self._cmds.keys()) + self._fs.lista()
 
     def _read(self):
-        style = Style.from_dict({
-            '': 'ansibrightgreen',  # User input (default text).
-            'username': 'ansibrightmagenta',
-            'at': 'ansiwhite',
-            'colon': 'ansiwhite',
-            'pound': 'ansibrightyellow',
-            'host': 'ansibrightgreen',
-            'path': '#4848ff',
-        })
-
         message = [
             ('class:username', 'root'),
             ('class:at', '@'),
@@ -168,8 +171,7 @@ class Console:
             ('class:path', ' ~' + self._fs.path()),
             ('class:pound', ' $ '),
         ]
-        completer = WordCompleter(self._get_completer)
-        return prompt(message, style=style, completer=completer, complete_style=CompleteStyle.READLINE_LIKE)
+        return self._session.prompt(message)
 
     def start_console(self):
         command_line = self._read()
