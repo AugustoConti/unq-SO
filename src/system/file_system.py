@@ -6,6 +6,9 @@ class FileSystem:
         self._raiz = raiz
         self._actual = raiz
 
+    def get_names(self):
+        return self._actual.get_names()
+
     def path(self):
         return self._actual.path()
 

@@ -1,4 +1,5 @@
-from prompt_toolkit.shortcuts import prompt
+from prompt_toolkit.completion import WordCompleter
+from prompt_toolkit.shortcuts import prompt, CompleteStyle
 from prompt_toolkit.styles import Style
 from tabulate import tabulate
 from termcolor import colored
@@ -110,6 +111,9 @@ class Console:
     def _ayuda(self, _):
         print(tabulate([[v.usage, v.desc] for cmd, v in self._cmds.items()], headers=['Comando', 'Descripción']))
 
+    def _get_completer(self):
+        return list(self._cmds.keys()) + self._fs.get_names()
+
     def _read(self):
         style = Style.from_dict({
             '': 'ansibrightgreen',  # User input (default text).
@@ -120,7 +124,6 @@ class Console:
             'host': 'ansibrightgreen',
             'path': 'ansibrightblue',
         })
-
         message = [
             ('class:username', 'root'),
             ('class:at', '@'),
@@ -129,8 +132,8 @@ class Console:
             ('class:path', ' ~' + self._fs.path()),
             ('class:pound', ' $ '),
         ]
-
-        return prompt(message, style=style)
+        completer = WordCompleter(self._get_completer)
+        return prompt(message, style=style, completer=completer, complete_style=CompleteStyle.READLINE_LIKE)
 
     def start_console(self):
         command_line = self._read()

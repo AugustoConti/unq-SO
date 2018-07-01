@@ -23,6 +23,10 @@ class Folder:
     def set_up(self, up):
         self._up = up
 
+    def get_names(self):
+        folders, files = self.ls()
+        return folders + files
+
     def path(self):
         if self._up == self:
             return self.name

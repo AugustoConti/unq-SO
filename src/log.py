@@ -1,5 +1,6 @@
 import logging.config
 from subprocess import Popen
+from time import sleep
 
 from tabulate import tabulate
 from termcolor import colored
@@ -13,7 +14,6 @@ from termcolor import colored
     print(colored('bold', attrs=['bold']),'bold\n')
     print(colored('underline', attrs=['underline']),'underline\n')
     print(colored('reverse', 'cyan', attrs=['reverse']),'reverse\n')
-
 """
 
 logging.config.dictConfig({
@@ -27,6 +27,7 @@ logging.config.dictConfig({
     'handlers': {
         'file': {
             'filename': 'info.log',
+            'mode': 'w',
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
         },
@@ -97,6 +98,8 @@ class _Logger:
 
     def msj(self, msj):
         self._log.info(msj)
+        if self._proc != None:
+            sleep(0.5)
 
     def indice(self):
         print('\nIndice colores de Logger:\n', self._indices)
