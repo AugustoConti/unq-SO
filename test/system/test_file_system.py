@@ -35,11 +35,11 @@ class TestFileSystem(TestCase):
         self.assertFalse(self._fs.cd('git'))
 
     def test_ls_root(self):
-        self.assertEqual((['games', 'git']), self._fs.ls())
+        self.assertEqual((['games', 'git']), self._fs.lista())
 
     def test_ls_on_folder(self):
         self._fs.cd('games')
-        self.assertEqual((['cracks', 'cs', 'fifa']), self._fs.ls())
+        self.assertEqual((['cracks', 'cs', 'fifa']), self._fs.lista())
 
     def test_ls_on_empty_folder(self):
         self._fs.cd('games')
