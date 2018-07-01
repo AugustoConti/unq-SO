@@ -1,3 +1,5 @@
+from termcolor import colored
+
 from src.images import blue_screen
 from src.log import logger
 from src.structures.asm import ASM
@@ -8,14 +10,25 @@ class File:
     def __init__(self, name):
         self.name = name
 
+    def is_folder(self):
+        return False
+
+    def set_up(self, _):
+        pass
+
+    def __repr__(self):
+        return self.name
+
 
 class Folder:
-    def __init__(self, name, folders, files):
+    def __init__(self, name, files):
         self.name = name
         self._up = self
-        self._folders = folders
         self._files = files
-        [f.set_up(self) for f in folders]
+        [f.set_up(self) for f in files]
+
+    def is_folder(self):
+        return True
 
     def get_up(self):
         return self._up
@@ -23,40 +36,57 @@ class Folder:
     def set_up(self, up):
         self._up = up
 
-    def get_names(self):
-        folders, files = self.ls()
-        return folders + files
+    def add(self, file):
+        if self.has(file.name):
+            return False
+        self._files.append(file)
+        file.set_up(self)
+        return True
+
+    def rm(self, name):
+        if not self.has(name):
+            return False
+        self._files.remove(self._filter(name)[0])
+        return True
 
     def path(self):
-        if self._up == self:
-            return self.name
-        else:
-            return self._up.path() + self.name + '/'
+        return self.name if self._up == self else self._up.path() + self.name + '/'
 
     def ls(self):
-        return [f.name for f in self._folders], [f.name for f in self._files]
+        return sorted(self._files, key=lambda f: f.name)
 
-    def _filter_folder(self, folder):
-        return [f for f in self._folders if f.name == folder]
+    def lista(self):
+        return [f.name for f in self._files]
+
+    def _filter(self, name):
+        return [f for f in self._files if f.name == name]
+
+    def has(self, name):
+        return len(self._filter(name)) > 0
+
+    def _filter_file(self, file, is_folder):
+        return [f for f in self._files if f.name == file and f.is_folder() == is_folder]
 
     def has_folder(self, folder):
-        return len(self._filter_folder(folder)) > 0
+        return len(self._filter_file(folder, True)) > 0
+
+    def has_file(self, file):
+        return len(self._filter_file(file, False)) > 0
 
     def cd(self, folder):
-        return self._filter_folder(folder)[0]
+        return self._filter_file(folder, True)[0]
 
-    def exe(self, prog):
-        res = [f for f in self._files if f.name == prog]
-        return len(res) > 0
+    def __repr__(self):
+        return colored(self.name, 'cyan')
 
 
 class Disk:
     def __init__(self, frame_size):
-        games = Folder('games', [], [File('cs'), File('fifa')])
-        unq = Folder('unq', [], [])
-        documents = Folder('documents', [unq], [File('book'), File('xls')])
-        utils = Folder('utils', [], [File('calc')])
-        self._root = Folder('/', [documents, games, utils], [File('git')])
+        games = Folder('games', [File('cs'), File('fifa')])
+        unq = Folder('unq', [])
+        documents = Folder('documents', [unq, File('book'), File('xls')])
+        utils = Folder('utils', [File('calc')])
+        self._root = Folder('/', [documents, games, utils, File('git')])
         self._frame_size = frame_size
         self._programs = dict()
         self.add_all({

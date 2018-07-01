@@ -1,4 +1,4 @@
-# TODO implementar mkdir, touch, rm !!!
+from src.hardware.disk import Folder, File
 
 
 class FileSystem:
@@ -6,14 +6,23 @@ class FileSystem:
         self._raiz = raiz
         self._actual = raiz
 
-    def get_names(self):
-        return self._actual.get_names()
-
     def path(self):
         return self._actual.path()
 
     def ls(self):
         return self._actual.ls()
+
+    def lista(self):
+        return self._actual.lista()
+
+    def mkdir(self, name):
+        return self._actual.add(Folder(name, []))
+
+    def touch(self, name):
+        return self._actual.add(File(name))
+
+    def rm(self, name):
+        return self._actual.rm(name)
 
     def cd(self, folder):
         if folder == '/':
@@ -27,4 +36,4 @@ class FileSystem:
         return True
 
     def exe(self, prog):
-        return self._actual.exe(prog)
+        return self._actual.has_file(prog)

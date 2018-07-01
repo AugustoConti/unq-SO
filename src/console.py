@@ -2,7 +2,6 @@ from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.shortcuts import prompt, CompleteStyle
 from prompt_toolkit.styles import Style
 from tabulate import tabulate
-from termcolor import colored
 
 from src.utils import execute_program
 
@@ -25,6 +24,7 @@ class Console:
         self._kernel = kernel
         self._fs = fs
         self._cmds = {
+            'cat': CMD(self._cat, 'cat <file>', 'Ver contenido del archivo.'),
             'cd': CMD(self._cd, 'cd <folder>', 'Cambiar directorio actual.'),
             'clear': CMD(self._clear, 'clear', 'Limpiar pantalla'),
             'exe': CMD(self._exe, 'exe <program> [priority=3]', 'Ejectuar programa con prioridad.'),
@@ -34,11 +34,14 @@ class Console:
             'kill': CMD(self._kill, 'kill <pid>', 'Matar proceso con pid'),
             'ls': CMD(self._ls, 'ls', 'Listar archivos del directorio actual.'),
             'mem': CMD(self._mem, 'mem', 'Mostrar memoria actual.'),
+            'mkdir': CMD(self._mkdir, 'mkdir <carpeta>', 'Crear carpeta si no existe.'),
             'ps': CMD(self._top, 'ps', 'Mostrar procesos.'),
             'pt': CMD(self._pt, 'pt', 'Mostrar Page Table.'),
             'resume': CMD(self._resume, 'resume', 'Reanudar ejecución.'),
+            'rm': CMD(self._rm, 'rm (<directory|<file>)', 'Remover archivo o carpeta.'),
             'stop': CMD(self._stop, 'stop', 'Detener ejecución.'),
             'top': CMD(self._top, 'top', 'Mostrar procesos.'),
+            'touch': CMD(self._touch, 'touch <file>', 'Crear archivo.'),
         }
 
     def process_input(self, command_line):
@@ -58,8 +61,8 @@ class Console:
     def _kill(self, args):
         if len(args) == 0:
             print('Usage: {u}'.format(u=self._cmds['kill'].usage))
-            return
-        print('FALTA IMPLEMENTAR')
+        else:
+            print('FALTA IMPLEMENTAR')
 
     def _clear(self, _):
         print('FALTA IMPLEMENTAR')
@@ -69,6 +72,32 @@ class Console:
 
     def _resume(self, _):
         print('FALTA IMPLEMENTAR')
+
+    def _cat(self, args):
+        if len(args) == 0:
+            print('Usage: {u}'.format(u=self._cmds['cat'].usage))
+        elif self._fs.exe(args[0]):
+            print(self._hard.disk().get(args[0]))
+        else:
+            print('cat: {f}: No such file or directory'.format(f=args[0]))
+
+    def _mkdir(self, args):
+        if len(args) == 0:
+            print('Usage: {u}'.format(u=self._cmds['mkdir'].usage))
+        elif not self._fs.mkdir(args[0]):
+            print('mkdir: cannot create directory "{f}": File exists'.format(f=args[0]))
+
+    def _touch(self, args):
+        if len(args) == 0:
+            print('Usage: {u}'.format(u=self._cmds['touch'].usage))
+        else:
+            self._fs.touch(args[0])
+
+    def _rm(self, args):
+        if len(args) == 0:
+            print('Usage: {u}'.format(u=self._cmds['rm'].usage))
+        elif not self._fs.rm(args[0]):
+            print('rm: cannot remove "{f}": No such file or directory'.format(f=args[0]))
 
     def _exe(self, args):
         if len(args) == 0:
@@ -82,13 +111,11 @@ class Console:
             execute_program(self._hard.interrupt_vector(), args[0], priority)
 
     def _ls(self, _):
-        folders, files = self._fs.ls()
-        print(' '.join([colored(f, 'cyan') for f in folders] + [f for f in files]))
+        print('   '.join([str(f) for f in self._fs.ls()]))
 
     def _cd(self, args):
-        if len(args) > 0:
-            if not self._fs.cd(args[0]):
-                print('cd: {f}: No such directory'.format(f=args[0]))
+        if len(args) > 0 and not self._fs.cd(args[0]):
+            print('cd: {f}: No such directory'.format(f=args[0]))
 
     def _mem(self, _):
         print(self._hard.memory())
@@ -112,7 +139,7 @@ class Console:
         print(tabulate([[v.usage, v.desc] for cmd, v in self._cmds.items()], headers=['Comando', 'Descripción']))
 
     def _get_completer(self):
-        return list(self._cmds.keys()) + self._fs.get_names()
+        return list(self._cmds.keys()) + self._fs.lista()
 
     def _read(self):
         style = Style.from_dict({
@@ -122,8 +149,9 @@ class Console:
             'colon': 'ansiwhite',
             'pound': 'ansibrightyellow',
             'host': 'ansibrightgreen',
-            'path': 'ansibrightblue',
+            'path': '#4848ff',
         })
+
         message = [
             ('class:username', 'root'),
             ('class:at', '@'),
