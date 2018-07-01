@@ -1,5 +1,5 @@
 from prompt_toolkit.completion import WordCompleter
-from prompt_toolkit.shortcuts import prompt, CompleteStyle
+from prompt_toolkit.shortcuts import prompt, CompleteStyle, clear
 from prompt_toolkit.styles import Style
 from tabulate import tabulate
 
@@ -64,14 +64,14 @@ class Console:
         else:
             print('FALTA IMPLEMENTAR')
 
-    def _clear(self, _):
-        print('FALTA IMPLEMENTAR')
-
     def _stop(self, _):
         print('FALTA IMPLEMENTAR')
 
     def _resume(self, _):
         print('FALTA IMPLEMENTAR')
+
+    def _clear(self, _):
+        clear()
 
     def _cat(self, args):
         if len(args) == 0:

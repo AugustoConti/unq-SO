@@ -1,5 +1,6 @@
 from threading import Thread
 
+from prompt_toolkit.shortcuts import clear
 from tabulate import tabulate
 from termcolor import colored
 
@@ -25,6 +26,7 @@ def _run_system(memory_size, frame_size, scheduler, quantum, mmu_type, algorithm
     logger.indice()
     print('\n', colored('System Info:', 'cyan'), '\n', tabulate(hardware.info() + kernel.info()))
     input('\nEnter to start...')
+    clear()
     t_system = Thread(target=hardware.switch_on)
     t_system.start()
     Console(hardware, kernel, FileSystem(hardware.disk().get_root())).start_console()
