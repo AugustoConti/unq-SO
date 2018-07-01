@@ -11,11 +11,17 @@ class KillInterruptionHandler:
         self._dispatcher = dispatcher
         self._mm = mm
 
-    def execute(self, _):
-        logger.info("Kill", "Finished: {currentPCB}".format(currentPCB=self._pcb_table.get_running()))
-        self._dispatcher.save(State.TERMINATED)
-        self._mm.kill(self._pcb_table.get_running_pid())
-        self._scheduler.load_from_ready()
+    def execute(self, irq):
+        pid = irq.parameters()
+        if pid is None or pid == self._pcb_table.get_running_pid():
+            pid = self._pcb_table.get_running_pid()
+            self._dispatcher.save(State.TERMINATED)
+            self._scheduler.load_from_ready()
+        else:
+            self._pcb_table.set_pcb_state(pid, State.TERMINATED)
+            self._scheduler.kill(pid)
+        self._mm.kill(pid)
+        logger.info("Kill", "Finished pid: {pid}".format(pid=pid))
 
 
 class IoInInterruptionHandler:
@@ -61,13 +67,16 @@ class NewInterruptionHandler:
 
 
 class IoOutInterruptionHandler:
-    def __init__(self, scheduler, io_device_controller):
+    def __init__(self, scheduler, pcb_table, io_device_controller):
         self._scheduler = scheduler
+        self._pcb_table = pcb_table
         self._io_device_controller = io_device_controller
 
     def execute(self, _):
         logger.info("IoOut", self._io_device_controller)
-        self._scheduler.run_or_add_queue(self._io_device_controller.get_finished_pid())
+        pid = self._io_device_controller.get_finished_pid()
+        if self._pcb_table.contains_pid(pid):
+            self._scheduler.run_or_add_queue(pid)
 
 
 class PageFaultInterruptionHandler:
@@ -100,7 +109,7 @@ def register_handlers(interrupt_vector, scheduler, pcb_table, loader, dispatcher
     interrupt_vector.register(Interruption.IO_IN,
                               IoInInterruptionHandler(scheduler, pcb_table, io_device_controller, dispatcher))
     interrupt_vector.register(Interruption.IO_OUT,
-                              IoOutInterruptionHandler(scheduler, io_device_controller))
+                              IoOutInterruptionHandler(scheduler, pcb_table, io_device_controller))
     interrupt_vector.register(Interruption.TIME_OUT,
                               TimeOutInterruptionHandler(scheduler, dispatcher, timer))
     interrupt_vector.register(Interruption.PAGE_FAULT,

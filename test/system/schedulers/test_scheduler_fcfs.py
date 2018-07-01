@@ -1,5 +1,6 @@
 from unittest import TestCase
-from src.system.schedulers import FCFS
+
+from src.system.scheduler import FCFS
 
 
 class TestFCFS(TestCase):

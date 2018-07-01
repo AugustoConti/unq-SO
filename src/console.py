@@ -3,7 +3,7 @@ from prompt_toolkit.shortcuts import prompt, CompleteStyle, clear
 from prompt_toolkit.styles import Style
 from tabulate import tabulate
 
-from src.utils import execute_program
+from src.utils import execute_program, kill_program
 
 
 # TODO implementar comandos
@@ -58,12 +58,6 @@ class Console:
     def _gant(self, _):
         print('FALTA IMPLEMENTAR')
 
-    def _kill(self, args):
-        if len(args) == 0:
-            print('Usage: {u}'.format(u=self._cmds['kill'].usage))
-        else:
-            print('FALTA IMPLEMENTAR')
-
     def _stop(self, _):
         print('FALTA IMPLEMENTAR')
 
@@ -110,6 +104,19 @@ class Console:
                 priority = args[1]
             execute_program(self._hard.interrupt_vector(), args[0], priority)
 
+    def _kill(self, args):
+        if len(args) == 0:
+            print('Usage: {u}'.format(u=self._cmds['kill'].usage))
+            return
+        try:
+            pid = int(args[0])
+            if not self._kernel.contains_pid(pid):
+                print('kill: {pid}: arguments must be process or job IDs'.format(pid=pid))
+            else:
+                kill_program(self._hard.interrupt_vector(), pid)
+        except ValueError:
+            print('kill: {pid}: arguments must be process or job IDs'.format(pid=args[0]))
+
     def _ls(self, _):
         print('   '.join([str(f) for f in self._fs.ls()]))
 
@@ -121,6 +128,7 @@ class Console:
         print(self._hard.memory())
 
     def _top(self, _):
+        # TODO comando top, mantener abierto actualizando tabla hasta que ctrl+C
         lista = []
         for pcb in self._kernel.pcb_list():
             lista.append(pcb.to_dict())

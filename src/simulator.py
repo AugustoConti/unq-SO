@@ -22,7 +22,7 @@ def _run_system(memory_size, frame_size, scheduler, quantum, mmu_type, algorithm
     count_frames = memory_size // frame_size
     hardware = Hardware(memory_size, 1, mmu_type, frame_size)
     kernel = Kernel(hardware, scheduler, mmu_type, frame_size, count_frames, quantum, algorithm)
-    logger.show()
+    # logger.show()
     logger.indice()
     print('\n', colored('System Info:', 'cyan'), '\n', tabulate(hardware.info() + kernel.info()))
     input('\nEnter to start...')

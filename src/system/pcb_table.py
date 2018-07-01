@@ -11,6 +11,9 @@ class PCBTable:
         self._last_id += 1
         return self._last_id
 
+    def contains_pid(self, pid):
+        return pid in [pcb.pid for pcb in self._table.values() if pcb.state != State.TERMINATED]
+
     def is_running(self):
         return self._pid_running is not None
 

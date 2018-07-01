@@ -1,6 +1,5 @@
 import logging.config
 from subprocess import Popen
-from time import sleep
 
 from tabulate import tabulate
 from termcolor import colored
@@ -94,12 +93,11 @@ class _Logger:
         self._proc = Popen(['x-terminal-emulator', '-e', 'tail -s 0.5 -f info.log'])
 
     def terminate(self):
-        self._proc.terminate()
+        if self._proc is not None:
+            self._proc.terminate()
 
     def msj(self, msj):
         self._log.info(msj)
-        if self._proc != None:
-            sleep(0.5)
 
     def indice(self):
         print('\nIndice colores de Logger:\n', self._indices)

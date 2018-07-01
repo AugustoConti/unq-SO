@@ -30,3 +30,6 @@ class Scheduler:
         else:
             logger.info('Scheduler', self.__tipo)
             self._dispatcher.load(self.__tipo.next())
+
+    def kill(self, pid):
+        self.__tipo.kill(pid)

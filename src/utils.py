@@ -16,6 +16,10 @@ def execute_programs(interrupt_vector):
     execute_program(interrupt_vector, "prg6.exe", 3)
 
 
+def kill_program(interrupt_vector, pid):
+    interrupt_vector.handle(IRQ(Interruption.KILL, pid))
+
+
 def execute_program(interrupt_vector, program, priority=3):
     interrupt_vector.handle(IRQ(Interruption.NEW, {'program': program, 'priority': priority}))
 

@@ -1,22 +1,12 @@
 from time import sleep
 
 from src.hardware.disk import Disk, Swap
+from src.hardware.interrupt_vector import InterruptVector
 from src.hardware.memory import Memory
 from src.log import logger
 from src.structures.asm import ASM
 from src.structures.interruptions import Interruption
 from src.structures.irq import IRQ
-
-
-class InterruptVector:
-    def __init__(self):
-        self._handlers = dict()
-
-    def register(self, tipo, handler):
-        self._handlers[tipo] = handler
-
-    def handle(self, irq):
-        self._handlers[irq.type()].execute(irq)
 
 
 class Clock:

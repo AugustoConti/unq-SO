@@ -1,5 +1,5 @@
 from src.menu import selection_menu
-from src.system.schedulers import Scheduler
+from src.system.scheduler import Scheduler
 from src.system.schedulers_types import *
 
 

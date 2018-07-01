@@ -14,7 +14,7 @@ class TestKillInterruptionHandler(TestCase):
         self._kill = KillInterruptionHandler(self._scheduler, self._pcbTable, self._dispatcher, self._mm)
 
     def test_execute(self):
-        self._kill.execute(None)
+        self._kill.execute(NonCallableMock(parameters=Mock(return_value=None)))
         self._mm.kill.assert_called_once_with(1)
         self._dispatcher.save.assert_called_once_with(State.TERMINATED)
         self._scheduler.load_from_ready.assert_called_once()

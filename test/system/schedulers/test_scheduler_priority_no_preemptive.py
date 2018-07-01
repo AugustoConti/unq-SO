@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import Mock, NonCallableMock
 
-from src.system.schedulers import PriorityNoPreemptive
+from src.system.scheduler import PriorityNoPreemptive
 
 
 class TestPriorityNoPreemptive(TestCase):

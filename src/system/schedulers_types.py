@@ -37,6 +37,10 @@ class SJF:
         self._ready.remove(minimo)
         return minimo
 
+    def kill(self, pid):
+        if pid in self._ready:
+            self._ready.remove(pid)
+
     def __repr__(self):
         return 'SJF: {ready}'.format(ready=self._ready)
 
@@ -54,16 +58,20 @@ class FCFS:
     def next(self):
         return self._ready.pop(0)
 
+    def kill(self, pid):
+        if pid in self._ready:
+            self._ready.remove(pid)
+
     def __repr__(self):
         return 'FCFS: {ready}'.format(ready=self._ready)
 
 
 class PriorityNoPreemptive:
     def __init__(self, pcb_table):
-        self.__cant_priority = 5
+        self.__cant = 5
         self.__doAging = 0
         self._pcb_table = pcb_table
-        self._ready = [[] for _ in range(self.__cant_priority)]
+        self._ready = [[] for _ in range(self.__cant)]
 
     def is_empty(self):
         return not any(self._ready)
@@ -77,7 +85,7 @@ class PriorityNoPreemptive:
         self.__doAging += 1
         if self.__doAging % 4 == 0:
             logger.info('PriorityNoPreemptive', 'Doing aging!')
-            [self._ready[i - 1].append(self._ready[i].pop(0)) for i in range(1, self.__cant_priority) if self._ready[i]]
+            [self._ready[i - 1].append(self._ready[i].pop(0)) for i in range(1, self.__cant) if self._ready[i]]
 
     def next(self):
         pid = self.__get_max_priority()
@@ -86,6 +94,9 @@ class PriorityNoPreemptive:
 
     def add(self, pid):
         self._ready[self._pcb_table.get_priority(pid) - 1].append(pid)
+
+    def kill(self, pid):
+        [self._ready[i].remove(pid) for i in range(self.__cant) if pid in self._ready[i]]
 
     def __repr__(self):
         return 'PriorityNoPreemptive:\n{ready}'.format(
@@ -107,6 +118,9 @@ class PriorityPreemptive:
     def next(self):
         return self._base.next()
 
+    def kill(self, pid):
+        self._base.kill(pid)
+
     def __repr__(self):
         return 'PriorityPreemptive: {ready}'.format(ready=self._base)
 
@@ -124,6 +138,9 @@ class RoundRobin:
 
     def next(self):
         return self._base.next()
+
+    def kill(self, pid):
+        self._base.kill(pid)
 
     def __repr__(self):
         return 'RoundRobin: {ready}'.format(ready=self._base)
