@@ -1,10 +1,10 @@
 from termcolor import colored
 
-from src.images import blue_screen
-from src.log import logger
+from src.utils.images import blue_screen
+from src.utils.log import logger
 from src.structures.asm import ASM
-from src.usage import Usage
-from src.utils import expand
+from src.utils.usage import Usage
+from src.utils.utils import expand
 
 
 class File:

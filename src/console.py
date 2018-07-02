@@ -6,8 +6,8 @@ from prompt_toolkit.styles import Style
 from tabulate import tabulate
 from termcolor import colored
 
-from src.full_screen import show_full_screen
-from src.utils import execute_program, kill_program
+from src.utils.full_screen import show_full_screen
+from src.utils.utils import execute_program, kill_program
 
 
 class CMD:

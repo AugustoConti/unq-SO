@@ -1,4 +1,4 @@
-from src.menu import selection_menu
+from src.utils.menu import selection_menu
 from src.system.memory_manager.algorithms import *
 
 

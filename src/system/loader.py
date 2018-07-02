@@ -1,5 +1,5 @@
-from src.log import logger
-from src.usage import Usage
+from src.utils.log import logger
+from src.utils.usage import Usage
 
 
 class LoaderBasic:

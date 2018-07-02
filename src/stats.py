@@ -7,9 +7,8 @@ from src.configuration.mmu_factory import AsignacionContinuaFactory
 from src.configuration.scheduler import SchedulerType
 from src.hardware.hardware import *
 from src.kernel import Kernel
-from src.log import logger
+from src.utils.log import logger
 from src.structures.states import State
-from src.utils import *
 
 __all__ = ["run_stats"]
 

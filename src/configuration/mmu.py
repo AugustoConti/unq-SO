@@ -1,5 +1,5 @@
 from src.configuration.mmu_factory import AsignacionContinuaFactory, PagedFactory, PagedOnDemandFactory
-from src.menu import selection_menu
+from src.utils.menu import selection_menu
 
 
 class MMUType:

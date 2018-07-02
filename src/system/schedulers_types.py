@@ -1,6 +1,6 @@
 from tabulate import tabulate
 
-from src.log import logger
+from src.utils.log import logger
 from src.structures.states import State
 
 

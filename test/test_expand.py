@@ -1,5 +1,5 @@
 from unittest import TestCase
-from src.utils import expand
+from src.utils.utils import expand
 
 
 class TestExpand(TestCase):

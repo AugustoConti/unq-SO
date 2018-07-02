@@ -4,7 +4,7 @@ from time import sleep
 from src.hardware.disk import Disk, Swap
 from src.hardware.interrupt_vector import InterruptVector
 from src.hardware.memory import Memory
-from src.log import logger
+from src.utils.log import logger
 from src.structures.asm import ASM
 from src.structures.interruptions import Interruption
 from src.structures.irq import IRQ

@@ -1,5 +1,5 @@
-from src.images import blue_screen
-from src.log import logger
+from src.utils.images import blue_screen
+from src.utils.log import logger
 from src.structures.page_row import PageRow
 
 

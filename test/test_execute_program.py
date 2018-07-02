@@ -2,7 +2,7 @@ from unittest import TestCase
 from unittest.mock import NonCallableMock
 
 from src.structures.interruptions import Interruption
-from src.utils import execute_program
+from src.utils.utils import execute_program
 
 
 class TestExecute(TestCase):

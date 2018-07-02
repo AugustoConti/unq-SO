@@ -9,10 +9,10 @@ from src.configuration.scheduler import SchedulerType
 from src.console import Console
 from src.hardware.hardware import Hardware
 from src.kernel import Kernel
-from src.log import logger
+from src.utils.log import logger
 from src.system.file_system import FileSystem
 from src.system.memory_manager.algorithms import FCFS
-from src.utils import input_default
+from src.utils.utils import input_default
 
 
 def _run_system(memory_size, frame_size, scheduler, quantum, mmu_type, algorithm):
