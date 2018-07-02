@@ -53,7 +53,7 @@ class Console:
             'clear': CMD(self._clear, 'clear', 'Limpiar pantalla'),
             'exe': CMDWithParam(CMD(self._exe, 'exe <program> [priority=3]', 'Ejectuar programa con prioridad.')),
             'exit': CMD(None, 'exit', 'Apagar el sistema.'),
-            'gant': CMD(self._gant, 'gant', 'Ver diagrama de gant hasta el momento.'),
+            # 'gant': CMD(self._gant, 'gant', 'Ver diagrama de gant hasta el momento.'),
             'help': CMD(self._ayuda, 'help', 'Mostrar esta ayuda.'),
             'kill': CMDWithParam(CMD(self._kill, 'kill <pid>', 'Matar proceso con pid')),
             'ls': CMD(self._ls, 'ls', 'Listar archivos del directorio actual.'),
@@ -61,7 +61,7 @@ class Console:
             'mkdir': CMDWithParam(CMD(self._mkdir, 'mkdir <carpeta>', 'Crear carpeta si no existe.')),
             'ps': CMD(self._top, 'ps', 'Mostrar procesos.'),
             'pt': CMD(self._pt, 'pt', 'Mostrar Page Table.'),
-            'resume': CMD(self._resume, 'resume', 'Reanudar ejecución.'),
+            'start': CMD(self._start, 'start', 'Reanudar ejecución.'),
             'rm': CMDWithParam(CMD(self._rm, 'rm (<directory|<file>)', 'Remover archivo o carpeta.')),
             'stop': CMD(self._stop, 'stop', 'Detener ejecución.'),
             'top': CMD(self._top, 'top', 'Mostrar procesos.'),
@@ -83,10 +83,10 @@ class Console:
         print('FALTA IMPLEMENTAR')
 
     def _stop(self, _):
-        print('FALTA IMPLEMENTAR')
+        self._hard.clock().stop()
 
-    def _resume(self, _):
-        print('FALTA IMPLEMENTAR')
+    def _start(self, _):
+        self._hard.clock().start()
 
     def _clear(self, _):
         clear()

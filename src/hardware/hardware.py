@@ -1,3 +1,4 @@
+from threading import Thread
 from time import sleep
 
 from src.hardware.disk import Disk, Swap
@@ -14,6 +15,7 @@ class Clock:
         self._subscribers = []
         self._running = False
         self._delay = delay
+        self._tick_nbr = 0
 
     def add_subscriber(self, subscriber):
         self._subscribers.append(subscriber)
@@ -22,15 +24,20 @@ class Clock:
         self._subscribers.extend(subscribers)
 
     def stop(self):
+        logger.info("Clock", "---- :::: STOP CLOCK  ::: -----")
         self._running = False
 
-    def start(self):
+    def _run(self):
         logger.info("Clock", "---- :::: START CLOCK  ::: -----")
         self._running = True
-        tick_nbr = 0
         while self._running:
-            self.tick(tick_nbr)
-            tick_nbr += 1
+            self.tick(self._tick_nbr)
+            self._tick_nbr += 1
+
+    def start(self):
+        if self._running:
+            raise Exception('Clock is already Running!')
+        Thread(target=self._run).start()
 
     def tick(self, tick_nbr):
         logger.info("Clock", "        --------------- tick: {tickNbr} ---------------".format(tickNbr=tick_nbr))
