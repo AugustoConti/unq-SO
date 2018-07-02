@@ -3,11 +3,11 @@ from prompt_toolkit.shortcuts import PromptSession, CompleteStyle, clear
 from prompt_toolkit.styles import Style
 from tabulate import tabulate
 
+from src.full_screen import show_full_screen
 from src.utils import execute_program, kill_program
 
 
-# TODO implementar comandos
-# TODO comandos: cambiar la prioridad
+# TODO comandos: implementar gant
 # TODO separar comandos por categoria: FileSystem, Kernel, Otro
 
 
@@ -59,12 +59,13 @@ class Console:
             'ls': CMD(self._ls, 'ls', 'Listar archivos del directorio actual.'),
             'mem': CMD(self._mem, 'mem', 'Mostrar memoria actual.'),
             'mkdir': CMDWithParam(CMD(self._mkdir, 'mkdir <carpeta>', 'Crear carpeta si no existe.')),
-            'ps': CMD(self._top, 'ps', 'Mostrar procesos.'),
+            'ps': CMD(self._ps, 'ps', 'Mostrar procesos.'),
             'pt': CMD(self._pt, 'pt', 'Mostrar Page Table.'),
             'start': CMD(self._start, 'start', 'Reanudar ejecución.'),
             'rm': CMDWithParam(CMD(self._rm, 'rm (<directory|<file>)', 'Remover archivo o carpeta.')),
             'stop': CMD(self._stop, 'stop', 'Detener ejecución.'),
-            'top': CMD(self._top, 'top', 'Mostrar procesos.'),
+            'top': CMD(self._top, 'top', 'Mostrar procesos en vivo.'),
+            'toppt': CMD(self._toppt, 'toppt', 'Mostrar procesos y Page Table en vivo.'),
             'touch': CMDWithParam(CMD(self._touch, 'touch <file>', 'Crear archivo.')),
         }
 
@@ -76,8 +77,7 @@ class Console:
         if cmd in self._cmds:
             self._cmds[cmd].func(args)
         else:
-            print('{c}: command not found'.format(c=command_line))
-            print('Use "help" to see the command list.')
+            print('{c}: command not found\nUse "help" to see the command list.'.format(c=command_line))
 
     def _gant(self, _):
         print('FALTA IMPLEMENTAR')
@@ -140,21 +140,32 @@ class Console:
     def _mem(self, _):
         print(self._hard.memory())
 
-    def _top(self, _):
-        # TODO comando top, mantener abierto actualizando tabla hasta que ctrl+C
+    def _get_list_process(self):
         lista = []
         for pcb in self._kernel.pcb_list():
             lista.append(pcb.to_dict())
-        print(tabulate(lista, headers='keys', tablefmt='psql') if lista else 'Empty')
+        return tabulate(lista, headers='keys', tablefmt='psql') if lista else 'Empty'
 
-    def _pt(self, _):
+    def _ps(self, _):
+        print(self._get_list_process())
+
+    def _top(self, _):
+        show_full_screen('TOP', self._get_list_process)
+
+    def _get_page_table(self):
         table = []
         for pid, pageTable in self._kernel.page_table().items():
             for idx, row in enumerate(pageTable):
                 page = {'pid': pid, 'page': idx}
                 page.update(row.to_dict())
                 table.append(page)
-        print(tabulate(table, headers='keys', tablefmt='psql'))
+        return tabulate(table, headers='keys', tablefmt='psql')
+
+    def _pt(self, _):
+        print(self._get_page_table())
+
+    def _toppt(self, _):
+        show_full_screen('TOP', lambda: self._get_list_process() + '\n\nPAGE TABLE\n' + self._get_page_table())
 
     def _ayuda(self, _):
         print(tabulate([[v.usage, v.desc] for cmd, v in self._cmds.items()], headers=['Comando', 'Descripción']))
