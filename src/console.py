@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.shortcuts import PromptSession, CompleteStyle, clear
 from prompt_toolkit.styles import Style
@@ -7,13 +9,10 @@ from src.full_screen import show_full_screen
 from src.utils import execute_program, kill_program
 
 
-# TODO comandos: implementar gant
-# TODO separar comandos por categoria: FileSystem, Kernel, Otro
-
-
 class CMD:
-    def __init__(self, func, usage, desc):
+    def __init__(self, func, categ, usage, desc):
         self.func = func
+        self.categ = categ
         self.usage = usage
         self.desc = desc
 
@@ -21,6 +20,7 @@ class CMD:
 class CMDWithParam:
     def __init__(self, cmd):
         self._cmd = cmd
+        self.categ = cmd.categ
         self.usage = cmd.usage
         self.desc = cmd.desc
 
@@ -29,6 +29,13 @@ class CMDWithParam:
             print('Usage: {u}'.format(u=self.usage))
         else:
             self._cmd.func(args)
+
+
+class Categ:
+    CONSOLE = 'CONSOLE'
+    FS = 'FILE SYSTEM'
+    KERNEL = 'KERNEL'
+    lista = [CONSOLE, FS, KERNEL]
 
 
 class Console:
@@ -48,25 +55,26 @@ class Console:
         self._session = PromptSession(style=style, completer=WordCompleter(self._get_completer),
                                       complete_style=CompleteStyle.READLINE_LIKE, enable_history_search=True)
         self._cmds = {
-            'cat': CMDWithParam(CMD(self._cat, 'cat <file>', 'Ver contenido del archivo.')),
-            'cd': CMD(self._cd, 'cd <folder>', 'Cambiar directorio actual.'),
-            'clear': CMD(self._clear, 'clear', 'Limpiar pantalla'),
-            'exe': CMDWithParam(CMD(self._exe, 'exe <program> [priority=3]', 'Ejectuar programa con prioridad.')),
-            'exit': CMD(None, 'exit', 'Apagar el sistema.'),
-            # 'gant': CMD(self._gant, 'gant', 'Ver diagrama de gant hasta el momento.'),
-            'help': CMD(self._ayuda, 'help', 'Mostrar esta ayuda.'),
-            'kill': CMDWithParam(CMD(self._kill, 'kill <pid>', 'Matar proceso con pid')),
-            'ls': CMD(self._ls, 'ls', 'Listar archivos del directorio actual.'),
-            'mem': CMD(self._mem, 'mem', 'Mostrar memoria actual.'),
-            'mkdir': CMDWithParam(CMD(self._mkdir, 'mkdir <carpeta>', 'Crear carpeta si no existe.')),
-            'ps': CMD(self._ps, 'ps', 'Mostrar procesos.'),
-            'pt': CMD(self._pt, 'pt', 'Mostrar Page Table.'),
-            'start': CMD(self._start, 'start', 'Reanudar ejecución.'),
-            'rm': CMDWithParam(CMD(self._rm, 'rm (<directory|<file>)', 'Remover archivo o carpeta.')),
-            'stop': CMD(self._stop, 'stop', 'Detener ejecución.'),
-            'top': CMD(self._top, 'top', 'Mostrar procesos en vivo.'),
-            'toppt': CMD(self._toppt, 'toppt', 'Mostrar procesos y Page Table en vivo.'),
-            'touch': CMDWithParam(CMD(self._touch, 'touch <file>', 'Crear archivo.')),
+            'cat': CMDWithParam(CMD(self._cat, Categ.FS, '<file>', 'Ver contenido del archivo.')),
+            'cd': CMD(self._cd, Categ.FS, '<folder>', 'Cambiar directorio actual.'),
+            'clear': CMD(self._clear, Categ.CONSOLE, '', 'Limpiar pantalla'),
+            'exe': CMDWithParam(CMD(self._exe, Categ.KERNEL, '<program> [priority=3]',
+                                    'Ejectuar programa con prioridad.')),
+            'exit': CMD(None, Categ.CONSOLE, '', 'Apagar el sistema.'),
+            # 'gant': CMD(self._gant, Categ.KERNEL, '', 'Ver diagrama de gant hasta el momento.'),
+            'help': CMD(self._ayuda, Categ.CONSOLE, '', 'Mostrar esta ayuda.'),
+            'kill': CMDWithParam(CMD(self._kill, Categ.KERNEL, '<pid>', 'Matar proceso con pid')),
+            'ls': CMD(self._ls, Categ.FS, '', 'Listar archivos del directorio actual.'),
+            'mem': CMD(self._mem, Categ.KERNEL, '', 'Mostrar memoria actual.'),
+            'mkdir': CMDWithParam(CMD(self._mkdir, Categ.FS, '<carpeta>', 'Crear carpeta si no existe.')),
+            'ps': CMD(self._ps, Categ.KERNEL, '', 'Mostrar procesos.'),
+            'pt': CMD(self._pt, Categ.KERNEL, '', 'Mostrar Page Table.'),
+            'rm': CMDWithParam(CMD(self._rm, Categ.FS, '(<directory|<file>)', 'Remover archivo o carpeta.')),
+            'start': CMD(self._start, Categ.KERNEL, '', 'Reanudar ejecución.'),
+            'stop': CMD(self._stop, Categ.KERNEL, '', 'Detener ejecución.'),
+            'top': CMD(self._top, Categ.KERNEL, '', 'Mostrar procesos en vivo.'),
+            'toppt': CMD(self._toppt, Categ.KERNEL, '', 'Mostrar procesos y Page Table en vivo.'),
+            'touch': CMDWithParam(CMD(self._touch, Categ.FS, '<file>', 'Crear archivo.')),
         }
 
     def process_input(self, command_line):
@@ -78,6 +86,14 @@ class Console:
             self._cmds[cmd].func(args)
         else:
             print('{c}: command not found\nUse "help" to see the command list.'.format(c=command_line))
+
+    def _ayuda(self, _):
+        tabla = defaultdict(list)
+        for cmd, v in self._cmds.items():
+            tabla[v.categ].append([cmd + ' ' + v.usage, v.desc])
+        for cat, l in tabla.items():
+            print(cat)
+            print(tabulate(l), '\n')
 
     def _gant(self, _):
         print('FALTA IMPLEMENTAR')
@@ -166,9 +182,6 @@ class Console:
 
     def _toppt(self, _):
         show_full_screen('TOP', lambda: self._get_list_process() + '\n\nPAGE TABLE\n' + self._get_page_table())
-
-    def _ayuda(self, _):
-        print(tabulate([[v.usage, v.desc] for cmd, v in self._cmds.items()], headers=['Comando', 'Descripción']))
 
     def _get_completer(self):
         return list(self._cmds.keys()) + self._fs.lista()
