@@ -28,16 +28,15 @@ class Clock:
         self._running = False
 
     def _run(self):
-        logger.info("Clock", "---- :::: START CLOCK  ::: -----")
         self._running = True
+        logger.info("Clock", "---- :::: START CLOCK  ::: -----")
         while self._running:
             self.tick(self._tick_nbr)
             self._tick_nbr += 1
 
     def start(self):
-        if self._running:
-            raise Exception('Clock is already Running!')
-        Thread(target=self._run).start()
+        if not self._running:
+            Thread(target=self._run).start()
 
     def tick(self, tick_nbr):
         logger.info("Clock", "        --------------- tick: {tickNbr} ---------------".format(tickNbr=tick_nbr))
