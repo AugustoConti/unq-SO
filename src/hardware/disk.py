@@ -3,6 +3,7 @@ from termcolor import colored
 from src.images import blue_screen
 from src.log import logger
 from src.structures.asm import ASM
+from src.usage import Usage
 from src.utils import expand
 
 
@@ -121,9 +122,14 @@ class Disk:
         size = len(self.get(name))
         return size // self._frame_size + (1 if size % self._frame_size else 0)
 
+    def get_info(self):
+        ocupado = len(expand(self._programs.values()))
+        return Usage('Disk', ocupado, 512 - ocupado)
+
 
 class Swap:
     def __init__(self, memory_size, frame_size):
+        self._frame_size = frame_size
         self._free_index = list(range(int(memory_size / frame_size) * 2))
         self._swap_memory = dict()
 
@@ -141,3 +147,8 @@ class Swap:
         self._free_index.append(idx)
         logger.info("SWAP", "OUT - Page {page} from index {idx}".format(page=page, idx=idx))
         return page
+
+    def get_info(self):
+        ocupado = len(self._swap_memory.keys())*self._frame_size
+        disponible = len(self._free_index)*self._frame_size
+        return Usage('Swap', ocupado, disponible)

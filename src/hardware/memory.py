@@ -13,5 +13,8 @@ class Memory:
     def get(self, addr):
         return self._cells[addr]
 
+    def __len__(self):
+        return len(self._cells)
+
     def __repr__(self):
         return 'RAM:\n' + tabulate(enumerate(self._cells), tablefmt='psql')

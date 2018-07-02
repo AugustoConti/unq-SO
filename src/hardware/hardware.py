@@ -47,6 +47,9 @@ class Clock:
         logger.info("Clock", "---- :::: CLOCK do_ticks: {times} ::: -----".format(times=times))
         [self.tick(tickNbr) for tickNbr in range(times)]
 
+    def get_info(self):
+        return 'tick {nro}'.format(nro=self._tick_nbr)
+
 
 class Cpu:
     def __init__(self, mmu, interrupt_vector):
@@ -86,7 +89,10 @@ class Cpu:
         self._pc = addr
 
     def __repr__(self):
-        return "CPU(PC={pc})".format(pc=self._pc)
+        return 'CPU({info})'.format(info=self.get_info())
+
+    def get_info(self):
+        return 'PC={pc}, IR={ir}'.format(pc=self._pc, ir=self._ir)
 
 
 class IODevice:
@@ -170,7 +176,9 @@ class Hardware:
 
     def info(self):
         return [['Memory Size', self._memory_size],
-                ['Frame Size', self._frame_size]]
+                ['Frame Size', self._frame_size],
+                ['Disk usage', self._disk.get_info()],
+                ]
 
     def switch_on(self):
         logger.info("Hardware", self)

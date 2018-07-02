@@ -20,11 +20,11 @@ class AsignacionContinuaFactory(metaclass=Meta):
         return False
 
     @staticmethod
-    def new_mmu(memory, _, _a):
+    def new_mmu(memory, _, __):
         return MMU(MMUBasic(memory))
 
     @staticmethod
-    def new_loader(disk, memory, _, _a, _b):
+    def new_loader(disk, memory, _, __, ___):
         return LoaderBasic(disk, memory)
 
     @staticmethod
@@ -32,7 +32,7 @@ class AsignacionContinuaFactory(metaclass=Meta):
         return Dispatcher(DispatcherBasic(mmu), pcb_table, cpu, timer)
 
     @staticmethod
-    def new_mm(_, _a, _b):
+    def new_mm(_, __, ___):
         return MemoryManagerPaged()
 
 
@@ -58,7 +58,7 @@ class PagedFactory(metaclass=Meta):
         return Dispatcher(DispatcherPaged(mm, mmu), pcb_table, cpu, timer)
 
     @staticmethod
-    def new_mm(_, _a, _b):
+    def new_mm(_, __, ___):
         return MemoryManagerPaged()
 
 

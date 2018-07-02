@@ -41,6 +41,9 @@ class MemoryManager:
     def set_base(self, base):
         self._base = base
 
+    def free(self):
+        return len(self._free_frames)
+
     def get_frame(self):
         if self._free_frames:
             return self._free_frames.pop(0)

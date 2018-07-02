@@ -4,6 +4,7 @@ from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.shortcuts import PromptSession, CompleteStyle, clear
 from prompt_toolkit.styles import Style
 from tabulate import tabulate
+from termcolor import colored
 
 from src.full_screen import show_full_screen
 from src.utils import execute_program, kill_program
@@ -35,7 +36,8 @@ class Categ:
     CONSOLE = 'CONSOLE'
     FS = 'FILE SYSTEM'
     KERNEL = 'KERNEL'
-    lista = [CONSOLE, FS, KERNEL]
+    HARD = 'HARDWARE'
+    lista = [CONSOLE, FS, KERNEL, HARD]
 
 
 class Console:
@@ -50,7 +52,7 @@ class Console:
             'colon': 'ansiwhite',
             'pound': 'ansibrightyellow',
             'host': 'ansibrightgreen',
-            'path': '#4848ff',
+            'path': '#ff4000',
         })
         self._session = PromptSession(style=style, completer=WordCompleter(self._get_completer),
                                       complete_style=CompleteStyle.READLINE_LIKE, enable_history_search=True)
@@ -61,11 +63,12 @@ class Console:
             'exe': CMDWithParam(CMD(self._exe, Categ.KERNEL, '<program> [priority=3]',
                                     'Ejectuar programa con prioridad.')),
             'exit': CMD(None, Categ.CONSOLE, '', 'Apagar el sistema.'),
+            'free': CMD(self._free, Categ.HARD, '', 'Ver totales de uso de memoria fisica.'),
             # 'gant': CMD(self._gant, Categ.KERNEL, '', 'Ver diagrama de gant hasta el momento.'),
             'help': CMD(self._ayuda, Categ.CONSOLE, '', 'Mostrar esta ayuda.'),
             'kill': CMDWithParam(CMD(self._kill, Categ.KERNEL, '<pid>', 'Matar proceso con pid')),
             'ls': CMD(self._ls, Categ.FS, '', 'Listar archivos del directorio actual.'),
-            'mem': CMD(self._mem, Categ.KERNEL, '', 'Mostrar memoria actual.'),
+            'mem': CMD(self._mem, Categ.HARD, '', 'Mostrar memoria actual.'),
             'mkdir': CMDWithParam(CMD(self._mkdir, Categ.FS, '<carpeta>', 'Crear carpeta si no existe.')),
             'ps': CMD(self._ps, Categ.KERNEL, '', 'Mostrar procesos.'),
             'pt': CMD(self._pt, Categ.KERNEL, '', 'Mostrar Page Table.'),
@@ -73,7 +76,7 @@ class Console:
             'start': CMD(self._start, Categ.KERNEL, '', 'Reanudar ejecución.'),
             'stop': CMD(self._stop, Categ.KERNEL, '', 'Detener ejecución.'),
             'top': CMD(self._top, Categ.KERNEL, '', 'Mostrar procesos en vivo.'),
-            'toppt': CMD(self._toppt, Categ.KERNEL, '', 'Mostrar procesos y Page Table en vivo.'),
+            'info': CMD(self._info, Categ.KERNEL, '', 'Mostrar información del sistema en vivo.'),
             'touch': CMDWithParam(CMD(self._touch, Categ.FS, '<file>', 'Crear archivo.')),
         }
 
@@ -91,8 +94,8 @@ class Console:
         tabla = defaultdict(list)
         for cmd, v in self._cmds.items():
             tabla[v.categ].append([cmd + ' ' + v.usage, v.desc])
-        for cat, l in tabla.items():
-            print(cat)
+        for categ, l in tabla.items():
+            print(colored(categ, 'cyan'))
             print(tabulate(l), '\n')
 
     def _gant(self, _):
@@ -180,8 +183,18 @@ class Console:
     def _pt(self, _):
         print(self._get_page_table())
 
-    def _toppt(self, _):
-        show_full_screen('TOP', lambda: self._get_list_process() + '\n\nPAGE TABLE\n' + self._get_page_table())
+    def _get_free(self):
+        return tabulate([self._kernel.mem_info().to_dict(), self._hard.swap().get_info().to_dict(),
+                         self._hard.disk().get_info().to_dict()], headers="keys")
+
+    def _free(self, _):
+        print(self._get_free())
+
+    def _info(self, _):
+        show_full_screen('System Info',
+                         lambda: 'CPU: {cpu}\tCLOCK: {clock}\n\nFREE\n{free}\n\nTOP\n{top}\n\nPAGE TABLE\n{pt}'
+                         .format(cpu=self._hard.cpu().get_info(), clock=self._hard.clock().get_info(),
+                                 free=self._get_free(), top=self._get_list_process(), pt=self._get_page_table()))
 
     def _get_completer(self):
         return list(self._cmds.keys()) + self._fs.lista()

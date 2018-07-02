@@ -1,4 +1,5 @@
 from src.log import logger
+from src.usage import Usage
 
 
 class LoaderBasic:
@@ -17,6 +18,10 @@ class LoaderBasic:
         self._update_pcb(pcb, size)
         [self._memory.put(self._next_dir + i, instructions[i]) for i in range(size)]
         self._next_dir += size
+
+    def get_info(self):
+        total = len(self._memory)
+        return Usage('Memory', self._next_dir, total - self._next_dir)
 
 
 class LoaderPagedBase:
@@ -52,6 +57,11 @@ class LoaderPagedBase:
         logger.info('Loader', 'swap in frame: {frame}, page: {page}'.format(frame=frame, page=page))
         return self._swap.swap_in(page)
 
+    def get_info(self):
+        libre = self._mm.free() * self._frame_size
+        total = len(self._memory)
+        return Usage('Memory', total - libre, libre)
+
 
 class LoaderPaged:
     def __init__(self, mm):
@@ -64,5 +74,5 @@ class LoaderPaged:
 
 
 class LoaderPagedOnDemand:
-    def load(self, _, _a, _b):
+    def load(self, _, __, ___):
         return -1

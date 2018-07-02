@@ -28,6 +28,9 @@ class Kernel:
                 ['Scheduler', SchedulerType.str(self._scheduler_type)],
                 ['Quantum', self._quantum]]
 
+    def mem_info(self):
+        return self._loader.get_info()
+
     def contains_pid(self, pid):
         return self._pcb_table.contains_pid(pid)
 
