@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 from src.simulator import run_priority
 
 # TODO Sonidos en el sistema (cpu ejecuta algo, kill, etc)
