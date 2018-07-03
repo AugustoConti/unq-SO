@@ -60,7 +60,7 @@ class Console:
             'cat': CMDWithParam(CMD(self._cat, Categ.FS, '<file>', 'Ver contenido del archivo.')),
             'cd': CMD(self._cd, Categ.FS, '<folder>', 'Cambiar directorio actual.'),
             'clear': CMD(self._clear, Categ.CONSOLE, '', 'Limpiar pantalla'),
-            'exe': CMDWithParam(CMD(self._exe, Categ.KERNEL, '<program> [tick=0] [priority=3]',
+            'run': CMDWithParam(CMD(self._exe, Categ.KERNEL, '<program> [tick=0] [priority=3]',
                                     'Ejectuar programa con prioridad en un determinado tick.')),
             'exit': CMD(None, Categ.CONSOLE, '', 'Apagar el sistema.'),
             'free': CMD(self._free, Categ.HARD, '', 'Ver totales de uso de memoria fisica.'),

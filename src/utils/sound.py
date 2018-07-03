@@ -16,7 +16,7 @@ class Sonidos:
 def play(tipo):
     if not habilitado:
         return
-    path = '/home/augusto/PycharmProjects/grupo_7/src/utils/'
+    path = '/home/niko/PycharmProjects/grupo_7/src/utils/'
     paths = {
         Sonidos.CPU: path + 'cpu.wav',
         Sonidos.KILL: path + 'kill.wav',
