@@ -12,5 +12,6 @@ class TestIoOutInterruptionHandler(TestCase):
         self._io_out = IoOutInterruptionHandler(self._scheduler, self._pcb_table, self._deviceController)
 
     def test_execute(self):
-        self._io_out.execute(None)
+        self._io_out.execute(NonCallableMock(parameters=Mock(return_value=4)))
+        self._deviceController.get_finished_pid.assert_called_once_with(4)
         self._scheduler.run_or_add_queue.assert_called_once_with(1)

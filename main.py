@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
-from src.simulator import run_priority
+from consolemenu.items import FunctionItem
 
-# TODO Sonidos en el sistema (cpu ejecuta algo, kill, etc)
+from src.simulator import run_simulator
+from src.stats import run_stats
+from src.utils.images import logo
+from src.utils.menu import console_menu
+
 
 # TODO MultiThreading. Varios device de IO, cada uno en un thread, instruccion identificar que IO quiere
 
@@ -10,11 +14,20 @@ from src.simulator import run_priority
 # TODO guardar gant en cada tick, me sirve para stats y para simulator durante ejecucion ver gant actual
 # TODO COMANDO GANT: implementar gant en consola de comandos(tick actual o tick viejo?)
 
-# TODO asignacion continua: bloques libres, bloques ocupados y compactacion. arranco con un bloque solo toda la mem libre, lo voy achicando y en los kill libera su bloque (y merge con bloque de arriba y abajo). Compactacion tengo que tocar todos los pcb.
-# TODO decodificar instrucciones. Instrucciones reales: MOV(de mem a Reg, de Reg a mem), ADD(sum 2 Reg), JMP (modifica el pc si da positivo). En instrucciones define variables, guardarlas despues del exit.
-
+# TODO Sonidos en el sistema (cpu ejecuta algo, kill, etc)
 
 """
+# TODO asignacion continua: bloques libres, bloques ocupados y compactacion. 
+    arranco con un bloque solo toda la mem libre, lo voy achicando 
+    y en los kill libera su bloque (y merge con bloque de arriba y abajo). 
+    Compactacion tengo que tocar todos los pcb.
+    
+# TODO decodificar instrucciones. 
+    Instrucciones reales: MOV(de mem a Reg, de Reg a mem), ADD(sum 2 Reg), JMP (modifica el pc si da positivo). 
+    En instrucciones define variables, guardarlas despues del exit.
+
+
+
 TP: Introduccion, desarrollo y conclusion. Codigo en el PowerPoint.
 
 INFORME con pros y contras del TP, que hicimos, en que consta, que problemas, hasta donde llegamos, el alcance, 
@@ -24,6 +37,8 @@ EXPO: Que hicimos, Que falta implementar, Que haríamos si tuvieramos 6 meses ma
     - Vender nuestro SO, que tiene de copado que lo diferencia??
     - Alguna clase bien implementada para mostrar? 
     - Configuracion del sistema, como se configura?
+
+
 
 FILE SYSTEM
 organizacion en carpetas
@@ -38,11 +53,11 @@ syscall que solo la puedan usar un grp de users
 
 
 def main():
-    # logo()
-    # console_menu("Contillini OS",
-    #             [FunctionItem("Estadísticas", run_stats),
-    #              FunctionItem("Simulador", run_simulator)])
-    run_priority()
+    logo()
+    console_menu("Contillini OS",
+                 [FunctionItem("Estadísticas", run_stats),
+                  FunctionItem("Simulador", run_simulator)])
+    # run_priority()
 
 
 if __name__ == '__main__':

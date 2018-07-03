@@ -7,8 +7,16 @@ class ASM:
         return [Instruction.EXIT]
 
     @classmethod
-    def io(cls):
-        return [Instruction.IO]
+    def io_key(cls):
+        return [Instruction.IO_KEYBOARD]
+
+    @classmethod
+    def io_screen(cls):
+        return [Instruction.IO_SCREEN]
+
+    @classmethod
+    def io_printer(cls):
+        return [Instruction.IO_PRINTER]
 
     @classmethod
     def cpu(cls, times):
@@ -20,4 +28,4 @@ class ASM:
 
     @classmethod
     def is_io(cls, instruction):
-        return Instruction.IO == instruction
+        return instruction.startswith('IO')

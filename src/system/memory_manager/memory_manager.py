@@ -68,5 +68,6 @@ class MemoryManager:
         return self._page_table[pid][page].swap
 
     def update_page(self, pid, page, frame):
-        self._page_table[pid][page].swap = -1
-        self._page_table[pid][page].frame = frame
+        p = self._page_table[pid][page]
+        p.swap = -1
+        p.frame = frame

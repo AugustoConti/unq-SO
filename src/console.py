@@ -102,10 +102,10 @@ class Console:
         print('FALTA IMPLEMENTAR')
 
     def _stop(self, _):
-        self._hard.clock().stop()
+        self._hard.switch_off()
 
     def _start(self, _):
-        self._hard.clock().start()
+        self._hard.switch_on()
 
     def _clear(self, _):
         clear()
@@ -192,9 +192,9 @@ class Console:
 
     def _info(self, _):
         show_full_screen('System Info',
-                         lambda: 'CPU: {cpu}\tCLOCK: {clock}\n\nFREE\n{free}\n\nTOP\n{top}\n\nPAGE TABLE\n{pt}'
-                         .format(cpu=self._hard.cpu().get_info(), clock=self._hard.clock().get_info(),
-                                 free=self._get_free(), top=self._get_list_process(), pt=self._get_page_table()))
+                         lambda: 'CPU: {cpu}\nCLOCKS: {clock}\n\nFREE\n{free}\n\nTOP\n{top}\n\nPAGE TABLE\n{pt}'
+                         .format(cpu=self._hard.cpu().get_info(), clock=self._hard.clock_info(), free=self._get_free(),
+                                 top=self._get_list_process(), pt=self._get_page_table()))
 
     def _get_completer(self):
         return list(self._cmds.keys()) + self._fs.lista()

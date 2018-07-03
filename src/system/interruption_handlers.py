@@ -72,9 +72,10 @@ class IoOutInterruptionHandler:
         self._pcb_table = pcb_table
         self._io_device_controller = io_device_controller
 
-    def execute(self, _):
-        logger.info("IoOut", self._io_device_controller)
-        pid = self._io_device_controller.get_finished_pid()
+    def execute(self, irq):
+        device = irq.parameters()
+        logger.info("IoOut", 'Device: {d}'.format(d=device))
+        pid = self._io_device_controller.get_finished_pid(device)
         if self._pcb_table.contains_pid(pid):
             self._scheduler.run_or_add_queue(pid)
 

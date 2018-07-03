@@ -1,19 +1,24 @@
+from subprocess import Popen
+
 from src.structures.asm import ASM
 from src.structures.interruptions import Interruption
 from src.structures.irq import IRQ
 
+
+def open_term(cmd):
+    return Popen(['x-terminal-emulator', '-e', cmd])
 
 def input_default(msj, default):
     return int(input('{msj} [{default}] '.format(msj=msj, default=default)) or default)
 
 
 def execute_programs(interrupt_vector):
-    execute_program(interrupt_vector, "prg1.exe", 3)
-    execute_program(interrupt_vector, "prg2.exe", 1)
-    execute_program(interrupt_vector, "prg3.exe", 5)
-    execute_program(interrupt_vector, "prg4.exe", 5)
-    execute_program(interrupt_vector, "prg5.exe", 4)
-    execute_program(interrupt_vector, "prg6.exe", 3)
+    execute_program(interrupt_vector, 'fifa', 3)
+    execute_program(interrupt_vector, 'cs', 1)
+    execute_program(interrupt_vector, 'book', 5)
+    execute_program(interrupt_vector, 'calc', 5)
+    execute_program(interrupt_vector, 'xls', 4)
+    execute_program(interrupt_vector, 'git', 3)
 
 
 def kill_program(interrupt_vector, pid):

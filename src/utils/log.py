@@ -1,8 +1,9 @@
 import logging.config
-from subprocess import Popen
 
 from tabulate import tabulate
 from termcolor import colored
+
+from src.utils.utils import open_term
 
 """
     print(colored('red', 'red'),'\n')
@@ -42,7 +43,7 @@ logging.config.dictConfig({
 
 
 def _do_color(tipo, color):
-    return colored('[' + tipo + ']', color, attrs=['bold'])
+    return colored('[{t}]'.format(t=tipo), color, attrs=['bold'])
 
 
 def _get_color(tipo):
@@ -90,7 +91,7 @@ class _Logger:
         self._indices = tabulate([[_get_color(i)] for i in ['Hardware', 'Software', 'Interruption', 'Otro']])
 
     def show(self):
-        self._proc = Popen(['x-terminal-emulator', '-e', 'tail -s 0.5 -f info.log'])
+        self._proc = open_term('tail -s 0.5 -f info.log')
 
     def terminate(self):
         if self._proc is not None:

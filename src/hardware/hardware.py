@@ -4,32 +4,30 @@ from time import sleep
 from src.hardware.disk import Disk, Swap
 from src.hardware.interrupt_vector import InterruptVector
 from src.hardware.memory import Memory
-from src.utils.log import logger
 from src.structures.asm import ASM
 from src.structures.interruptions import Interruption
 from src.structures.irq import IRQ
+from src.utils.log import logger
 
 
 class Clock:
-    def __init__(self, delay):
-        self._subscribers = []
-        self._running = False
+    def __init__(self, name, delay, subscribers):
+        self._name = name
         self._delay = delay
+        self._subscribers = subscribers
+        self._running = False
         self._tick_nbr = 0
 
     def add_subscriber(self, subscriber):
         self._subscribers.append(subscriber)
 
-    def add_subscribers(self, subscribers):
-        self._subscribers.extend(subscribers)
-
     def stop(self):
-        logger.info("Clock", "---- :::: STOP CLOCK  ::: -----")
+        logger.info("Clock", "---- :::: STOP CLOCK {name} ::: -----".format(name=self._name))
         self._running = False
 
     def _run(self):
         self._running = True
-        logger.info("Clock", "---- :::: START CLOCK  ::: -----")
+        logger.info("Clock", "---- :::: START CLOCK {name} ::: -----".format(name=self._name))
         while self._running:
             self.tick(self._tick_nbr)
             self._tick_nbr += 1
@@ -39,16 +37,17 @@ class Clock:
             Thread(target=self._run).start()
 
     def tick(self, tick_nbr):
-        logger.info("Clock", "        --------------- tick: {tickNbr} ---------------".format(tickNbr=tick_nbr))
+        logger.info("Clock", "        --------------- {name} tick: {tickNbr} ---------------"
+                    .format(name=self._name, tickNbr=tick_nbr))
         [subscriber.tick(tick_nbr) for subscriber in self._subscribers]
         sleep(self._delay)
 
     def do_ticks(self, times):
-        logger.info("Clock", "---- :::: CLOCK do_ticks: {times} ::: -----".format(times=times))
+        logger.info("Clock", "---- :::: CLOCK {name} do_ticks: {times} ::: -----".format(name=self._name, times=times))
         [self.tick(tickNbr) for tickNbr in range(times)]
 
     def get_info(self):
-        return 'tick {nro}'.format(nro=self._tick_nbr)
+        return '{name}: tick {nro}'.format(name=self._name, nro=self._tick_nbr)
 
 
 class Cpu:
@@ -126,8 +125,8 @@ class IODevice:
             self._busy = False
             self._interrupt_vector.handle(IRQ(Interruption.IO_OUT, self._device))
         else:
-            logger.info(self._device, "device {deviceId} - Busy: {ticksCount} of {deviceTime}"
-                        .format(deviceId=self._device, ticksCount=self._ticks_count, deviceTime=self._time))
+            logger.info(self._device, "device {d} - Busy: {tck} of {time}"
+                        .format(d=self._device, tck=self._ticks_count, time=self._time))
 
 
 class Timer:
@@ -161,44 +160,47 @@ class Timer:
 
 class Hardware:
     def __init__(self, memory_size, delay, mmu_type, frame_size):
-        self._memory_size = memory_size
         self._frame_size = frame_size
         self._memory = Memory(memory_size)
         self._interrupt_vector = InterruptVector()
-        self._clock = Clock(delay)
-        self._io_device = IODevice(self._interrupt_vector, "Printer", 3)
         self._disk = Disk(frame_size)
         self._swap = Swap(memory_size, frame_size)
         self._mmu = mmu_type.new_mmu(self._memory, frame_size, self._interrupt_vector)
         self._cpu = Cpu(self._mmu, self._interrupt_vector)
         self._timer = Timer(self._interrupt_vector)
-        self._clock.add_subscribers([self._mmu, self._io_device, self._timer, self._cpu])
+
+        keyboard = IODevice(self._interrupt_vector, "KEYBOARD", 1)
+        screen = IODevice(self._interrupt_vector, "SCREEN", 2)
+        printer = IODevice(self._interrupt_vector, "PRINTER", 3)
+        self._io_devices = [keyboard, screen, printer]
+        self._clocks = [Clock('CPU', delay, [self._mmu, self._timer, self._cpu]),
+                        Clock('KEYBOARD', delay * 1.2, [keyboard]),
+                        Clock('SCREEN', delay * 1.5, [screen]),
+                        Clock('PRINTER', delay * 2, [printer])]
 
     def info(self):
-        return [['Memory Size', self._memory_size],
+        return [['Memory Size', len(self._memory)],
                 ['Frame Size', self._frame_size],
                 ['Disk usage', self._disk.get_info()],
                 ]
 
+    def clock_info(self):
+        return '\t'.join([c.get_info() for c in self._clocks])
+
+    def tick(self):
+        [c.do_ticks(1) for c in self._clocks]
+
     def switch_on(self):
         logger.info("Hardware", self)
         logger.info("Hardware", " ---- SWITCH ON ---- ")
-        self._clock.start()
+        [c.start() for c in self._clocks]
 
     def switch_off(self):
-        self._clock.stop()
-        # logger.info("Hardware", "SWITCHING OFF in:")
-        # for i in [3, 2, 1]:
-        #    logger.info("Hardware", i)
-        #    sleep(1)
+        [c.stop() for c in self._clocks]
         logger.info("Hardware", " ---- SWITCH OFF ---- ")
-        sleep(0.5)
 
     def cpu(self):
         return self._cpu
-
-    def clock(self):
-        return self._clock
 
     def interrupt_vector(self):
         return self._interrupt_vector
@@ -212,8 +214,8 @@ class Hardware:
     def mmu(self):
         return self._mmu
 
-    def io_device(self):
-        return self._io_device
+    def io_devices(self):
+        return self._io_devices
 
     def disk(self):
         return self._disk

@@ -1,6 +1,17 @@
 from src.utils.log import logger
 
 
+class ControllerDevices:
+    def __init__(self, devices):
+        self._devices = devices
+
+    def run_operation(self, pid, instruction):
+        self._devices[instruction.split()[1]].run_operation(pid, instruction)
+
+    def get_finished_pid(self, device):
+        return self._devices[device].get_finished_pid()
+
+
 class IoDeviceController:
     def __init__(self, device):
         self._device = device

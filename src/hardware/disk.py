@@ -91,12 +91,12 @@ class Disk:
         self._frame_size = frame_size
         self._programs = dict()
         self.add_all({
-            'fifa': expand([ASM.cpu(2), ASM.io(), ASM.cpu(3), ASM.io(), ASM.cpu(2)]),
-            'cs': expand([ASM.cpu(4), ASM.io(), ASM.cpu(1)]),
-            'book': expand([ASM.cpu(3), ASM.io()]),
+            'fifa': expand([ASM.cpu(2), ASM.io_key(), ASM.cpu(3), ASM.io_screen(), ASM.cpu(2)]),
+            'cs': expand([ASM.cpu(4), ASM.io_screen(), ASM.cpu(1)]),
+            'book': expand([ASM.cpu(3), ASM.io_printer()]),
             'calc': expand([ASM.cpu(3)]),
             'xls': expand([ASM.cpu(5)]),
-            'git': expand([ASM.cpu(3), ASM.io()])
+            'git': expand([ASM.cpu(3), ASM.io_key()])
         })
 
     def get_root(self):

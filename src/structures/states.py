@@ -8,21 +8,18 @@ class State:
     WAITING = 'WAITING'
     RUNNING = 'RUNNING'
     TERMINATED = 'TERMINATED'
+    map = {
+        NEW: colored('N', 'magenta'),
+        READY: colored('R', 'green'),
+        RUNNING: colored('X', 'red', attrs=['reverse']),
+        WAITING: colored('W', 'cyan'),
+        TERMINATED: colored('T', 'white'),
+    }
 
     @staticmethod
     def mapear(state):
-        return {
-            State.NEW: colored('N', 'magenta'),
-            State.READY: colored('R', 'green'),
-            State.RUNNING: colored('X', 'red', attrs=['reverse']),
-            State.TERMINATED: colored('T', 'blue'),
-            State.WAITING: colored('W', 'cyan')
-        }[state]
+        return State.map[state]
 
     @staticmethod
     def map_all():
-        return tabulate([[State.mapear(State.NEW), State.NEW],
-                         [State.mapear(State.READY), State.READY],
-                         [State.mapear(State.RUNNING), State.RUNNING],
-                         [State.mapear(State.WAITING), State.WAITING],
-                         [State.mapear(State.TERMINATED), State.TERMINATED]], headers=['Letra', 'Estado'])
+        return tabulate([[v, k] for k, v in State.map.items()], headers=['Letra', 'Estado'])

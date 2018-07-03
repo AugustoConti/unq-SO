@@ -1,6 +1,6 @@
 from src.configuration.scheduler import SchedulerType
 from src.system.interruption_handlers import register_handlers
-from src.system.io_device_controller import IoDeviceController
+from src.system.io_device_controller import IoDeviceController, ControllerDevices
 from src.system.memory_manager.memory_manager import MemoryManager
 from src.system.pcb_table import PCBTable
 
@@ -14,13 +14,17 @@ class Kernel:
         self._table = dict()
         self._mm = MemoryManager(count_frames)
         self._pcb_table = PCBTable(self._table)
-        self._io_controller = IoDeviceController(hard.io_device())
         self._loader = mmu_type.new_loader(hard.disk(), hard.memory(), self._mm, frame_size, hard.swap())
         self._mm.set_base(mmu_type.new_mm(self._loader, hard.swap(), algorithm))
         self._dispatcher = mmu_type.new_dispatcher(self._mm, hard.mmu(), self._pcb_table, hard.cpu(), hard.timer())
         self._scheduler = SchedulerType.new(scheduler_type, self._pcb_table, self._dispatcher, hard.timer(), quantum)
+
+        devices = {}
+        for d in hard.io_devices():
+            devices[d.device_id()] = IoDeviceController(d)
+
         register_handlers(hard.interrupt_vector(), self._scheduler, self._pcb_table, self._loader, self._dispatcher,
-                          self._io_controller, hard.timer(), self._mm, hard.mmu())
+                          ControllerDevices(devices), hard.timer(), self._mm, hard.mmu())
 
     def info(self):
         return [['Cantidad de Frames', self._count_frames],

@@ -1,4 +1,5 @@
 from collections import defaultdict
+from pydoc import pipepager
 
 from tabulate import tabulate
 from termcolor import colored
@@ -7,31 +8,33 @@ from src.configuration.mmu_factory import AsignacionContinuaFactory
 from src.configuration.scheduler import SchedulerType
 from src.hardware.hardware import *
 from src.kernel import Kernel
-from src.utils.log import logger
 from src.structures.states import State
+from src.utils.log import logger
+from src.utils.utils import execute_programs
 
 __all__ = ["run_stats"]
 
 
 def run_stats():
     logger.disabled()
-    print('\n', State.map_all(), '\n')
-    total = [['Scheduler', 'Retorno', 'Espera']]
+    salida = '\n'+State.map_all()+'\n'
+    total = [['Scheduler', 'Return', 'Wait']]
     mmu_type = AsignacionContinuaFactory
     for scheduler in SchedulerType.all():
-        print('\n', colored(SchedulerType.str(scheduler), 'cyan'))
+        salida += '\n\n'+colored(SchedulerType.str(scheduler), 'cyan')+'\n'
         hardware = Hardware(50, 0, mmu_type, 1)
         kernel = Kernel(hardware, scheduler, mmu_type, 0, 0, 2, None)
         execute_programs(hardware.interrupt_vector())
-        gant = Timeline(hardware.clock(), kernel.pcb_list()).calc()
+        tabla, gant = Timeline(hardware, kernel.pcb_list()).calc()
+        salida += tabla
         total.append([SchedulerType.str(scheduler)] + gant)
-    print('\n')
-    print(tabulate(total, headers="firstrow", tablefmt="presto"))
+    salida += '\n\n'+tabulate(total, headers="firstrow", tablefmt="presto")+'\n'
+    pipepager(salida, cmd='less -R -S')
 
 
 class Timeline:
-    def __init__(self, clock, pcb_table):
-        self._clock = clock
+    def __init__(self, hard, pcb_table):
+        self._hard = hard
         self._pcb_table = pcb_table
         self._tick_nro = 0
         self._ready = defaultdict(int)
@@ -53,10 +56,10 @@ class Timeline:
     def calc(self):
         while not self._terminated():
             self._save_states()
-            self._clock.do_ticks(1)
-        self._states['Retorno'] = self._retorno.values()
-        self._states['Espera'] = self._ready.values()
+            self._hard.tick()
+        self._states['Return'] = self._retorno.values()
+        self._states['Wait'] = self._ready.values()
         total_retorno = sum(self._retorno.values())
         total_espera = sum(self._ready.values())
-        print(tabulate(self._states, headers="keys", tablefmt="fancy_grid"))
-        return [round(total_retorno / len(self._pcb_table), 2), round(total_espera / len(self._pcb_table), 2)]
+        return (tabulate(self._states, headers="keys", tablefmt="fancy_grid"),
+                [round(total_retorno / len(self._pcb_table), 2), round(total_espera / len(self._pcb_table), 2)])

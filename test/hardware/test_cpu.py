@@ -38,7 +38,7 @@ class TestCPU(TestCase):
         self.assertEqual(2, self._cpu.get_pc())
 
     def test_tick_io(self):
-        self._mmu.fetch = Mock(return_value=Instruction.IO)
+        self._mmu.fetch = Mock(return_value=Instruction.IO_KEYBOARD)
         self._cpu.set_pc(2)
         self._cpu.tick(0)
         self._mmu.fetch.assert_called_once_with(2)
