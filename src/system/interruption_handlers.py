@@ -2,6 +2,7 @@ from src.utils.log import logger
 from src.structures.interruptions import Interruption
 from src.structures.pcb import PCB
 from src.structures.states import State
+from src.utils.sound import play, Sonidos
 
 
 class KillInterruptionHandler:
@@ -12,6 +13,7 @@ class KillInterruptionHandler:
         self._mm = mm
 
     def execute(self, irq):
+        play(Sonidos.KILL)
         pid = irq.parameters()
         if pid is None or pid == self._pcb_table.get_running_pid():
             pid = self._pcb_table.get_running_pid()
@@ -58,6 +60,7 @@ class NewInterruptionHandler:
         self._loader = loader
 
     def execute(self, irq):
+        play(Sonidos.NEW)
         params = irq.parameters()
         pcb = PCB(self._pcb_table.get_pid(), params['program'], priority=params['priority'])
         logger.info("New", "{pcb}".format(pcb=pcb))

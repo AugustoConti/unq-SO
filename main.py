@@ -6,13 +6,11 @@ from src.stats import run_stats
 from src.utils.images import logo
 from src.utils.menu import console_menu
 
-# TODO Sonidos en el sistema (cpu ejecuta algo, kill, etc)
-
 """
 # TODO asignacion continua: bloques libres, bloques ocupados y compactacion. 
     arranco con un bloque solo toda la mem libre, lo voy achicando 
-    y en los kill libera su bloque (y merge con bloque de arriba y abajo). 
-    Compactacion tengo que tocar todos los pcb.
+    y en los kill libera su bloque (y merge con bloque de arriba y abajo si estan libres). 
+    Compactacion tengo que tocar todos los pcb o solo del bloque tocar donde empieza??.
     
 # TODO decodificar instrucciones. 
     Instrucciones reales: MOV(de mem a Reg, de Reg a mem), ADD(sum 2 Reg), JMP (modifica el pc si da positivo). 

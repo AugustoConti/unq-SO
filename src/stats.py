@@ -6,6 +6,7 @@ from src.configuration.scheduler import SchedulerType
 from src.hardware.hardware import *
 from src.kernel import Kernel
 from src.structures.states import State
+from src.utils import sound
 from src.utils.log import logger
 from src.utils.utils import show_less, Executor
 
@@ -14,6 +15,7 @@ __all__ = ["run_stats"]
 
 def run_stats():
     logger.disabled()
+    sound.habilitado = False
     salida = '\n' + State.map_all() + '\n'
     total = [['Scheduler', 'Return', 'Wait']]
     mmu_type = AsignacionContinuaFactory

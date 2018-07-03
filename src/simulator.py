@@ -13,10 +13,12 @@ from src.utils.log import logger
 from src.system.file_system import FileSystem
 from src.system.memory_manager.algorithms import FCFS
 from src.utils.utils import input_default
+from src.utils import sound
 
 
 def _run_system(memory_size, frame_size, scheduler, quantum, mmu_type, algorithm):
     logger.enabled()
+    sound.habilitado = True
     count_frames = memory_size // frame_size
     hardware = Hardware(memory_size, 1, mmu_type, frame_size)
     kernel = Kernel(hardware, scheduler, mmu_type, frame_size, count_frames, quantum, algorithm)

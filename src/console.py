@@ -195,7 +195,7 @@ class Console:
 
     def _info(self, _):
         show_full_screen('System Info',
-                         lambda: 'CPU: {cpu}\nCLOCKS: {clock}\n\nFREE\n{free}\n\nTOP\n{top}\n\nPAGE TABLE\n{pt}'
+                         lambda: 'CPU: {cpu}\nCLOCKS:  {clock}\n\nFREE\n{free}\n\nTOP\n{top}\n\nPAGE TABLE\n{pt}'
                          .format(cpu=self._hard.cpu().get_info(), clock=self._hard.clock_info(), free=self._get_free(),
                                  top=self._get_list_process(), pt=self._get_page_table()))
 

@@ -8,6 +8,7 @@ from src.structures.asm import ASM
 from src.structures.interruptions import Interruption
 from src.structures.irq import IRQ
 from src.utils.log import logger
+from src.utils.sound import play, Sonidos
 
 
 class Clock:
@@ -86,6 +87,7 @@ class Cpu:
         elif ASM.is_io(self._ir):
             self._interrupt_vector.handle(IRQ(Interruption.IO_IN, self._ir))
         else:
+            play(Sonidos.CPU)
             logger.info("CPU", "Exec: {instr} in PC={pc}".format(instr=self._ir, pc=self._pc))
 
     def get_pc(self):
@@ -196,7 +198,7 @@ class Hardware:
         return self._clock_cpu
 
     def clock_info(self):
-        return '\t'.join([c.get_info() for c in self._clocks])
+        return '  '.join([c.get_info() for c in self._clocks])
 
     def tick(self):
         [c.do_ticks(1) for c in self._clocks]

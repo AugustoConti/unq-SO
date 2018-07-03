@@ -87,6 +87,7 @@ def _get_color(tipo):
 class _Logger:
     def __init__(self):
         self._log = logging.getLogger(__name__)
+        self._log.propagate = False
         self._proc = None
         self._indices = tabulate([[_get_color(i)] for i in ['Hardware', 'Software', 'Interruption', 'Otro']])
 
