@@ -2,6 +2,8 @@ from time import sleep
 
 from termcolor import colored
 
+from src.utils import sound
+
 img_logo = '''
   /$$$$$$                           /$$      /$$  /$$  /$$  /$$             /$$       
  /$$__  $$                         | $$     |__/ | $$ | $$ |__/            |__/      
@@ -67,12 +69,15 @@ dP      dP
 
 
 def logo():
+    sound.habilitado = True
     print("Loading...")
+    sound.play(sound.Sonidos.START)
     for line in img_logo.splitlines():
         sleep(0.2)
         print(colored(line, 'cyan', attrs=['bold']))
     print()
-    sleep(1)
+    sound.habilitado = False
+    sleep(1.5)
 
 
 def blue_screen():

@@ -6,25 +6,22 @@ pygame.mixer.init()
 
 habilitado = False
 
+path = '/home/niko/PycharmProjects/grupo_7/src/utils/'
+
 
 class Sonidos:
-    CPU = 0
-    KILL = 1
-    NEW = 2
+    CPU = path + 'cpu.wav'
+    KILL = path + 'kill.wav'
+    NEW = path + 'new.wav'
+    START = path + 'start.wav'
 
 
-def play(tipo):
+def play(file):
     if not habilitado:
         return
-    path = '/home/niko/PycharmProjects/grupo_7/src/utils/'
-    paths = {
-        Sonidos.CPU: path + 'cpu.wav',
-        Sonidos.KILL: path + 'kill.wav',
-        Sonidos.NEW: path + 'new.wav'
-    }
 
     def _doplay():
-        song = pygame.mixer.Sound(paths[tipo])
+        song = pygame.mixer.Sound(file)
         clock = pygame.time.Clock()
         song.play()
         clock.tick(1)
