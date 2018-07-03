@@ -38,6 +38,12 @@ Adicionales
  - Estadísticas: Para un determinado listado de procesos, calcular el tiempo de retorno y espera para cada scheduler implementado, mostrando diagrama de gant y una tabla comparativa de cada scheduler.
  - Consola: Interfaz para comunicarse con el sistema mediante comandos.
  - File System: Interfaz incorporada a la consola para navegar entre los directorios del disco, crear y borrar carpetas y archivos.
+ - Concurrencia:
+        3 dispositivos de IO, cada uno con un clock en thread distinto, corriendo concurrentemente.
+        - Clock CPU: 1
+        - Clock KEYBOARD: 1.2
+        - Clock SCREEN: 1.5
+        - Clock PRINTER: 2
 
  Listado de comandos disponibles:
  	Consola:
