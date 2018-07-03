@@ -7,7 +7,7 @@ from tabulate import tabulate
 from termcolor import colored
 
 from src.utils.full_screen import show_full_screen
-from src.utils.utils import execute_program, kill_program
+from src.utils.utils import kill_program, Executor
 
 
 class CMD:
@@ -60,8 +60,8 @@ class Console:
             'cat': CMDWithParam(CMD(self._cat, Categ.FS, '<file>', 'Ver contenido del archivo.')),
             'cd': CMD(self._cd, Categ.FS, '<folder>', 'Cambiar directorio actual.'),
             'clear': CMD(self._clear, Categ.CONSOLE, '', 'Limpiar pantalla'),
-            'exe': CMDWithParam(CMD(self._exe, Categ.KERNEL, '<program> [priority=3]',
-                                    'Ejectuar programa con prioridad.')),
+            'exe': CMDWithParam(CMD(self._exe, Categ.KERNEL, '<program> [tick=0] [priority=3]',
+                                    'Ejectuar programa con prioridad en un determinado tick.')),
             'exit': CMD(None, Categ.CONSOLE, '', 'Apagar el sistema.'),
             'free': CMD(self._free, Categ.HARD, '', 'Ver totales de uso de memoria fisica.'),
             # 'gant': CMD(self._gant, Categ.KERNEL, '', 'Ver diagrama de gant hasta el momento.'),
@@ -132,12 +132,16 @@ class Console:
             print('{c}: file not found'.format(c=args[0]))
         else:
             try:
-                priority = 3
+                tick = 0
                 if len(args) > 1:
-                    priority = int(args[1])
-                execute_program(self._hard.interrupt_vector(), args[0], priority)
+                    tick = int(args[1])
+                priority = 3
+                if len(args) > 2:
+                    priority = int(args[2])
+                Executor(self._hard.clock_cpu(), self._hard.interrupt_vector(), args[0], tick, priority)
             except ValueError:
-                print('exe: {prog} {pri}: priority argument must be a number'.format(prog=args[0], pri=args[1]))
+                print('exe: {prog} {tick} {pri}: tick and priority arguments must be a numbers'
+                      .format(prog=args[0], tick=args[1], pri=args[2]))
 
     def _kill(self, args):
         try:

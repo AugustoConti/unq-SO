@@ -19,7 +19,10 @@ class Clock:
         self._tick_nbr = 0
 
     def add_subscriber(self, subscriber):
-        self._subscribers.append(subscriber)
+        self._subscribers.insert(0, subscriber)
+
+    def remove_subscriber(self, subscriber):
+        self._subscribers.remove(subscriber)
 
     def stop(self):
         logger.info("Clock", "---- :::: STOP CLOCK {name} ::: -----".format(name=self._name))
@@ -29,22 +32,22 @@ class Clock:
         self._running = True
         logger.info("Clock", "---- :::: START CLOCK {name} ::: -----".format(name=self._name))
         while self._running:
-            self.tick(self._tick_nbr)
-            self._tick_nbr += 1
+            self.tick()
 
     def start(self):
         if not self._running:
             Thread(target=self._run).start()
 
-    def tick(self, tick_nbr):
+    def tick(self):
         logger.info("Clock", "        --------------- {name} tick: {tickNbr} ---------------"
-                    .format(name=self._name, tickNbr=tick_nbr))
-        [subscriber.tick(tick_nbr) for subscriber in self._subscribers]
+                    .format(name=self._name, tickNbr=self._tick_nbr))
+        [subscriber.tick(self._tick_nbr) for subscriber in self._subscribers]
+        self._tick_nbr += 1
         sleep(self._delay)
 
     def do_ticks(self, times):
         logger.info("Clock", "---- :::: CLOCK {name} do_ticks: {times} ::: -----".format(name=self._name, times=times))
-        [self.tick(tickNbr) for tickNbr in range(times)]
+        [self.tick() for _ in range(times)]
 
     def get_info(self):
         return '{name}: tick {nro}'.format(name=self._name, nro=self._tick_nbr)
@@ -169,11 +172,12 @@ class Hardware:
         self._cpu = Cpu(self._mmu, self._interrupt_vector)
         self._timer = Timer(self._interrupt_vector)
 
+        self._clock_cpu = Clock('CPU', delay, [self._mmu, self._timer, self._cpu])
         keyboard = IODevice(self._interrupt_vector, "KEYBOARD", 1)
         screen = IODevice(self._interrupt_vector, "SCREEN", 2)
         printer = IODevice(self._interrupt_vector, "PRINTER", 3)
         self._io_devices = [keyboard, screen, printer]
-        self._clocks = [Clock('CPU', delay, [self._mmu, self._timer, self._cpu]),
+        self._clocks = [self._clock_cpu,
                         Clock('KEYBOARD', delay * 1.2, [keyboard]),
                         Clock('SCREEN', delay * 1.5, [screen]),
                         Clock('PRINTER', delay * 2, [printer])]
@@ -183,6 +187,9 @@ class Hardware:
                 ['Frame Size', self._frame_size],
                 ['Disk usage', self._disk.get_info()],
                 ]
+
+    def clock_cpu(self):
+        return self._clock_cpu
 
     def clock_info(self):
         return '\t'.join([c.get_info() for c in self._clocks])
