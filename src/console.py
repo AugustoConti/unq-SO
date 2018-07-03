@@ -7,7 +7,7 @@ from tabulate import tabulate
 from termcolor import colored
 
 from src.utils.full_screen import show_full_screen
-from src.utils.utils import kill_program, Executor
+from src.utils.utils import kill_program, Executor, show_less
 
 
 class CMD:
@@ -64,7 +64,7 @@ class Console:
                                     'Ejectuar programa con prioridad en un determinado tick.')),
             'exit': CMD(None, Categ.CONSOLE, '', 'Apagar el sistema.'),
             'free': CMD(self._free, Categ.HARD, '', 'Ver totales de uso de memoria fisica.'),
-            # 'gant': CMD(self._gant, Categ.KERNEL, '', 'Ver diagrama de gant hasta el momento.'),
+            'gant': CMD(self._gant, Categ.KERNEL, '', 'Ver diagrama de gant hasta el momento.'),
             'help': CMD(self._ayuda, Categ.CONSOLE, '', 'Mostrar esta ayuda.'),
             'kill': CMDWithParam(CMD(self._kill, Categ.KERNEL, '<pid>', 'Matar proceso con pid')),
             'ls': CMD(self._ls, Categ.FS, '', 'Listar archivos del directorio actual.'),
@@ -99,7 +99,8 @@ class Console:
             print(tabulate(l), '\n')
 
     def _gant(self, _):
-        print('FALTA IMPLEMENTAR')
+        tabla, _ = self._kernel.gant()
+        show_less(tabla)
 
     def _stop(self, _):
         self._hard.switch_off()
@@ -164,9 +165,7 @@ class Console:
         print(self._hard.memory())
 
     def _get_list_process(self):
-        lista = []
-        for pcb in self._kernel.pcb_list():
-            lista.append(pcb.to_dict())
+        lista = [pcb.to_dict() for pcb in self._kernel.pcb_list()]
         return tabulate(lista, headers='keys', tablefmt='psql') if lista else 'Empty'
 
     def _ps(self, _):

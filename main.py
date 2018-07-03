@@ -6,11 +6,6 @@ from src.stats import run_stats
 from src.utils.images import logo
 from src.utils.menu import console_menu
 
-
-# TODO en stats, preconfigurar los programas que van a correr y en que tick arrancan
-# TODO guardar gant en cada tick, me sirve para stats y para simulator durante ejecucion ver gant actual
-# TODO COMANDO GANT: implementar gant en consola de comandos(tick actual o tick viejo?)
-
 # TODO Sonidos en el sistema (cpu ejecuta algo, kill, etc)
 
 """

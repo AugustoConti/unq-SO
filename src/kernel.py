@@ -3,6 +3,7 @@ from src.system.interruption_handlers import register_handlers
 from src.system.io_device_controller import IoDeviceController, ControllerDevices
 from src.system.memory_manager.memory_manager import MemoryManager
 from src.system.pcb_table import PCBTable
+from src.system.time_line import Timeline
 
 
 class Kernel:
@@ -18,6 +19,8 @@ class Kernel:
         self._mm.set_base(mmu_type.new_mm(self._loader, hard.swap(), algorithm))
         self._dispatcher = mmu_type.new_dispatcher(self._mm, hard.mmu(), self._pcb_table, hard.cpu(), hard.timer())
         self._scheduler = SchedulerType.new(scheduler_type, self._pcb_table, self._dispatcher, hard.timer(), quantum)
+        self._timeline = Timeline(self._table.values())
+        hard.clock_cpu().add_subscriber_first(self._timeline)
 
         devices = {}
         for d in hard.io_devices():
@@ -43,3 +46,9 @@ class Kernel:
 
     def page_table(self):
         return self._mm.page_table()
+
+    def gant(self):
+        if len(self._table.values()) > 0:
+            return self._timeline.calc()
+        else:
+            return ('Empty', '')

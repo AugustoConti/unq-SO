@@ -19,6 +19,9 @@ class Clock:
         self._tick_nbr = 0
 
     def add_subscriber(self, subscriber):
+        self._subscribers.append(subscriber)
+
+    def add_subscriber_first(self, subscriber):
         self._subscribers.insert(0, subscriber)
 
     def remove_subscriber(self, subscriber):
@@ -41,7 +44,8 @@ class Clock:
     def tick(self):
         logger.info("Clock", "        --------------- {name} tick: {tickNbr} ---------------"
                     .format(name=self._name, tickNbr=self._tick_nbr))
-        [subscriber.tick(self._tick_nbr) for subscriber in self._subscribers]
+        subs = list(self._subscribers)
+        [sub.tick(self._tick_nbr) for sub in subs]
         self._tick_nbr += 1
         sleep(self._delay)
 
