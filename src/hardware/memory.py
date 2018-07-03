@@ -1,5 +1,7 @@
 from tabulate import tabulate
 
+from src.utils.images import blue_screen
+
 
 class Memory:
     def __init__(self, size):
@@ -7,7 +9,7 @@ class Memory:
 
     def put(self, addr, value):
         if addr >= len(self._cells):
-            raise Exception('Memory PUT out of memory size')
+            blue_screen()
         self._cells[addr] = value
 
     def get(self, addr):

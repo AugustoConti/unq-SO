@@ -18,18 +18,16 @@ from src.utils.menu import console_menu
     Instrucciones reales: MOV(de mem a Reg, de Reg a mem), ADD(sum 2 Reg), JMP (modifica el pc si da positivo). 
     En instrucciones define variables, guardarlas despues del exit.
 
+# TODO crear programa desde "touch" y poder ejecutarlo, "nano"?
 
 
 TP: Introduccion, desarrollo y conclusion. Codigo en el PowerPoint.
-
 INFORME con pros y contras del TP, que hicimos, en que consta, que problemas, hasta donde llegamos, el alcance, 
     problemas que no pudimos resolver y una conclusión
-
 EXPO: Que hicimos, Que falta implementar, Que haríamos si tuvieramos 6 meses mas para seguir programando
     - Vender nuestro SO, que tiene de copado que lo diferencia??
     - Alguna clase bien implementada para mostrar? 
     - Configuracion del sistema, como se configura?
-
 
 
 FILE SYSTEM
@@ -40,7 +38,7 @@ control de permisos de usuarios
 SEGURIDAD
 grupos de usuarios
 permisos de grupos
-syscall que solo la puedan usar un grp de users
+syscall que solo la puedan usar un grupo de users
 """
 
 

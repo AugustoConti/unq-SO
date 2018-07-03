@@ -1,0 +1,84 @@
+Simulador
+
+
+Integrantes:
+	Augusto Conti   - augustoconti10@gmail.com
+	Nicolas Bellini - nicolasgbellini@gmail.com
+
+
+
+Alcance
+
+Componentes implementados:
+	Hardware:
+		Disk, Swap, Memory, MMU, Interrupt Vector, Clock, CPU, IODevice, Timer
+	System:
+		Memory Manager, Dispatcher, File System, Interruption Handlers, Loader, PCB Table, Schedulers
+
+	Schedulers implementados:
+		- Shorter Job First
+		- FCFS
+		- Priority No Preemptive
+		- Priority Preemptive
+		- Round Robin
+		- Round Robin Priority No Preemptive
+		- Round Robin Priority Preemptive
+
+	Manejo de memoria:
+		- Batch
+		- Paginación
+		- Paginación bajo demanda
+
+
+
+Adicionales
+
+ - 157 Test de unidad
+ - Configuración del sistema: Tipo de MMU, tipo de scheduler, tamaño de la memoria, tamaño del frame, quantum, algoritmo de selección de victima.
+ - Estadísticas: Para un determinado listado de procesos, calcular el tiempo de retorno y espera para cada scheduler implementado, mostrando diagrama de gant y una tabla comparativa de cada scheduler.
+ - Consola: Interfaz para comunicarse con el sistema mediante comandos.
+ - File System: Interfaz incorporada a la consola para navegar entre los directorios del disco, crear y borrar carpetas y archivos.
+
+ Listado de comandos disponibles:
+ 	Consola:
+	    clear: Limpiar pantalla.
+	    exit: Apagar el sistema.
+	    help: Mostrar ayuda.
+	File System:
+	    cat <file>: Ver contenido del archivo.
+	    cd <folder>: Cambiar directorio actual.
+	    ls: Listar archivos del directorio actual.
+	    mkdir <carpeta>: Crear carpeta si no existe.
+	    rm (<directory|<file>): Remover archivo o carpeta.
+	    touch <file>: Crear archivo.	    
+	Kernel:
+	    exe <program> [tick=0] [priority=3]: Ejectuar programa con prioridad en un determinado tick.
+	    gant: Ver diagrama de gant hasta el momento.
+	    kill <pid>: Matar proceso con pid.
+	    ps: Mostrar procesos.
+	    pt: Mostrar Page Table.
+	    start: Reanudar ejecución.
+	    stop: Detener ejecución.
+	    top: Mostrar procesos en vivo.
+	    info: Mostrar información del sistema en vivo.
+	Hardware:
+	    free: Ver totales de uso de memoria fisica.
+	    mem: Mostrar memoria actual.
+
+
+
+Pendiente de implementación:
+
+Si tuvieramos otro cuatrimestre mas para seguir desarrollando le agregaríamos las siguientes funcionalidades:
+
+	# Asignación Continua: bloques libres, bloques ocupados y compactacion. 
+    Empieza con un bloque solo de toda la memoria libre, se va achicando a medida que piden bloques y en los kill se libera su bloque y mergea con bloque de arriba y abajo si estan libres. 
+    
+	# Instrucciones reales: MOV(de mem a Reg, de Reg a mem), ADD(sum 2 Reg), JMP (modifica el pc si da positivo). En instrucciones se definen variables. Fetch instruccion guarda en los registros las variables necesarias.
+
+	# Usuarios
+
+	# Seguridad:
+	 - Permisos por capeta
+	 - Grupos de usuarios
+	 - Permisos de grupos (Que carpetas pueden acceder).
