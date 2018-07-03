@@ -6,6 +6,8 @@ from src.stats import run_stats
 from src.utils.images import logo
 from src.utils.menu import console_menu
 
+# TODO al correr simulador dividir pantalla, arriba log, abajo consola
+
 """
 # TODO asignacion continua: bloques libres, bloques ocupados y compactacion. 
     arranco con un bloque solo toda la mem libre, lo voy achicando 
