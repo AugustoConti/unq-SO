@@ -74,11 +74,12 @@ Si tuvieramos otro cuatrimestre mas para seguir desarrollando le agregaríamos l
 	# Asignación Continua: bloques libres, bloques ocupados y compactacion. 
     Empieza con un bloque solo de toda la memoria libre, se va achicando a medida que piden bloques y en los kill se libera su bloque y mergea con bloque de arriba y abajo si estan libres. 
     
-	# Instrucciones reales: MOV(de mem a Reg, de Reg a mem), ADD(sum 2 Reg), JMP (modifica el pc si da positivo). En instrucciones se definen variables. Fetch instruccion guarda en los registros las variables necesarias.
+	# Instrucciones reales: MOV(de mem a Reg, de Reg a mem), ADD(sum 2 Reg), JMP (modifica el pc si da positivo).
+	En instrucciones se definen variables. Fetch instruccion guarda en los registros las variables necesarias.
 
 	# Usuarios
 
 	# Seguridad:
-	 - Permisos por capeta
 	 - Grupos de usuarios
 	 - Permisos de grupos (Que carpetas pueden acceder).
+	 - Permisos por capeta
